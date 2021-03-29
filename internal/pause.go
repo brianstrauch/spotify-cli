@@ -11,10 +11,11 @@ func NewPauseCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:     "pause",
 		Short:   "Pause music.",
-		PreRunE: checkToken,
+		PreRunE: checkLogin,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			token := viper.GetString("token")
-			return pkg.Pause(token)
+			api := pkg.NewSpotifyAPI(token)
+			return api.Pause()
 		},
 	}
 }

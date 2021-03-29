@@ -8,23 +8,31 @@ import (
 	"spotify/pkg/model"
 )
 
-const BaseAPIURL = "https://api.spotify.com/v1"
-
-func Play(token string) error {
-	return call("PUT", "/me/player/play", token)
+type SpotifyAPI struct {
+	token string
 }
 
-func Pause(token string) error {
-	return call("PUT", "/me/player/pause", token)
+func NewSpotifyAPI(token string) *SpotifyAPI {
+	return &SpotifyAPI{token}
 }
 
-func call(method string, endpoint string, token string) error {
-	req, err := http.NewRequest(method, BaseAPIURL+endpoint, nil)
+func (s *SpotifyAPI) Play() error {
+	return s.call("PUT", "/me/player/play")
+}
+
+func (s *SpotifyAPI) Pause() error {
+	return s.call("PUT", "/me/player/pause")
+}
+
+func (s *SpotifyAPI) call(method string, endpoint string) error {
+	url := "https://api.spotify.com/v1" + endpoint
+
+	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return err
 	}
 
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", s.token))
 
 	client := http.Client{}
 	res, err := client.Do(req)

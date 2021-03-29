@@ -3,6 +3,7 @@ package internal
 import (
 	"errors"
 	"os/exec"
+	"runtime"
 	"spotify/pkg"
 	"spotify/pkg/model"
 	"time"
@@ -44,8 +45,7 @@ func authorize(cmd *cobra.Command) (*model.Token, error) {
 	uri := pkg.BuildAuthURI(challenge)
 
 	// 3. Your app redirects the user to the authorization URI
-	// TODO: Support other operating systems
-	if err := exec.Command("open", uri).Run(); err != nil {
+	if err := exec.Command(findOpenCommand(), uri).Run(); err != nil {
 		return nil, err
 	}
 
@@ -63,9 +63,19 @@ func authorize(cmd *cobra.Command) (*model.Token, error) {
 	return token, err
 }
 
-func checkToken(cmd *cobra.Command, _ []string) error {
+func findOpenCommand() string {
+	switch os := runtime.GOOS; os {
+	case "linux":
+		return "xdg-open"
+	default:
+		return "open"
+	}
+}
+
+func checkLogin(cmd *cobra.Command, _ []string) error {
 	exp := viper.GetInt64("expiration")
 	now := time.Now().Unix()
+
 	if now > exp {
 		return errors.New("You are not logged in. Please use 'spotify login' before running this command.")
 	}
