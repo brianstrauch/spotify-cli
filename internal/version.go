@@ -2,7 +2,7 @@ package internal
 
 import "github.com/spf13/cobra"
 
-const version = "1.0"
+const version = "1.0.0"
 
 func NewVersionCommand() *cobra.Command {
 	return &cobra.Command{
