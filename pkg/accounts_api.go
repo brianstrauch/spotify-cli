@@ -59,6 +59,9 @@ func ListenForCode() (string, error) {
 
 	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
 		code = r.URL.Query().Get("code")
+
+		// TODO: Check for "access denied" (user cancels)
+		// TODO: Return full webpage with title
 		fmt.Fprintln(w, "Success!")
 
 		// Use a separate thread so browser does not show a "No Connection" message

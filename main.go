@@ -1,7 +1,6 @@
 package main
 
 import (
-	_ "embed"
 	"fmt"
 	"spotify/internal"
 
@@ -14,13 +13,16 @@ const (
 	FullName    = "Spotify CLI"
 )
 
-//go:embed version.txt
-var version string
-
 func main() {
-	viper.SetConfigFile("config.json")
+	// TODO: https://github.com/spf13/viper/pull/1064
+	viper.AddConfigPath("$HOME")
+	viper.SetConfigName(".spotify-cli")
+	viper.SetConfigType("json")
 	viper.SafeWriteConfig()
-	viper.ReadInConfig()
+
+	if err := viper.ReadInConfig(); err != nil {
+		panic(err)
+	}
 
 	root := &cobra.Command{
 		Use:              CommandName,
@@ -31,6 +33,7 @@ func main() {
 	root.AddCommand(internal.NewLoginCommand())
 	root.AddCommand(internal.NewPlayCommand())
 	root.AddCommand(internal.NewPauseCommand())
+	root.AddCommand(internal.NewVersionCommand())
 
 	// Hide help command and rename help flag
 	root.SetHelpCommand(&cobra.Command{Hidden: true})
