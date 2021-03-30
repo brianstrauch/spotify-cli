@@ -1,11 +1,9 @@
 package internal
 
 import (
-	"errors"
 	"os/exec"
 	"runtime"
 	"spotify/pkg"
-	"spotify/pkg/model"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -17,14 +15,13 @@ func NewLoginCommand() *cobra.Command {
 		Use:   "login",
 		Short: "Log in to Spotify.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			token, err := authorize(cmd)
+			token, err := authorize()
 			if err != nil {
 				return err
 			}
 
-			viper.Set("token", token.AccessToken)
-			viper.Set("expiration", time.Now().Unix()+int64(token.ExpiresIn))
-
+			// Save token
+			viper.Set("token", token)
 			if err := viper.WriteConfig(); err != nil {
 				return err
 			}
@@ -35,7 +32,7 @@ func NewLoginCommand() *cobra.Command {
 	}
 }
 
-func authorize(cmd *cobra.Command) (*model.Token, error) {
+func authorize() (*pkg.Token, error) {
 	// https://developer.spotify.com/documentation/general/guides/authorization-guide/#authorization-code-flow-with-proof-key-for-code-exchange-pkce
 
 	// 1. Create the code verifier and challenge
@@ -55,10 +52,12 @@ func authorize(cmd *cobra.Command) (*model.Token, error) {
 	}
 
 	// 4. Your app exchanges the code for an access token
-	token, err := pkg.RequestToken(code, verifier)
+	relativeToken, err := pkg.RequestToken(code, verifier)
 	if err != nil {
 		return nil, err
 	}
+
+	token := pkg.NewToken(relativeToken, time.Now().Unix())
 
 	return token, err
 }
@@ -70,15 +69,4 @@ func findOpenCommand() string {
 	default:
 		return "open"
 	}
-}
-
-func checkLogin(cmd *cobra.Command, _ []string) error {
-	exp := viper.GetInt64("expiration")
-	now := time.Now().Unix()
-
-	if now > exp {
-		return errors.New("You are not logged in. Please use 'spotify login' before running this command.")
-	}
-
-	return nil
 }
