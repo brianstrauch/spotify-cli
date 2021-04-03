@@ -25,8 +25,11 @@ func NewLoginCommand() *cobra.Command {
 			viper.Set("token", token.AccessToken)
 
 			// Save expiration
-			exp := time.Now().Unix() + int64(token.ExpiresIn)
-			viper.Set("exp", exp)
+			expiration := time.Now().Unix() + int64(token.ExpiresIn)
+			viper.Set("expiration", expiration)
+
+			// Save refresh token
+			viper.Set("refresh_token", token.RefreshToken)
 
 			if err := viper.WriteConfig(); err != nil {
 				return err

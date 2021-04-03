@@ -19,7 +19,7 @@ func NewPlayCommand() *cobra.Command {
 				return errors.New(NotLoggedInErr)
 			}
 
-			if time.Now().Unix() > viper.GetInt64("exp") {
+			if time.Now().Unix() > viper.GetInt64("expiration") {
 				return errors.New(TokenExpiredErr)
 			}
 
