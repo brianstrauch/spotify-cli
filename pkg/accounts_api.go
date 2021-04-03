@@ -77,7 +77,7 @@ func ListenForCode() (string, error) {
 	return code, nil
 }
 
-func RequestToken(code, verifier string) (*model.RelativeToken, error) {
+func RequestToken(code, verifier string) (*model.Token, error) {
 	v := url.Values{}
 	v.Set("client_id", ClientID)
 	v.Set("grant_type", "authorization_code")
@@ -94,7 +94,7 @@ func RequestToken(code, verifier string) (*model.RelativeToken, error) {
 
 	// TODO: Handle errors
 
-	token := new(model.RelativeToken)
+	token := new(model.Token)
 	if err := json.NewDecoder(res.Body).Decode(token); err != nil {
 		return nil, err
 	}

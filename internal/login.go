@@ -4,6 +4,7 @@ import (
 	"os/exec"
 	"runtime"
 	"spotify/pkg"
+	"spotify/pkg/model"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -21,7 +22,12 @@ func NewLoginCommand() *cobra.Command {
 			}
 
 			// Save token
-			viper.Set("token", token)
+			viper.Set("token", token.AccessToken)
+
+			// Save expiration
+			exp := time.Now().Unix() + int64(token.ExpiresIn)
+			viper.Set("exp", exp)
+
 			if err := viper.WriteConfig(); err != nil {
 				return err
 			}
@@ -32,7 +38,7 @@ func NewLoginCommand() *cobra.Command {
 	}
 }
 
-func authorize() (*pkg.Token, error) {
+func authorize() (*model.Token, error) {
 	// https://developer.spotify.com/documentation/general/guides/authorization-guide/#authorization-code-flow-with-proof-key-for-code-exchange-pkce
 
 	// 1. Create the code verifier and challenge
@@ -52,12 +58,10 @@ func authorize() (*pkg.Token, error) {
 	}
 
 	// 4. Your app exchanges the code for an access token
-	relativeToken, err := pkg.RequestToken(code, verifier)
+	token, err := pkg.RequestToken(code, verifier)
 	if err != nil {
 		return nil, err
 	}
-
-	token := pkg.NewToken(relativeToken, time.Now().Unix())
 
 	return token, err
 }

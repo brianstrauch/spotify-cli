@@ -3,6 +3,7 @@ package internal
 import (
 	"errors"
 	"spotify/pkg"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -13,9 +14,13 @@ func NewPlayCommand() *cobra.Command {
 		Use:   "play",
 		Short: "Play music.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			token := new(pkg.Token)
-			if err := viper.UnmarshalKey("token", token); err != nil {
+			token := viper.GetString("token")
+			if token == "" {
 				return errors.New(NotLoggedInErr)
+			}
+
+			if time.Now().Unix() > viper.GetInt64("exp") {
+				return errors.New(TokenExpiredErr)
 			}
 
 			api := pkg.NewAPI(token)

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"spotify/pkg/model"
-	"time"
 )
 
 type APIInterface interface {
@@ -15,10 +14,10 @@ type APIInterface interface {
 }
 
 type API struct {
-	token *Token
+	token string
 }
 
-func NewAPI(token *Token) *API {
+func NewAPI(token string) *API {
 	return &API{token}
 }
 
@@ -31,10 +30,6 @@ func (s *API) Pause() error {
 }
 
 func (s *API) call(method string, endpoint string) error {
-	if time.Now().Unix() > s.token.ExpiresAt {
-		return errors.New("API token is expired.")
-	}
-
 	url := "https://api.spotify.com/v1" + endpoint
 
 	req, err := http.NewRequest(method, url, nil)
@@ -42,7 +37,7 @@ func (s *API) call(method string, endpoint string) error {
 		return err
 	}
 
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", s.token.AccessToken))
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", s.token))
 
 	client := http.Client{}
 	res, err := client.Do(req)
