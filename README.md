@@ -2,8 +2,11 @@
 
 Work in progress! Current functionality:
 
-`$ spotify login`
-
-`$ spotify play`
-
-`$ spotify pause`
+```
+$ spotify version
+1.0.0
+$ spotify login
+Success!
+$ spotify play
+$ spotify pause
+```
