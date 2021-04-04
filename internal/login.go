@@ -21,17 +21,7 @@ func NewLoginCommand() *cobra.Command {
 				return err
 			}
 
-			// Save token
-			viper.Set("token", token.AccessToken)
-
-			// Save expiration
-			expiration := time.Now().Unix() + int64(token.ExpiresIn)
-			viper.Set("expiration", expiration)
-
-			// Save refresh token
-			viper.Set("refresh_token", token.RefreshToken)
-
-			if err := viper.WriteConfig(); err != nil {
+			if err := persist(token); err != nil {
 				return err
 			}
 
@@ -67,6 +57,20 @@ func authorize() (*model.Token, error) {
 	}
 
 	return token, err
+}
+
+func persist(token *model.Token) error {
+	// Save token
+	viper.Set("token", token.AccessToken)
+
+	// Save expiration
+	expiration := time.Now().Unix() + int64(token.ExpiresIn)
+	viper.Set("expiration", expiration)
+
+	// Save refresh token
+	viper.Set("refresh_token", token.RefreshToken)
+
+	return viper.WriteConfig()
 }
 
 func findOpenCommand() string {

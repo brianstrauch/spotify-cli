@@ -102,6 +102,29 @@ func RequestToken(code, verifier string) (*model.Token, error) {
 	return token, nil
 }
 
+func RefreshToken(refreshToken string) (*model.Token, error) {
+	v := url.Values{}
+	v.Set("grant_type", "refresh_token")
+	v.Set("refresh_token", refreshToken)
+	v.Set("client_id", ClientID)
+	body := strings.NewReader(v.Encode())
+
+	res, err := http.Post(BaseURL+"/api/token", "application/x-www-form-urlencoded", body)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	// TODO: Handle errors
+
+	token := new(model.Token)
+	if err := json.NewDecoder(res.Body).Decode(token); err != nil {
+		return nil, err
+	}
+
+	return token, nil
+}
+
 func buildRedirectURI() string {
 	return fmt.Sprintf("http://localhost:%d/callback", Port)
 }

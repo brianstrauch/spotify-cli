@@ -14,13 +14,22 @@ func NewPlayCommand() *cobra.Command {
 		Use:   "play",
 		Short: "Play music.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
+			if time.Now().Unix() > viper.GetInt64("expiration") {
+				refreshToken := viper.GetString("refresh_token")
+
+				token, err := pkg.RefreshToken(refreshToken)
+				if err != nil {
+					return err
+				}
+
+				if err := persist(token); err != nil {
+					return err
+				}
+			}
+
 			token := viper.GetString("token")
 			if token == "" {
 				return errors.New(NotLoggedInErr)
-			}
-
-			if time.Now().Unix() > viper.GetInt64("expiration") {
-				return errors.New(TokenExpiredErr)
 			}
 
 			api := pkg.NewAPI(token)
