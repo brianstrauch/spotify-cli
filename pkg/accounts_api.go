@@ -60,14 +60,14 @@ func generateSecureSeed() (int64, error) {
 	return seed, nil
 }
 
-func BuildAuthURI(redirectURI, challenge string) string {
+func BuildAuthURI(redirectURI, challenge, state string) string {
 	q := url.Values{}
 	q.Add("client_id", ClientID)
 	q.Add("response_type", "code")
 	q.Add("redirect_uri", redirectURI)
 	q.Add("code_challenge_method", "S256")
 	q.Add("code_challenge", challenge)
-	// TODO: state
+	q.Add("state", state)
 	q.Add("scope", "user-modify-playback-state")
 
 	return BaseURL + "/authorize?" + q.Encode()

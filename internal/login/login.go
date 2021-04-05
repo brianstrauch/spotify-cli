@@ -2,7 +2,9 @@ package login
 
 import (
 	"context"
+	"crypto/rand"
 	_ "embed"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"net/http"
@@ -69,14 +71,18 @@ func authorize() (*model.Token, error) {
 	}
 
 	// 2. Construct the authorization URI
-	uri := pkg.BuildAuthURI(RedirectURI, challenge)
+	state, err := generateRandomState()
+	if err != nil {
+		return nil, err
+	}
+	uri := pkg.BuildAuthURI(RedirectURI, challenge, state)
 
 	// 3. Your app redirects the user to the authorization URI
 	if err := exec.Command(findOpenCommand(), uri).Run(); err != nil {
 		return nil, err
 	}
 
-	code, err := listenForCode()
+	code, err := listenForCode(state)
 	if err != nil {
 		return nil, err
 	}
@@ -90,6 +96,17 @@ func authorize() (*model.Token, error) {
 	return token, err
 }
 
+func generateRandomState() (string, error) {
+	buf := make([]byte, 7)
+	_, err := rand.Read(buf)
+	if err != nil {
+		return "", err
+	}
+
+	state := hex.EncodeToString(buf)
+	return state, nil
+}
+
 func findOpenCommand() string {
 	switch os := runtime.GOOS; os {
 	case "linux":
@@ -99,19 +116,19 @@ func findOpenCommand() string {
 	}
 }
 
-func listenForCode() (string, error) {
+func listenForCode(state string) (string, error) {
 	server := &http.Server{Addr: ":1024"}
 
 	var code string
 	var err error
 
 	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Query().Get("error") == "" {
-			code = r.URL.Query().Get("code")
-			fmt.Fprintln(w, successHTML)
-		} else {
+		if r.URL.Query().Get("state") != state || r.URL.Query().Get("error") != "" {
 			err = errors.New("Login failed.")
 			fmt.Fprintln(w, failureHTML)
+		} else {
+			code = r.URL.Query().Get("code")
+			fmt.Fprintln(w, successHTML)
 		}
 
 		// Use a separate thread so browser doesn't show a "No Connection" message
