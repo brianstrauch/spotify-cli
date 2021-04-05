@@ -10,7 +10,7 @@ import (
 )
 
 func TestVersionCommand(t *testing.T) {
-	cmd := NewVersionCommand()
+	cmd := NewCommand()
 
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)

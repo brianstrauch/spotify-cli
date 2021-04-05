@@ -23,6 +23,8 @@ var (
 	failureHTML string
 )
 
+const RedirectURI = "http://localhost:1024/callback"
+
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "login",
@@ -61,10 +63,13 @@ func authorize() (*model.Token, error) {
 	// https://developer.spotify.com/documentation/general/guides/authorization-guide/#authorization-code-flow-with-proof-key-for-code-exchange-pkce
 
 	// 1. Create the code verifier and challenge
-	verifier, challenge := pkg.StartProof()
+	verifier, challenge, err := pkg.StartProof()
+	if err != nil {
+		return nil, err
+	}
 
 	// 2. Construct the authorization URI
-	uri := pkg.BuildAuthURI(challenge)
+	uri := pkg.BuildAuthURI(RedirectURI, challenge)
 
 	// 3. Your app redirects the user to the authorization URI
 	if err := exec.Command(findOpenCommand(), uri).Run(); err != nil {
@@ -77,7 +82,7 @@ func authorize() (*model.Token, error) {
 	}
 
 	// 4. Your app exchanges the code for an access token
-	token, err := pkg.RequestToken(code, verifier)
+	token, err := pkg.RequestToken(code, RedirectURI, verifier)
 	if err != nil {
 		return nil, err
 	}
