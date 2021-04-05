@@ -1,11 +1,9 @@
 package pkg
 
 import (
-	"context"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -16,7 +14,6 @@ import (
 const (
 	ClientID = "81dddfee3e8d47d89b7902ba616f3357"
 	BaseURL  = "https://accounts.spotify.com"
-	Port     = 1024
 )
 
 func StartProof() (string, string) {
@@ -51,30 +48,6 @@ func BuildAuthURI(challenge string) string {
 	q.Add("scope", "user-modify-playback-state")
 
 	return BaseURL + "/authorize?" + q.Encode()
-}
-
-func ListenForCode() (string, error) {
-	server := &http.Server{Addr: fmt.Sprintf(":%d", Port)}
-	var code string
-
-	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
-		code = r.URL.Query().Get("code")
-
-		// TODO: Check for "access denied" (user cancels)
-		// TODO: Return full webpage with title
-		fmt.Fprintln(w, "Success!")
-
-		// Use a separate thread so browser does not show a "No Connection" message
-		go func() {
-			server.Shutdown(context.TODO())
-		}()
-	})
-
-	if err := server.ListenAndServe(); err != http.ErrServerClosed {
-		return "", err
-	}
-
-	return code, nil
 }
 
 func RequestToken(code, verifier string) (*model.Token, error) {
@@ -126,5 +99,5 @@ func RefreshToken(refreshToken string) (*model.Token, error) {
 }
 
 func buildRedirectURI() string {
-	return fmt.Sprintf("http://localhost:%d/callback", Port)
+	return "http://localhost:1024/callback"
 }

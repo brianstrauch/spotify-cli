@@ -1,4 +1,4 @@
-package internal
+package pause
 
 import (
 	"spotify/pkg"
@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestPlayCommand(t *testing.T) {
+func TestPauseCommand(t *testing.T) {
 	api := new(pkg.MockSpotifyAPI)
-	err := play(api)
+	err := pause(api)
 	require.NoError(t, err)
 }

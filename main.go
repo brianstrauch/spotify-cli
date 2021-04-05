@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
-	"spotify/internal"
+	"spotify/internal/login"
+	"spotify/internal/pause"
+	"spotify/internal/play"
+	"spotify/internal/version"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -30,10 +33,10 @@ func main() {
 		PersistentPreRun: update,
 	}
 
-	root.AddCommand(internal.NewLoginCommand())
-	root.AddCommand(internal.NewPlayCommand())
-	root.AddCommand(internal.NewPauseCommand())
-	root.AddCommand(internal.NewVersionCommand())
+	root.AddCommand(login.NewCommand())
+	root.AddCommand(play.NewCommand())
+	root.AddCommand(pause.NewCommand())
+	root.AddCommand(version.NewCommand())
 
 	// Hide help command and rename help flag
 	root.SetHelpCommand(&cobra.Command{Hidden: true})

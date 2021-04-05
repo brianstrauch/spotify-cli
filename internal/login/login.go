@@ -1,6 +1,11 @@
-package internal
+package login
 
 import (
+	"context"
+	_ "embed"
+	"errors"
+	"fmt"
+	"net/http"
 	"os/exec"
 	"runtime"
 	"spotify/pkg"
@@ -11,7 +16,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-func NewLoginCommand() *cobra.Command {
+var (
+	//go:embed success.html
+	successHTML string
+	//go:embed failure.html
+	failureHTML string
+)
+
+func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "login",
 		Short: "Log in to Spotify.",
@@ -21,7 +33,7 @@ func NewLoginCommand() *cobra.Command {
 				return err
 			}
 
-			if err := persist(token); err != nil {
+			if err := SaveToken(token); err != nil {
 				return err
 			}
 
@@ -29,6 +41,20 @@ func NewLoginCommand() *cobra.Command {
 			return nil
 		},
 	}
+}
+
+func SaveToken(token *model.Token) error {
+	// Save token
+	viper.Set("token", token.AccessToken)
+
+	// Save expiration
+	expiration := time.Now().Unix() + int64(token.ExpiresIn)
+	viper.Set("expiration", expiration)
+
+	// Save refresh token
+	viper.Set("refresh_token", token.RefreshToken)
+
+	return viper.WriteConfig()
 }
 
 func authorize() (*model.Token, error) {
@@ -45,7 +71,7 @@ func authorize() (*model.Token, error) {
 		return nil, err
 	}
 
-	code, err := pkg.ListenForCode()
+	code, err := listenForCode()
 	if err != nil {
 		return nil, err
 	}
@@ -59,20 +85,6 @@ func authorize() (*model.Token, error) {
 	return token, err
 }
 
-func persist(token *model.Token) error {
-	// Save token
-	viper.Set("token", token.AccessToken)
-
-	// Save expiration
-	expiration := time.Now().Unix() + int64(token.ExpiresIn)
-	viper.Set("expiration", expiration)
-
-	// Save refresh token
-	viper.Set("refresh_token", token.RefreshToken)
-
-	return viper.WriteConfig()
-}
-
 func findOpenCommand() string {
 	switch os := runtime.GOOS; os {
 	case "linux":
@@ -80,4 +92,32 @@ func findOpenCommand() string {
 	default:
 		return "open"
 	}
+}
+
+func listenForCode() (string, error) {
+	server := &http.Server{Addr: ":1024"}
+
+	var code string
+	var err error
+
+	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Query().Get("error") == "" {
+			code = r.URL.Query().Get("code")
+			fmt.Fprintln(w, successHTML)
+		} else {
+			err = errors.New("Login failed.")
+			fmt.Fprintln(w, failureHTML)
+		}
+
+		// Use a separate thread so browser doesn't show a "No Connection" message
+		go func() {
+			server.Shutdown(context.TODO())
+		}()
+	})
+
+	if err := server.ListenAndServe(); err != http.ErrServerClosed {
+		return "", err
+	}
+
+	return code, err
 }
