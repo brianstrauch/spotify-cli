@@ -68,7 +68,7 @@ func BuildAuthURI(redirectURI, challenge, state string) string {
 	q.Add("code_challenge_method", "S256")
 	q.Add("code_challenge", challenge)
 	q.Add("state", state)
-	q.Add("scope", "user-modify-playback-state")
+	q.Add("scope", "user-modify-playback-state user-read-playback-state")
 
 	return BaseURL + "/authorize?" + q.Encode()
 }

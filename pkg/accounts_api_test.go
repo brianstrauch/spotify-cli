@@ -22,9 +22,12 @@ func TestStartProof(t *testing.T) {
 }
 
 func TestBuildAuthURI(t *testing.T) {
-	redirectURI := "http://example.com"
-	challenge := "challenge"
-	state := "state"
+	var (
+		redirectURI = "http://example.com"
+		challenge   = "challenge"
+		state       = "state"
+		scope       = "user-modify-playback-state user-read-playback-state"
+	)
 
 	uri := BuildAuthURI(redirectURI, challenge, state)
 
@@ -34,5 +37,5 @@ func TestBuildAuthURI(t *testing.T) {
 	require.True(t, strings.Contains(uri, "code_challenge_method=S256"))
 	require.True(t, strings.Contains(uri, "code_challenge="+challenge))
 	require.True(t, strings.Contains(uri, "state="+state))
-	require.True(t, strings.Contains(uri, "scope=user-modify-playback-state"))
+	require.True(t, strings.Contains(uri, "scope="+url.QueryEscape(scope)))
 }

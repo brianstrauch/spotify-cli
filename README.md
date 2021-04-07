@@ -12,5 +12,8 @@ $ spotify version
 $ spotify login
 Success!
 $ spotify play
+$ spotify status
+1612
+Vulfpeck
 $ spotify pause
 ```

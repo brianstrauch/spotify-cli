@@ -5,6 +5,7 @@ import (
 	"spotify/internal/login"
 	"spotify/internal/pause"
 	"spotify/internal/play"
+	"spotify/internal/status"
 	"spotify/internal/version"
 
 	"github.com/spf13/cobra"
@@ -34,8 +35,9 @@ func main() {
 	}
 
 	root.AddCommand(login.NewCommand())
-	root.AddCommand(play.NewCommand())
 	root.AddCommand(pause.NewCommand())
+	root.AddCommand(play.NewCommand())
+	root.AddCommand(status.NewCommand())
 	root.AddCommand(version.NewCommand())
 
 	// Hide help command and rename help flag
