@@ -9,8 +9,10 @@ import (
 )
 
 type APIInterface interface {
-	Play() error
+	Next() error
 	Pause() error
+	Play() error
+	Previous() error
 	Status() (*model.Playback, error)
 }
 
@@ -22,13 +24,23 @@ func NewAPI(token string) *API {
 	return &API{token}
 }
 
-func (s *API) Play() error {
-	_, err := s.call("PUT", "/me/player/play")
+func (s *API) Next() error {
+	_, err := s.call("POST", "/me/player/next")
 	return err
 }
 
 func (s *API) Pause() error {
 	_, err := s.call("PUT", "/me/player/pause")
+	return err
+}
+
+func (s *API) Play() error {
+	_, err := s.call("PUT", "/me/player/play")
+	return err
+}
+
+func (s *API) Previous() error {
+	_, err := s.call("POST", "/me/player/previous")
 	return err
 }
 

@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"spotify/internal/back"
 	"spotify/internal/login"
+	"spotify/internal/next"
 	"spotify/internal/pause"
 	"spotify/internal/play"
 	"spotify/internal/status"
@@ -34,7 +36,9 @@ func main() {
 		PersistentPreRun: update,
 	}
 
+	root.AddCommand(back.NewCommand())
 	root.AddCommand(login.NewCommand())
+	root.AddCommand(next.NewCommand())
 	root.AddCommand(pause.NewCommand())
 	root.AddCommand(play.NewCommand())
 	root.AddCommand(status.NewCommand())

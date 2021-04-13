@@ -10,12 +10,22 @@ type MockSpotifyAPI struct {
 	mock.Mock
 }
 
-func (m *MockSpotifyAPI) Play() error {
+func (m *MockSpotifyAPI) Next() error {
 	args := m.Called()
 	return args.Error(0)
 }
 
 func (m *MockSpotifyAPI) Pause() error {
+	args := m.Called()
+	return args.Error(0)
+}
+
+func (m *MockSpotifyAPI) Play() error {
+	args := m.Called()
+	return args.Error(0)
+}
+
+func (m *MockSpotifyAPI) Previous() error {
 	args := m.Called()
 	return args.Error(0)
 }
