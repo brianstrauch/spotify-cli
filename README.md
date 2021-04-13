@@ -16,4 +16,6 @@ $ spotify status
 1612
 Vulfpeck
 $ spotify pause
+$ spotify next
+$ spotify back
 ```
