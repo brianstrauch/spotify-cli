@@ -1,17 +1,26 @@
 package pkg
 
-import "spotify/pkg/model"
+import (
+	"spotify/pkg/model"
 
-type MockSpotifyAPI struct{}
+	"github.com/stretchr/testify/mock"
+)
+
+type MockSpotifyAPI struct {
+	mock.Mock
+}
 
 func (m *MockSpotifyAPI) Play() error {
-	return nil
+	args := m.Called()
+	return args.Error(0)
 }
 
 func (m *MockSpotifyAPI) Pause() error {
-	return nil
+	args := m.Called()
+	return args.Error(0)
 }
 
 func (m *MockSpotifyAPI) Status() (*model.Playback, error) {
-	return nil, nil
+	args := m.Called()
+	return args.Get(0).(*model.Playback), args.Error(1)
 }

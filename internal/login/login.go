@@ -48,14 +48,10 @@ func NewCommand() *cobra.Command {
 }
 
 func SaveToken(token *model.Token) error {
-	// Save token
-	viper.Set("token", token.AccessToken)
-
-	// Save expiration
 	expiration := time.Now().Unix() + int64(token.ExpiresIn)
-	viper.Set("expiration", expiration)
 
-	// Save refresh token
+	viper.Set("expiration", expiration)
+	viper.Set("token", token.AccessToken)
 	viper.Set("refresh_token", token.RefreshToken)
 
 	return viper.WriteConfig()

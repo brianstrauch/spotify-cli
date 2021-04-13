@@ -1,8 +1,6 @@
 package version
 
 import (
-	"bytes"
-	"io/ioutil"
 	"regexp"
 	"testing"
 
@@ -10,15 +8,6 @@ import (
 )
 
 func TestVersionCommand(t *testing.T) {
-	cmd := NewCommand()
-
-	buf := new(bytes.Buffer)
-	cmd.SetOut(buf)
-
-	err := cmd.Execute()
-	require.NoError(t, err)
-
-	out, err := ioutil.ReadAll(buf)
-	require.NoError(t, err)
-	require.True(t, regexp.MustCompile(`^\d+.\d+\.\d+\n$`).Match(out))
+	v := version()
+	require.True(t, regexp.MustCompile(`^\d+.\d+\.\d+$`).MatchString(v))
 }
