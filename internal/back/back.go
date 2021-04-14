@@ -1,6 +1,7 @@
 package back
 
 import (
+	"errors"
 	"spotify/internal"
 	"spotify/pkg"
 
@@ -23,5 +24,16 @@ func NewCommand() *cobra.Command {
 }
 
 func back(api pkg.APIInterface) error {
-	return api.Previous()
+	err := api.Back()
+
+	if err != nil {
+		switch err.Error() {
+		case internal.RestrictionViolatedSpotifyErr:
+			return errors.New(internal.NoPreviousErr)
+		case internal.NoActiveDeviceSpotifyErr:
+			return errors.New(internal.NoActiveDeviceErr)
+		}
+	}
+
+	return err
 }

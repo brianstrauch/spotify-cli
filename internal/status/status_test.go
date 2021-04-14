@@ -1,6 +1,7 @@
 package status
 
 import (
+	"spotify/internal"
 	"spotify/pkg"
 	"spotify/pkg/model"
 	"testing"
@@ -43,4 +44,13 @@ func TestMultipleArtists(t *testing.T) {
 	status, err := status(api)
 	require.NoError(t, err)
 	require.Equal(t, status, "Song\nArtist 1, Artist 2")
+}
+
+func TestNoActiveDeviceErr(t *testing.T) {
+	api := new(pkg.MockSpotifyAPI)
+	api.On("Status").Return(nil, nil)
+
+	status, err := status(api)
+	require.Empty(t, status)
+	require.Equal(t, internal.NoActiveDeviceErr, err.Error())
 }

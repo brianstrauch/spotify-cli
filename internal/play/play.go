@@ -1,6 +1,7 @@
 package play
 
 import (
+	"errors"
 	"spotify/internal"
 	"spotify/pkg"
 
@@ -23,5 +24,16 @@ func NewCommand() *cobra.Command {
 }
 
 func play(api pkg.APIInterface) error {
-	return api.Play()
+	err := api.Play()
+
+	if err != nil {
+		switch err.Error() {
+		case internal.RestrictionViolatedSpotifyErr:
+			return errors.New(internal.AlreadyPlayingErr)
+		case internal.NoActiveDeviceSpotifyErr:
+			return errors.New(internal.NoActiveDeviceErr)
+		}
+	}
+
+	return err
 }

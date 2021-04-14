@@ -1,6 +1,8 @@
 package play
 
 import (
+	"errors"
+	"spotify/internal"
 	"spotify/pkg"
 	"testing"
 
@@ -13,4 +15,20 @@ func TestPlayCommand(t *testing.T) {
 
 	err := play(api)
 	require.NoError(t, err)
+}
+
+func TestAlreadyPlayingErr(t *testing.T) {
+	api := new(pkg.MockSpotifyAPI)
+	api.On("Play").Return(errors.New(internal.RestrictionViolatedSpotifyErr))
+
+	err := play(api)
+	require.Equal(t, internal.AlreadyPlayingErr, err.Error())
+}
+
+func TestNoActiveDeviceErr(t *testing.T) {
+	api := new(pkg.MockSpotifyAPI)
+	api.On("Play").Return(errors.New(internal.NoActiveDeviceSpotifyErr))
+
+	err := play(api)
+	require.Equal(t, internal.NoActiveDeviceErr, err.Error())
 }

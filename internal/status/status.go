@@ -1,6 +1,7 @@
 package status
 
 import (
+	"errors"
 	"spotify/internal"
 	"spotify/pkg"
 
@@ -32,6 +33,10 @@ func status(api pkg.APIInterface) (string, error) {
 	playback, err := api.Status()
 	if err != nil {
 		return "", err
+	}
+
+	if playback == nil {
+		return "", errors.New(internal.NoActiveDeviceErr)
 	}
 
 	artists := playback.Item.Artists

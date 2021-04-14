@@ -9,10 +9,10 @@ import (
 )
 
 type APIInterface interface {
+	Back() error
 	Next() error
 	Pause() error
 	Play() error
-	Previous() error
 	Status() (*model.Playback, error)
 }
 
@@ -22,6 +22,11 @@ type API struct {
 
 func NewAPI(token string) *API {
 	return &API{token}
+}
+
+func (s *API) Back() error {
+	_, err := s.call("POST", "/me/player/previous")
+	return err
 }
 
 func (s *API) Next() error {
@@ -39,17 +44,16 @@ func (s *API) Play() error {
 	return err
 }
 
-func (s *API) Previous() error {
-	_, err := s.call("POST", "/me/player/previous")
-	return err
-}
-
 func (s *API) Status() (*model.Playback, error) {
 	res, err := s.call("GET", "/me/player")
 	if err != nil {
 		return nil, err
 	}
 	defer res.Body.Close()
+
+	if res.StatusCode == http.StatusNoContent {
+		return nil, nil
+	}
 
 	playback := new(model.Playback)
 	err = json.NewDecoder(res.Body).Decode(playback)

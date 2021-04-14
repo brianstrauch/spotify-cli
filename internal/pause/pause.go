@@ -1,6 +1,7 @@
 package pause
 
 import (
+	"errors"
 	"spotify/internal"
 	"spotify/pkg"
 
@@ -23,5 +24,16 @@ func NewCommand() *cobra.Command {
 }
 
 func pause(api pkg.APIInterface) error {
-	return api.Pause()
+	err := api.Pause()
+
+	if err != nil {
+		switch err.Error() {
+		case internal.RestrictionViolatedSpotifyErr:
+			return errors.New(internal.AlreadyPausedErr)
+		case internal.NoActiveDeviceSpotifyErr:
+			return errors.New(internal.NoActiveDeviceErr)
+		}
+	}
+
+	return err
 }
