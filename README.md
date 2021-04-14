@@ -12,12 +12,18 @@ $ spotify version
 $ spotify login
 Success!
 $ spotify play
-$ spotify status
-1612
+Back Pocket
 Vulfpeck
 $ spotify pause
 $ spotify next
+Blinding Lights
+The Weeknd
+$ spotify status
+Blinding Lights
+The Weeknd
 $ spotify back
+Back Pocket
+Vulfpeck
 ```
 
 ## Aliases
