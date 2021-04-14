@@ -34,8 +34,8 @@ func NewCommand() *cobra.Command {
 func Show(playback *model.Playback) string {
 	artists := playback.Item.Artists
 
-	status := playback.Item.Name + "\n"
-	status += artists[0].Name
+	status := "🎵 " + playback.Item.Name + "\n"
+	status += "🎤 " + artists[0].Name
 	for i := 1; i < len(artists); i++ {
 		status += ", " + artists[i].Name
 	}

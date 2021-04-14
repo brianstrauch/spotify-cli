@@ -23,7 +23,7 @@ func TestStatusCommand(t *testing.T) {
 	api.On("Status").Return(playback, nil)
 
 	status, err := status(api)
-	require.Equal(t, status, "Song\nArtist\n")
+	require.Equal(t, "🎵 Song\n🎤 Artist\n", status)
 	require.NoError(t, err)
 }
 
@@ -42,7 +42,7 @@ func TestMultipleArtists(t *testing.T) {
 	api.On("Status").Return(playback, nil)
 
 	status, err := status(api)
-	require.Equal(t, status, "Song\nArtist 1, Artist 2\n")
+	require.Equal(t, "🎵 Song\n🎤 Artist 1, Artist 2\n", status)
 	require.NoError(t, err)
 }
 

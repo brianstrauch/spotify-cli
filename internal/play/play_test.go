@@ -26,7 +26,7 @@ func TestPlayCommand(t *testing.T) {
 	api.On("Play").Return(nil)
 
 	status, err := Play(api)
-	require.Equal(t, "Song\nArtist\n", status)
+	require.Equal(t, "🎵 Song\n🎤 Artist\n", status)
 	require.NoError(t, err)
 }
 

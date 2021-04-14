@@ -33,7 +33,7 @@ func TestBackCommand(t *testing.T) {
 	api.On("Back").Return(nil)
 
 	status, err := back(api)
-	require.Equal(t, "Song\nArtist\n", status)
+	require.Equal(t, "🎵 Song\n🎤 Artist\n", status)
 	require.NoError(t, err)
 }
 

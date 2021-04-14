@@ -33,7 +33,7 @@ func TestNextCommand(t *testing.T) {
 	api.On("Next").Return(nil)
 
 	status, err := next(api)
-	require.Equal(t, "Song\nArtist\n", status)
+	require.Equal(t, "🎵 Song\n🎤 Artist\n", status)
 	require.NoError(t, err)
 }
 
