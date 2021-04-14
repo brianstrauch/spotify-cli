@@ -21,23 +21,29 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			return p(api)
+			status, err := p(api)
+			if err != nil {
+				return err
+			}
+
+			cmd.Print(status)
+			return nil
 		},
 	}
 }
 
-func p(api pkg.APIInterface) error {
+func p(api pkg.APIInterface) (string, error) {
 	playback, err := api.Status()
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if playback == nil {
-		return errors.New(internal.NoActiveDeviceErr)
+		return "", errors.New(internal.NoActiveDeviceErr)
 	}
 
 	if playback.IsPlaying {
-		return pause.Pause(api)
+		return "", pause.Pause(api)
 	} else {
 		return play.Play(api)
 	}

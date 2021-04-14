@@ -4,6 +4,7 @@ import (
 	"errors"
 	"spotify/internal"
 	"spotify/pkg"
+	"spotify/pkg/model"
 
 	"github.com/spf13/cobra"
 )
@@ -24,10 +25,23 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			cmd.Println(status)
+			cmd.Print(status)
 			return nil
 		},
 	}
+}
+
+func Show(playback *model.Playback) string {
+	artists := playback.Item.Artists
+
+	status := playback.Item.Name + "\n"
+	status += artists[0].Name
+	for i := 1; i < len(artists); i++ {
+		status += ", " + artists[i].Name
+	}
+	status += "\n"
+
+	return status
 }
 
 func status(api pkg.APIInterface) (string, error) {
@@ -40,13 +54,5 @@ func status(api pkg.APIInterface) (string, error) {
 		return "", errors.New(internal.NoActiveDeviceErr)
 	}
 
-	artists := playback.Item.Artists
-
-	status := playback.Item.Name + "\n"
-	status += artists[0].Name
-	for i := 1; i < len(artists); i++ {
-		status += ", " + artists[i].Name
-	}
-
-	return status, nil
+	return Show(playback), nil
 }

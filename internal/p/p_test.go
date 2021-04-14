@@ -14,12 +14,19 @@ func TestPCommandPlay(t *testing.T) {
 
 	playback := &model.Playback{
 		IsPlaying: false,
+		Item: model.Item{
+			Name: "Song",
+			Artists: []model.Artist{
+				{Name: "Artist"},
+			},
+		},
 	}
 
 	api.On("Status").Return(playback, nil)
 	api.On("Play").Return(nil)
 
-	err := p(api)
+	status, err := p(api)
+	require.Equal(t, "Song\nArtist\n", status)
 	require.NoError(t, err)
 }
 
@@ -33,7 +40,7 @@ func TestPCommandPause(t *testing.T) {
 	api.On("Status").Return(playback, nil)
 	api.On("Pause").Return(nil)
 
-	err := p(api)
+	_, err := p(api)
 	require.NoError(t, err)
 }
 
@@ -41,6 +48,6 @@ func TestNoActiveDeviceErr(t *testing.T) {
 	api := new(pkg.MockSpotifyAPI)
 	api.On("Status").Return(nil, nil)
 
-	err := p(api)
+	_, err := p(api)
 	require.Equal(t, internal.NoActiveDeviceErr, err.Error())
 }

@@ -3,6 +3,7 @@ package play
 import (
 	"errors"
 	"spotify/internal"
+	"spotify/internal/status"
 	"spotify/pkg"
 
 	"github.com/spf13/cobra"
@@ -18,22 +19,32 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			return Play(api)
+			status, err := Play(api)
+			if err != nil {
+				return err
+			}
+
+			cmd.Print(status)
+			return nil
 		},
 	}
 }
 
-func Play(api pkg.APIInterface) error {
-	err := api.Play()
-
+func Play(api pkg.APIInterface) (string, error) {
+	playback, err := api.Status()
 	if err != nil {
-		switch err.Error() {
-		case internal.RestrictionViolatedSpotifyErr:
-			return errors.New(internal.AlreadyPlayingErr)
-		case internal.NoActiveDeviceSpotifyErr:
-			return errors.New(internal.NoActiveDeviceErr)
+		return "", err
+	}
+
+	if playback == nil {
+		return "", errors.New(internal.NoActiveDeviceErr)
+	}
+
+	if err := api.Play(); err != nil {
+		if err.Error() == internal.RestrictionViolatedSpotifyErr {
+			return "", errors.New(internal.AlreadyPlayingErr)
 		}
 	}
 
-	return err
+	return status.Show(playback), nil
 }

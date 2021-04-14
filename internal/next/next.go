@@ -3,7 +3,9 @@ package next
 import (
 	"errors"
 	"spotify/internal"
+	"spotify/internal/status"
 	"spotify/pkg"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -19,22 +21,48 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			return next(api)
+			status, err := next(api)
+			if err != nil {
+				return err
+			}
+
+			cmd.Print(status)
+			return nil
 		},
 	}
 }
 
-func next(api pkg.APIInterface) error {
-	err := api.Next()
-
+func next(api pkg.APIInterface) (string, error) {
+	playback, err := api.Status()
 	if err != nil {
-		switch err.Error() {
-		case internal.RestrictionViolatedSpotifyErr:
-			return errors.New(internal.NoNextErr)
-		case internal.NoActiveDeviceSpotifyErr:
-			return errors.New(internal.NoActiveDeviceErr)
+		return "", err
+	}
+
+	if playback == nil {
+		return "", errors.New(internal.NoActiveDeviceErr)
+	}
+
+	id := playback.Item.ID
+
+	if err := api.Next(); err != nil {
+		if err.Error() == internal.RestrictionViolatedSpotifyErr {
+			return "", errors.New(internal.NoNextErr)
 		}
 	}
 
-	return err
+	for {
+		select {
+		case <-time.After(time.Second):
+			return "", nil
+		case <-time.Tick(100 * time.Millisecond):
+			playback, err := api.Status()
+			if err != nil {
+				return "", err
+			}
+
+			if id != playback.Item.ID {
+				return status.Show(playback), nil
+			}
+		}
+	}
 }

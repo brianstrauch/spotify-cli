@@ -23,8 +23,8 @@ func TestStatusCommand(t *testing.T) {
 	api.On("Status").Return(playback, nil)
 
 	status, err := status(api)
+	require.Equal(t, status, "Song\nArtist\n")
 	require.NoError(t, err)
-	require.Equal(t, status, "Song\nArtist")
 }
 
 func TestMultipleArtists(t *testing.T) {
@@ -42,15 +42,14 @@ func TestMultipleArtists(t *testing.T) {
 	api.On("Status").Return(playback, nil)
 
 	status, err := status(api)
+	require.Equal(t, status, "Song\nArtist 1, Artist 2\n")
 	require.NoError(t, err)
-	require.Equal(t, status, "Song\nArtist 1, Artist 2")
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
 	api := new(pkg.MockSpotifyAPI)
 	api.On("Status").Return(nil, nil)
 
-	status, err := status(api)
-	require.Empty(t, status)
+	_, err := status(api)
 	require.Equal(t, internal.NoActiveDeviceErr, err.Error())
 }

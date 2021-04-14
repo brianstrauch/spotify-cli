@@ -4,31 +4,52 @@ import (
 	"errors"
 	"spotify/internal"
 	"spotify/pkg"
+	"spotify/pkg/model"
+	"strconv"
 	"testing"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
 func TestNextCommand(t *testing.T) {
 	api := new(pkg.MockSpotifyAPI)
+
+	playback := &model.Playback{
+		Item: model.Item{
+			Name: "Song",
+			Artists: []model.Artist{
+				{Name: "Artist"},
+			},
+		},
+	}
+
+	i := 0
+	api.On("Status").Run(func(_ mock.Arguments) {
+		playback.Item.ID = strconv.Itoa(i)
+		i++
+	}).Return(playback, nil)
+
 	api.On("Next").Return(nil)
 
-	err := next(api)
+	status, err := next(api)
+	require.Equal(t, "Song\nArtist\n", status)
 	require.NoError(t, err)
 }
 
 func TestNoNextErr(t *testing.T) {
 	api := new(pkg.MockSpotifyAPI)
+	api.On("Status").Return(new(model.Playback), nil)
 	api.On("Next").Return(errors.New(internal.RestrictionViolatedSpotifyErr))
 
-	err := next(api)
+	_, err := next(api)
 	require.Equal(t, internal.NoNextErr, err.Error())
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
 	api := new(pkg.MockSpotifyAPI)
-	api.On("Next").Return(errors.New(internal.NoActiveDeviceSpotifyErr))
+	api.On("Status").Return(nil, nil)
 
-	err := next(api)
+	_, err := next(api)
 	require.Equal(t, internal.NoActiveDeviceErr, err.Error())
 }
