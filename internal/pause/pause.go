@@ -18,12 +18,12 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			return pause(api)
+			return Pause(api)
 		},
 	}
 }
 
-func pause(api pkg.APIInterface) error {
+func Pause(api pkg.APIInterface) error {
 	err := api.Pause()
 
 	if err != nil {

@@ -1,5 +1,6 @@
 package model
 
 type Playback struct {
-	Item Item `json:"item"`
+	IsPlaying bool `json:"is_playing"`
+	Item      Item `json:"item"`
 }

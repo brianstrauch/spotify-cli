@@ -5,6 +5,7 @@ import (
 	"spotify/internal/back"
 	"spotify/internal/login"
 	"spotify/internal/next"
+	"spotify/internal/p"
 	"spotify/internal/pause"
 	"spotify/internal/play"
 	"spotify/internal/status"
@@ -39,6 +40,7 @@ func main() {
 	root.AddCommand(back.NewCommand())
 	root.AddCommand(login.NewCommand())
 	root.AddCommand(next.NewCommand())
+	root.AddCommand(p.NewCommand())
 	root.AddCommand(pause.NewCommand())
 	root.AddCommand(play.NewCommand())
 	root.AddCommand(status.NewCommand())

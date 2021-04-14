@@ -10,8 +10,9 @@ import (
 
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "back",
-		Short: "Skip to previous song.",
+		Use:     "back",
+		Aliases: []string{"b"},
+		Short:   "Skip to previous song.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {
