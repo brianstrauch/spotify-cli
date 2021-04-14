@@ -32,9 +32,8 @@ func main() {
 	}
 
 	root := &cobra.Command{
-		Use:              CommandName,
-		Short:            "Play music from the command line.",
-		PersistentPreRun: update,
+		Use:   CommandName,
+		Short: "Play music from the command line.",
 	}
 
 	root.AddCommand(back.NewCommand())
@@ -51,8 +50,4 @@ func main() {
 	root.Flags().BoolP("help", "h", false, fmt.Sprintf("Help for %s.", FullName))
 
 	root.Execute()
-}
-
-func update(cmd *cobra.Command, _ []string) {
-	// TODO: Check for updates
 }
