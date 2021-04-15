@@ -44,6 +44,10 @@ func next(api pkg.APIInterface) (string, error) {
 
 	id := playback.Item.ID
 
+	if err := api.Next(); err != nil {
+		return "", err
+	}
+
 	timeout := time.After(time.Second)
 	tick := time.Tick(100 * time.Millisecond)
 
