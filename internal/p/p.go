@@ -43,7 +43,7 @@ func p(api pkg.APIInterface) (string, error) {
 	}
 
 	if playback.IsPlaying {
-		return "", pause.Pause(api)
+		return pause.Pause(api)
 	} else {
 		return play.Play(api)
 	}

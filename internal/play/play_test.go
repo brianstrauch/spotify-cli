@@ -7,6 +7,7 @@ import (
 	"spotify/pkg/model"
 	"testing"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -14,19 +15,25 @@ func TestPlayCommand(t *testing.T) {
 	api := new(pkg.MockSpotifyAPI)
 
 	playback := &model.Playback{
+		IsPlaying:  false,
+		ProgressMs: 0,
 		Item: model.Item{
 			Name: "Song",
 			Artists: []model.Artist{
 				{Name: "Artist"},
 			},
+			DurationMs: 1000,
 		},
 	}
 
-	api.On("Status").Return(playback, nil)
+	api.On("Status").Run(func(_ mock.Arguments) {
+		playback.IsPlaying = true
+	}).Return(playback, nil)
+
 	api.On("Play").Return(nil)
 
 	status, err := Play(api)
-	require.Equal(t, "🎵 Song\n🎤 Artist\n", status)
+	require.Equal(t, "🎵 Song\n🎤 Artist\n▶️  0:00 [                ] 0:01\n", status)
 	require.NoError(t, err)
 }
 

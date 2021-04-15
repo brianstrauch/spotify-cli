@@ -5,6 +5,7 @@ import (
 	"spotify/internal"
 	"spotify/internal/status"
 	"spotify/pkg"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -46,5 +47,19 @@ func Play(api pkg.APIInterface) (string, error) {
 		}
 	}
 
-	return status.Show(playback), nil
+	for {
+		select {
+		case <-time.After(time.Second):
+			return "", nil
+		case <-time.Tick(100 * time.Millisecond):
+			playback, err := api.Status()
+			if err != nil {
+				return "", err
+			}
+
+			if playback.IsPlaying {
+				return status.Show(playback), nil
+			}
+		}
+	}
 }

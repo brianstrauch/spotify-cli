@@ -2,6 +2,7 @@ package status
 
 import (
 	"errors"
+	"fmt"
 	"spotify/internal"
 	"spotify/pkg"
 	"spotify/pkg/model"
@@ -31,19 +32,6 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func Show(playback *model.Playback) string {
-	artists := playback.Item.Artists
-
-	status := "🎵 " + playback.Item.Name + "\n"
-	status += "🎤 " + artists[0].Name
-	for i := 1; i < len(artists); i++ {
-		status += ", " + artists[i].Name
-	}
-	status += "\n"
-
-	return status
-}
-
 func status(api pkg.APIInterface) (string, error) {
 	playback, err := api.Status()
 	if err != nil {
@@ -55,4 +43,47 @@ func status(api pkg.APIInterface) (string, error) {
 	}
 
 	return Show(playback), nil
+}
+
+func Show(playback *model.Playback) string {
+	status := fmt.Sprintf("🎵 %s\n", playback.Item.Name)
+	status += fmt.Sprintf("🎤 %s\n", joinArtists(playback.Item.Artists))
+
+	if playback.IsPlaying {
+		status += "▶️  "
+	} else {
+		status += "⏸  "
+	}
+	status += showProgressBar(playback.ProgressMs, playback.Item.DurationMs)
+
+	return status
+}
+
+func joinArtists(artists []model.Artist) string {
+	list := artists[0].Name
+	for i := 1; i < len(artists); i++ {
+		list += ", " + artists[i].Name
+	}
+	return list
+}
+
+func showProgressBar(progress, duration int) string {
+	const length = 16
+	bars := length * progress / duration
+
+	status := fmt.Sprintf("%s [", formatTime(progress))
+	for i := 0; i < bars; i++ {
+		status += "="
+	}
+	for i := bars; i < length; i++ {
+		status += " "
+	}
+	status += fmt.Sprintf("] %s\n", formatTime(duration))
+
+	return status
+}
+
+func formatTime(ms int) string {
+	s := ms / 1000
+	return fmt.Sprintf("%d:%02d", s/60, s%60)
 }
