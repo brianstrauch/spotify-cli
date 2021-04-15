@@ -14,16 +14,23 @@ Success!
 $ spotify play
 🎵 Back Pocket
 🎤 Vulfpeck
+▶️ 1:30 [========        ] 3:01
 $ spotify pause
+🎵 Back Pocket
+🎤 Vulfpeck
+⏸ 1:30 [========        ] 3:01
 $ spotify next
 🎵 Blinding Lights
 🎤 The Weeknd
+▶️ 0:00 [                ] 3:20
 $ spotify status
 🎵 Blinding Lights
 🎤 The Weeknd
+▶️ 0:20 [==              ] 3:20
 $ spotify back
 🎵 Back Pocket
 🎤 Vulfpeck
+▶️ 0:00 [                ] 3:01
 ```
 
 ## Aliases
