@@ -1,7 +1,6 @@
 package next
 
 import (
-	"errors"
 	"spotify/internal"
 	"spotify/pkg"
 	"spotify/pkg/model"
@@ -38,15 +37,6 @@ func TestNextCommand(t *testing.T) {
 	status, err := next(api)
 	require.Equal(t, "🎵 Song\n🎤 Artist\n▶️  0:00 [                ] 0:01\n", status)
 	require.NoError(t, err)
-}
-
-func TestNoNextErr(t *testing.T) {
-	api := new(pkg.MockSpotifyAPI)
-	api.On("Status").Return(new(model.Playback), nil)
-	api.On("Next").Return(errors.New(internal.RestrictionViolatedSpotifyErr))
-
-	_, err := next(api)
-	require.Equal(t, internal.NoNextErr, err.Error())
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {

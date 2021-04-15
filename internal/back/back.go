@@ -50,11 +50,14 @@ func back(api pkg.APIInterface) (string, error) {
 		}
 	}
 
+	timeout := time.After(time.Second)
+	tick := time.Tick(100 * time.Millisecond)
+
 	for {
 		select {
-		case <-time.After(time.Second):
+		case <-timeout:
 			return "", nil
-		case <-time.Tick(100 * time.Millisecond):
+		case <-tick:
 			playback, err := api.Status()
 			if err != nil {
 				return "", err
