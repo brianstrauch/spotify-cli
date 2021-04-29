@@ -8,12 +8,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os/exec"
-	"runtime"
 	"spotify/pkg"
 	"spotify/pkg/model"
 	"time"
 
+	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -74,7 +73,7 @@ func authorize() (*model.Token, error) {
 	uri := pkg.BuildAuthURI(RedirectURI, challenge, state)
 
 	// 3. Your app redirects the user to the authorization URI
-	if err := exec.Command(findOpenCommand(), uri).Run(); err != nil {
+	if err := browser.OpenURL(uri); err != nil {
 		return nil, err
 	}
 
@@ -101,15 +100,6 @@ func generateRandomState() (string, error) {
 
 	state := hex.EncodeToString(buf)
 	return state, nil
-}
-
-func findOpenCommand() string {
-	switch os := runtime.GOOS; os {
-	case "linux":
-		return "xdg-open"
-	default:
-		return "open"
-	}
 }
 
 func listenForCode(state string) (string, error) {
