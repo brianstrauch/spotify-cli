@@ -31,6 +31,10 @@ $ spotify back
 🎵 Back Pocket
 🎤 Vulfpeck
 ▶️ 0:00 [                ] 3:01
+$ spotify save
+Saved!
+$ spotify unsave
+Unsaved.
 ```
 
 ## Aliases
