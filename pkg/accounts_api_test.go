@@ -26,7 +26,7 @@ func TestBuildAuthURI(t *testing.T) {
 		redirectURI = "http://example.com"
 		challenge   = "challenge"
 		state       = "state"
-		scope       = "user-modify-playback-state user-read-playback-state"
+		scope       = "user-library-modify user-modify-playback-state user-read-playback-state"
 	)
 
 	uri := BuildAuthURI(redirectURI, challenge, state)

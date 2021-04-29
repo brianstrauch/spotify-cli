@@ -12,7 +12,7 @@ import (
 )
 
 func TestNextCommand(t *testing.T) {
-	api := new(pkg.MockSpotifyAPI)
+	api := new(pkg.MockAPI)
 
 	playback := &model.Playback{
 		IsPlaying:  true,
@@ -40,7 +40,7 @@ func TestNextCommand(t *testing.T) {
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
-	api := new(pkg.MockSpotifyAPI)
+	api := new(pkg.MockAPI)
 	api.On("Status").Return(nil, nil)
 
 	_, err := next(api)

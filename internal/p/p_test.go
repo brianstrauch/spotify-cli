@@ -11,7 +11,7 @@ import (
 )
 
 func TestPCommandPlay(t *testing.T) {
-	api := new(pkg.MockSpotifyAPI)
+	api := new(pkg.MockAPI)
 
 	playback := &model.Playback{
 		IsPlaying:  false,
@@ -41,7 +41,7 @@ func TestPCommandPlay(t *testing.T) {
 }
 
 func TestPCommandPause(t *testing.T) {
-	api := new(pkg.MockSpotifyAPI)
+	api := new(pkg.MockAPI)
 
 	playback := &model.Playback{
 		IsPlaying:  true,
@@ -71,7 +71,7 @@ func TestPCommandPause(t *testing.T) {
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
-	api := new(pkg.MockSpotifyAPI)
+	api := new(pkg.MockAPI)
 	api.On("Status").Return(nil, nil)
 
 	_, err := p(api)

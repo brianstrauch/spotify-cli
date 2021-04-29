@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"spotify/pkg/model"
 )
 
@@ -13,7 +14,9 @@ type APIInterface interface {
 	Next() error
 	Pause() error
 	Play() error
+	Save(id string) error
 	Status() (*model.Playback, error)
+	Unsave(id string) error
 }
 
 type API struct {
@@ -24,28 +27,36 @@ func NewAPI(token string) *API {
 	return &API{token}
 }
 
-func (s *API) Back() error {
-	_, err := s.call("POST", "/me/player/previous")
+func (a *API) Back() error {
+	_, err := a.call("POST", "/me/player/previous")
 	return err
 }
 
-func (s *API) Next() error {
-	_, err := s.call("POST", "/me/player/next")
+func (a *API) Next() error {
+	_, err := a.call("POST", "/me/player/next")
 	return err
 }
 
-func (s *API) Pause() error {
-	_, err := s.call("PUT", "/me/player/pause")
+func (a *API) Pause() error {
+	_, err := a.call("PUT", "/me/player/pause")
 	return err
 }
 
-func (s *API) Play() error {
-	_, err := s.call("PUT", "/me/player/play")
+func (a *API) Play() error {
+	_, err := a.call("PUT", "/me/player/play")
 	return err
 }
 
-func (s *API) Status() (*model.Playback, error) {
-	res, err := s.call("GET", "/me/player")
+func (a *API) Save(id string) error {
+	q := url.Values{}
+	q.Add("ids", id)
+
+	_, err := a.call("PUT", "/me/tracks?"+q.Encode())
+	return err
+}
+
+func (a *API) Status() (*model.Playback, error) {
+	res, err := a.call("GET", "/me/player")
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +72,15 @@ func (s *API) Status() (*model.Playback, error) {
 	return playback, err
 }
 
-func (s *API) call(method string, endpoint string) (*http.Response, error) {
+func (a *API) Unsave(id string) error {
+	q := url.Values{}
+	q.Add("ids", id)
+
+	_, err := a.call("DELETE", "/me/tracks?"+q.Encode())
+	return err
+}
+
+func (a *API) call(method string, endpoint string) (*http.Response, error) {
 	url := "https://api.spotify.com/v1" + endpoint
 
 	req, err := http.NewRequest(method, url, nil)
@@ -69,7 +88,7 @@ func (s *API) call(method string, endpoint string) (*http.Response, error) {
 		return nil, err
 	}
 
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", s.token))
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.token))
 
 	client := http.Client{}
 	res, err := client.Do(req)

@@ -6,31 +6,36 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type MockSpotifyAPI struct {
+type MockAPI struct {
 	mock.Mock
 }
 
-func (m *MockSpotifyAPI) Back() error {
+func (m *MockAPI) Back() error {
 	args := m.Called()
 	return args.Error(0)
 }
 
-func (m *MockSpotifyAPI) Next() error {
+func (m *MockAPI) Next() error {
 	args := m.Called()
 	return args.Error(0)
 }
 
-func (m *MockSpotifyAPI) Pause() error {
+func (m *MockAPI) Pause() error {
 	args := m.Called()
 	return args.Error(0)
 }
 
-func (m *MockSpotifyAPI) Play() error {
+func (m *MockAPI) Play() error {
 	args := m.Called()
 	return args.Error(0)
 }
 
-func (m *MockSpotifyAPI) Status() (*model.Playback, error) {
+func (m *MockAPI) Save(id string) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+func (m *MockAPI) Status() (*model.Playback, error) {
 	args := m.Called()
 
 	playback := args.Get(0)
@@ -41,5 +46,9 @@ func (m *MockSpotifyAPI) Status() (*model.Playback, error) {
 	}
 
 	return playback.(*model.Playback), err
+}
 
+func (m *MockAPI) Unsave(id string) error {
+	args := m.Called(id)
+	return args.Error(0)
 }
