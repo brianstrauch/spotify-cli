@@ -11,6 +11,7 @@ import (
 	"spotify/internal/save"
 	"spotify/internal/status"
 	"spotify/internal/unsave"
+	"spotify/internal/update"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -46,6 +47,7 @@ func main() {
 	root.AddCommand(save.NewCommand())
 	root.AddCommand(status.NewCommand())
 	root.AddCommand(unsave.NewCommand())
+	root.AddCommand(update.NewCommand())
 
 	// Hide help command and rename help flag
 	root.SetHelpCommand(&cobra.Command{Hidden: true})

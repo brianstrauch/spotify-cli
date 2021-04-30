@@ -8,6 +8,7 @@ const (
 	NoActiveDeviceSpotifyErr      = "Player command failed: No active device found"
 	NoNextErr                     = "No track after this one"
 	NoPreviousErr                 = "No track before this one"
+	NoReleaseAvailable            = "No release available for the given OS and architecture"
 	NotLoggedInErr                = "You are not logged in. Run 'spotify login' before using this command"
 	TokenExpiredErr               = "API token is expired"
 )
