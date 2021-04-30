@@ -1,38 +1,19 @@
-# Make sure to check the documentation at http://goreleaser.com
 before:
   hooks:
-    - go mod download
-
+    - go mod tidy
 builds:
   - env:
       - CGO_ENABLED=0
     goos:
+      - darwin
       - linux
       - windows
-      - darwin
     goarch:
       - amd64
       - arm64
-      - 386
-
 archives:
-  - replacements:
-      darwin: macos
-      linux: Linux
-      windows: Windows
-      amd64: x86_64
-    format: binary
-
-
+  - format: binary
 checksum:
-  name_template: 'checksums.txt'
-
-snapshot:
-  name_template: "{{ .Tag }}-next"
-
+  disable: true
 changelog:
   sort: asc
-  filters:
-    exclude:
-      - '^docs:'
-      - '^test:'
