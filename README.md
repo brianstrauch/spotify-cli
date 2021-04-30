@@ -7,8 +7,6 @@ Control an existing Spotify session without leaving the terminal.
 
 ## Usage
 ```
-$ spotify version
-1.0.0
 $ spotify login
 Success!
 $ spotify play
@@ -49,14 +47,14 @@ Unsaved.
   </tr>
   <tr>
     <td><code>spotify play</code></td>
-    <td><code>spotify p</code></td> 
+    <td><code>spotify p</code></td>
   </tr>
   <tr>
     <td><code>spotify pause</code></td>
-    <td><code>spotify p</code></td> 
+    <td><code>spotify p</code></td>
   </tr>
   <tr>
     <td><code>spotify status</code></td>
-    <td><code>spotify s</code></td> 
+    <td><code>spotify s</code></td>
   </tr>
 </table>
