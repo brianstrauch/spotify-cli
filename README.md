@@ -13,6 +13,8 @@ $ spotify play
 🎵 Back Pocket
 🎤 Vulfpeck
 ▶️ 1:30 [========        ] 3:01
+$ spotify save
+Saved!
 $ spotify pause
 🎵 Back Pocket
 🎤 Vulfpeck
@@ -29,10 +31,10 @@ $ spotify back
 🎵 Back Pocket
 🎤 Vulfpeck
 ▶️ 0:00 [                ] 3:01
-$ spotify save
-Saved!
 $ spotify unsave
 Unsaved.
+$ spotify update
+Updated CLI to v1.2.0!
 ```
 
 ## Aliases
