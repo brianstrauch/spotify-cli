@@ -14,7 +14,7 @@ func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:     "status",
 		Aliases: []string{"s"},
-		Short:   "Show the current song.",
+		Short:   "Show the current song or episode.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {
@@ -47,13 +47,20 @@ func status(api pkg.APIInterface) (string, error) {
 
 func Show(playback *model.Playback) string {
 	status := fmt.Sprintf("🎵 %s\n", playback.Item.Name)
-	status += fmt.Sprintf("🎤 %s\n", joinArtists(playback.Item.Artists))
+
+	switch playback.Item.Type {
+	case "track":
+		status += fmt.Sprintf("🎤 %s\n", joinArtists(playback.Item.Artists))
+	case "episode":
+		status += fmt.Sprintf("🎤 %s\n", playback.Item.Show.Name)
+	}
 
 	if playback.IsPlaying {
 		status += "▶️  "
 	} else {
 		status += "⏸  "
 	}
+
 	status += showProgressBar(playback.ProgressMs, playback.Item.DurationMs)
 
 	return status

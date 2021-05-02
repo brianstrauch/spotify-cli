@@ -16,6 +16,7 @@ func TestStatusCommand(t *testing.T) {
 		IsPlaying:  true,
 		ProgressMs: 0,
 		Item: model.Item{
+			Type: "track",
 			Name: "Song",
 			Artists: []model.Artist{
 				{Name: "Artist"},
@@ -38,6 +39,7 @@ func TestMultipleArtists(t *testing.T) {
 		IsPlaying:  true,
 		ProgressMs: 0,
 		Item: model.Item{
+			Type: "track",
 			Name: "Song",
 			Artists: []model.Artist{
 				{Name: "Artist 1"},
@@ -51,6 +53,29 @@ func TestMultipleArtists(t *testing.T) {
 
 	status, err := status(api)
 	require.Equal(t, "🎵 Song\n🎤 Artist 1, Artist 2\n▶️  0:00 [                ] 0:01\n", status)
+	require.NoError(t, err)
+}
+
+func TestPodcast(t *testing.T) {
+	api := new(pkg.MockAPI)
+
+	playback := &model.Playback{
+		IsPlaying:  true,
+		ProgressMs: 0,
+		Item: model.Item{
+			Type: "episode",
+			Name: "Episode",
+			Show: model.Show{
+				Name: "Podcast",
+			},
+			DurationMs: 1000,
+		},
+	}
+
+	api.On("Status").Return(playback, nil)
+
+	status, err := status(api)
+	require.Equal(t, "🎵 Episode\n🎤 Podcast\n▶️  0:00 [                ] 0:01\n", status)
 	require.NoError(t, err)
 }
 

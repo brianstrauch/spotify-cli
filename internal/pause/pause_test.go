@@ -18,6 +18,7 @@ func TestPauseCommand(t *testing.T) {
 		IsPlaying:  true,
 		ProgressMs: 0,
 		Item: model.Item{
+			Type: "track",
 			Name: "Song",
 			Artists: []model.Artist{
 				{Name: "Artist"},

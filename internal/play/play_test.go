@@ -18,6 +18,7 @@ func TestPlayCommand(t *testing.T) {
 		IsPlaying:  false,
 		ProgressMs: 0,
 		Item: model.Item{
+			Type: "track",
 			Name: "Song",
 			Artists: []model.Artist{
 				{Name: "Artist"},

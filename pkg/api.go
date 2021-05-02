@@ -56,7 +56,10 @@ func (a *API) Save(id string) error {
 }
 
 func (a *API) Status() (*model.Playback, error) {
-	res, err := a.call("GET", "/me/player")
+	q := url.Values{}
+	q.Add("additional_types", "episode")
+
+	res, err := a.call("GET", "/me/player?"+q.Encode())
 	if err != nil {
 		return nil, err
 	}
