@@ -4,6 +4,9 @@
 
 ## Description
 Control an existing Spotify session without leaving the terminal.
+- Support for Linux, MacOS, and Windows
+- Download once, and keep up to date with `spotify update`
+- Control playback for music and podcasts
 
 ## Usage
 ```
@@ -13,8 +16,6 @@ $ spotify play
 🎵 Back Pocket
 🎤 Vulfpeck
 ▶️ 1:30 [========        ] 3:01
-$ spotify save
-Saved!
 $ spotify pause
 🎵 Back Pocket
 🎤 Vulfpeck
@@ -31,10 +32,6 @@ $ spotify back
 🎵 Back Pocket
 🎤 Vulfpeck
 ▶️ 0:00 [                ] 3:01
-$ spotify unsave
-Unsaved.
-$ spotify update
-Updated CLI to v1.2.0!
 ```
 
 ## Aliases
