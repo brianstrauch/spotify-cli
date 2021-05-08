@@ -1,6 +1,7 @@
 package unsave
 
 import (
+	"spotify/internal"
 	"spotify/pkg"
 	"spotify/pkg/model"
 	"testing"
@@ -24,4 +25,19 @@ func TestUnsaveCommand(t *testing.T) {
 
 	err := unsave(api)
 	require.NoError(t, err)
+}
+
+func TestSavePodcast(t *testing.T) {
+	api := new(pkg.MockAPI)
+
+	playback := &model.Playback{
+		Item: model.Item{
+			Type: "episode",
+		},
+	}
+
+	api.On("Status").Return(playback, nil)
+
+	err := unsave(api)
+	require.Equal(t, internal.SavePodcastErr, err.Error())
 }

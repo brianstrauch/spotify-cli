@@ -1,6 +1,7 @@
 package save
 
 import (
+	"errors"
 	"spotify/internal"
 	"spotify/pkg"
 
@@ -31,6 +32,10 @@ func save(api pkg.APIInterface) error {
 	playback, err := api.Status()
 	if err != nil {
 		return err
+	}
+
+	if playback.Item.Type == "episode" {
+		return errors.New(internal.SavePodcastErr)
 	}
 
 	return api.Save(playback.Item.ID)

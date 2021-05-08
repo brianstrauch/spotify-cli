@@ -1,7 +1,6 @@
 package internal
 
 const (
-	RestrictionViolatedSpotifyErr = "Player command failed: Restriction violated"
 	AlreadyPausedErr              = "Already paused"
 	AlreadyPlayingErr             = "Already playing"
 	NoActiveDeviceErr             = "Spotify is not active on any device"
@@ -10,5 +9,7 @@ const (
 	NoPreviousErr                 = "No track before this one"
 	NoReleaseAvailable            = "No release available for the given OS and architecture"
 	NotLoggedInErr                = "You are not logged in. Run 'spotify login' before using this command"
+	RestrictionViolatedSpotifyErr = "Player command failed: Restriction violated"
+	SavePodcastErr                = "Saving podcasts is not allowed"
 	TokenExpiredErr               = "API token is expired"
 )
