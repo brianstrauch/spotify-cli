@@ -8,6 +8,9 @@ Control an existing Spotify session without leaving the terminal.
 - Download once, and keep up to date with `spotify update`
 - Control playback for music and podcasts
 
+## Installation
+Get the latest version <a href="https://github.com/brianstrauch/spotify-cli/releases/latest">here</a>.
+
 ## Usage
 ```
 $ spotify login
