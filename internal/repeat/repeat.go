@@ -9,10 +9,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	StateOff   = "off"
+	StateOn    = "context"
+	StateTrack = "track"
+)
+
+var states = []string{StateOff, StateOn, StateTrack}
+
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "repeat",
-		Short: "Toggle repeat on, off, or track.",
+		Short: "Cycle repeat through on, off, or track.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {
@@ -25,11 +33,11 @@ func NewCommand() *cobra.Command {
 			}
 
 			switch state {
-			case "off":
+			case StateOff:
 				cmd.Println("🔁 Repeat off")
-			case "context":
+			case StateOn:
 				cmd.Println("🔁 Repeat on")
-			case "track":
+			case StateTrack:
 				cmd.Println("🔂 Repeat track")
 			}
 
@@ -49,7 +57,7 @@ func Repeat(api pkg.APIInterface) (string, error) {
 	}
 
 	state := playback.RepeatState
-	if err := api.Repeat(toggle(state)); err != nil {
+	if err := api.Repeat(cycle(state)); err != nil {
 		return "", err
 	}
 
@@ -63,15 +71,12 @@ func Repeat(api pkg.APIInterface) (string, error) {
 	return playback.RepeatState, nil
 }
 
-func toggle(state string) string {
-	switch state {
-	case "off":
-		return "context"
-	case "context":
-		return "track"
-	case "track":
-		return "off"
+func cycle(state string) string {
+	for i := range states {
+		if states[i] == state {
+			j := (i + 1) % len(states)
+			return states[j]
+		}
 	}
-
 	return ""
 }

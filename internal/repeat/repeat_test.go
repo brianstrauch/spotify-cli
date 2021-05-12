@@ -13,45 +13,45 @@ import (
 func TestRepeatCommandOn(t *testing.T) {
 	api := new(pkg.MockAPI)
 
-	playback1 := &model.Playback{RepeatState: "off"}
-	playback2 := &model.Playback{RepeatState: "context"}
+	playback1 := &model.Playback{RepeatState: StateOff}
+	playback2 := &model.Playback{RepeatState: StateOn}
 
 	api.On("Status").Return(playback1, nil)
 	api.On("WaitForUpdatedPlayback", mock.AnythingOfType("func(*model.Playback) bool")).Return(playback2, nil)
-	api.On("Repeat", "context").Return(nil)
+	api.On("Repeat", StateOn).Return(nil)
 
 	status, err := Repeat(api)
-	require.Equal(t, "context", status)
+	require.Equal(t, StateOn, status)
 	require.NoError(t, err)
 }
 
 func TestRepeatCommandTrack(t *testing.T) {
 	api := new(pkg.MockAPI)
 
-	playback1 := &model.Playback{RepeatState: "context"}
-	playback2 := &model.Playback{RepeatState: "track"}
+	playback1 := &model.Playback{RepeatState: StateOn}
+	playback2 := &model.Playback{RepeatState: StateTrack}
 
 	api.On("Status").Return(playback1, nil)
 	api.On("WaitForUpdatedPlayback", mock.AnythingOfType("func(*model.Playback) bool")).Return(playback2, nil)
-	api.On("Repeat", "track").Return(nil)
+	api.On("Repeat", StateTrack).Return(nil)
 
 	status, err := Repeat(api)
-	require.Equal(t, "track", status)
+	require.Equal(t, StateTrack, status)
 	require.NoError(t, err)
 }
 
 func TestRepeatCommandOff(t *testing.T) {
 	api := new(pkg.MockAPI)
 
-	playback1 := &model.Playback{RepeatState: "track"}
-	playback2 := &model.Playback{RepeatState: "off"}
+	playback1 := &model.Playback{RepeatState: StateTrack}
+	playback2 := &model.Playback{RepeatState: StateOff}
 
 	api.On("Status").Return(playback1, nil)
 	api.On("WaitForUpdatedPlayback", mock.AnythingOfType("func(*model.Playback) bool")).Return(playback2, nil)
-	api.On("Repeat", "off").Return(nil)
+	api.On("Repeat", StateOff).Return(nil)
 
 	status, err := Repeat(api)
-	require.Equal(t, "off", status)
+	require.Equal(t, StateOff, status)
 	require.NoError(t, err)
 }
 
