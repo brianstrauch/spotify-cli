@@ -16,6 +16,8 @@ $ spotify play
 🎵 Back Pocket
 🎤 Vulfpeck
 ▶️ 1:30 [========        ] 3:01
+$ spotify shuffle
+🔀 Shuffle on
 $ spotify pause
 🎵 Back Pocket
 🎤 Vulfpeck
