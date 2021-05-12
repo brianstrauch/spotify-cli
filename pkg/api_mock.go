@@ -35,6 +35,11 @@ func (m *MockAPI) Save(id string) error {
 	return args.Error(0)
 }
 
+func (m *MockAPI) Shuffle(state bool) error {
+	args := m.Called(state)
+	return args.Error(0)
+}
+
 func (m *MockAPI) Status() (*model.Playback, error) {
 	args := m.Called()
 

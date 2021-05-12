@@ -4,20 +4,19 @@ import (
 	"spotify/internal"
 	"spotify/pkg"
 	"spotify/pkg/model"
-	"strconv"
 	"testing"
 
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
 func TestNextCommand(t *testing.T) {
 	api := new(pkg.MockAPI)
 
-	playback := &model.Playback{
+	playback1 := &model.Playback{
 		IsPlaying:  true,
 		ProgressMs: 0,
 		Item: model.Item{
+			ID:   "0",
 			Type: "track",
 			Name: "Song",
 			Artists: []model.Artist{
@@ -27,12 +26,12 @@ func TestNextCommand(t *testing.T) {
 		},
 	}
 
-	i := 0
-	api.On("Status").Run(func(_ mock.Arguments) {
-		playback.Item.ID = strconv.Itoa(i)
-		i++
-	}).Return(playback, nil)
+	playback2 := new(model.Playback)
+	*playback2 = *playback1
+	playback2.Item.ID = "1"
 
+	api.On("Status").Return(playback1, nil).Once()
+	api.On("Status").Return(playback2, nil)
 	api.On("Next").Return(nil)
 
 	status, err := next(api)

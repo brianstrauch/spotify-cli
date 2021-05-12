@@ -7,14 +7,13 @@ import (
 	"spotify/pkg/model"
 	"testing"
 
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
 func TestPauseCommand(t *testing.T) {
 	api := new(pkg.MockAPI)
 
-	playback := &model.Playback{
+	playback1 := &model.Playback{
 		IsPlaying:  true,
 		ProgressMs: 0,
 		Item: model.Item{
@@ -27,10 +26,12 @@ func TestPauseCommand(t *testing.T) {
 		},
 	}
 
-	api.On("Status").Run(func(_ mock.Arguments) {
-		playback.IsPlaying = false
-	}).Return(playback, nil)
+	playback2 := new(model.Playback)
+	*playback2 = *playback1
+	playback2.IsPlaying = false
 
+	api.On("Status").Return(playback1, nil).Once()
+	api.On("Status").Return(playback2, nil)
 	api.On("Pause").Return(nil)
 
 	status, err := Pause(api)

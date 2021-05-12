@@ -13,7 +13,7 @@ import (
 func TestPCommandPlay(t *testing.T) {
 	api := new(pkg.MockAPI)
 
-	playback := &model.Playback{
+	playback1 := &model.Playback{
 		IsPlaying:  false,
 		ProgressMs: 0,
 		Item: model.Item{
@@ -26,14 +26,12 @@ func TestPCommandPlay(t *testing.T) {
 		},
 	}
 
-	i := 0
-	api.On("Status").Run(func(_ mock.Arguments) {
-		if i == 1 {
-			playback.IsPlaying = true
-		}
-		i++
-	}).Return(playback, nil)
+	playback2 := new(model.Playback)
+	*playback2 = *playback1
+	playback2.IsPlaying = true
 
+	api.On("Status").Return(playback1, nil).Once()
+	api.On("Status").Return(playback2, nil)
 	api.On("Play").Return(nil)
 
 	status, err := p(api)

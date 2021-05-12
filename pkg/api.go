@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"spotify/pkg/model"
+	"strconv"
 )
 
 type APIInterface interface {
@@ -15,6 +16,7 @@ type APIInterface interface {
 	Pause() error
 	Play() error
 	Save(id string) error
+	Shuffle(state bool) error
 	Status() (*model.Playback, error)
 	Unsave(id string) error
 }
@@ -28,22 +30,22 @@ func NewAPI(token string) *API {
 }
 
 func (a *API) Back() error {
-	_, err := a.call("POST", "/me/player/previous")
+	_, err := a.call(http.MethodPost, "/me/player/previous")
 	return err
 }
 
 func (a *API) Next() error {
-	_, err := a.call("POST", "/me/player/next")
+	_, err := a.call(http.MethodPost, "/me/player/next")
 	return err
 }
 
 func (a *API) Pause() error {
-	_, err := a.call("PUT", "/me/player/pause")
+	_, err := a.call(http.MethodPut, "/me/player/pause")
 	return err
 }
 
 func (a *API) Play() error {
-	_, err := a.call("PUT", "/me/player/play")
+	_, err := a.call(http.MethodPut, "/me/player/play")
 	return err
 }
 
@@ -51,7 +53,15 @@ func (a *API) Save(id string) error {
 	q := url.Values{}
 	q.Add("ids", id)
 
-	_, err := a.call("PUT", "/me/tracks?"+q.Encode())
+	_, err := a.call(http.MethodPut, "/me/tracks?"+q.Encode())
+	return err
+}
+
+func (a *API) Shuffle(state bool) error {
+	q := url.Values{}
+	q.Add("state", strconv.FormatBool(state))
+
+	_, err := a.call(http.MethodPut, "/me/player/shuffle?"+q.Encode())
 	return err
 }
 
@@ -59,7 +69,7 @@ func (a *API) Status() (*model.Playback, error) {
 	q := url.Values{}
 	q.Add("additional_types", "episode")
 
-	res, err := a.call("GET", "/me/player?"+q.Encode())
+	res, err := a.call(http.MethodGet, "/me/player?"+q.Encode())
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +89,7 @@ func (a *API) Unsave(id string) error {
 	q := url.Values{}
 	q.Add("ids", id)
 
-	_, err := a.call("DELETE", "/me/tracks?"+q.Encode())
+	_, err := a.call(http.MethodDelete, "/me/tracks?"+q.Encode())
 	return err
 }
 
