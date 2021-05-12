@@ -16,8 +16,6 @@ $ spotify play
 🎵 Back Pocket
 🎤 Vulfpeck
 ▶️ 1:30 [========        ] 3:01
-$ spotify shuffle
-🔀 Shuffle on
 $ spotify pause
 🎵 Back Pocket
 🎤 Vulfpeck
@@ -34,6 +32,12 @@ $ spotify back
 🎵 Back Pocket
 🎤 Vulfpeck
 ▶️ 0:00 [                ] 3:01
+$ spotify shuffle
+🔀 Shuffle on
+$ spotify repeat
+🔁 Repeat on
+$ spotify repeat
+🔂 Repeat track
 ```
 
 ## Aliases
