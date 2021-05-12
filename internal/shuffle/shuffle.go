@@ -4,7 +4,7 @@ import (
 	"errors"
 	"spotify/internal"
 	"spotify/pkg"
-	"time"
+	"spotify/pkg/model"
 
 	"github.com/spf13/cobra"
 )
@@ -45,27 +45,17 @@ func Shuffle(api pkg.APIInterface) (bool, error) {
 		return false, errors.New(internal.NoActiveDeviceErr)
 	}
 
-	isShuffled := playback.ShuffleState
-	if err := api.Shuffle(!isShuffled); err != nil {
+	state := playback.ShuffleState
+	if err := api.Shuffle(!state); err != nil {
 		return false, err
 	}
 
-	timeout := time.After(time.Second)
-	tick := time.Tick(100 * time.Millisecond)
-
-	for {
-		select {
-		case <-timeout:
-			return false, nil
-		case <-tick:
-			playback, err := api.Status()
-			if err != nil {
-				return false, err
-			}
-
-			if playback.ShuffleState != isShuffled {
-				return playback.ShuffleState, nil
-			}
-		}
+	playback, err = api.WaitForUpdatedPlayback(func(playback *model.Playback) bool {
+		return playback.ShuffleState != state
+	})
+	if err != nil {
+		return false, err
 	}
+
+	return playback.ShuffleState, nil
 }

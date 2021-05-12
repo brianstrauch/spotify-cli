@@ -30,8 +30,8 @@ func TestPCommandPlay(t *testing.T) {
 	*playback2 = *playback1
 	playback2.IsPlaying = true
 
-	api.On("Status").Return(playback1, nil).Once()
-	api.On("Status").Return(playback2, nil)
+	api.On("Status").Return(playback1, nil)
+	api.On("WaitForUpdatedPlayback", mock.AnythingOfType("func(*model.Playback) bool")).Return(playback2, nil)
 	api.On("Play").Return(nil)
 
 	status, err := p(api)
@@ -42,7 +42,7 @@ func TestPCommandPlay(t *testing.T) {
 func TestPCommandPause(t *testing.T) {
 	api := new(pkg.MockAPI)
 
-	playback := &model.Playback{
+	playback1 := &model.Playback{
 		IsPlaying:  true,
 		ProgressMs: 0,
 		Item: model.Item{
@@ -55,14 +55,12 @@ func TestPCommandPause(t *testing.T) {
 		},
 	}
 
-	i := 0
-	api.On("Status").Run(func(_ mock.Arguments) {
-		if i == 1 {
-			playback.IsPlaying = false
-		}
-		i++
-	}).Return(playback, nil)
+	playback2 := new(model.Playback)
+	*playback2 = *playback1
+	playback2.IsPlaying = false
 
+	api.On("Status").Return(playback1, nil)
+	api.On("WaitForUpdatedPlayback", mock.AnythingOfType("func(*model.Playback) bool")).Return(playback2, nil)
 	api.On("Pause").Return(nil)
 
 	status, err := p(api)

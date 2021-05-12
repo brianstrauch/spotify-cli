@@ -62,3 +62,16 @@ func (m *MockAPI) Unsave(id string) error {
 	args := m.Called(id)
 	return args.Error(0)
 }
+
+func (m *MockAPI) WaitForUpdatedPlayback(isUpdated func(playback *model.Playback) bool) (*model.Playback, error) {
+	args := m.Called(isUpdated)
+
+	playback := args.Get(0)
+	err := args.Error(1)
+
+	if playback == nil {
+		return nil, err
+	}
+
+	return playback.(*model.Playback), err
+}

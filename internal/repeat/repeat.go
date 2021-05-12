@@ -4,7 +4,7 @@ import (
 	"errors"
 	"spotify/internal"
 	"spotify/pkg"
-	"time"
+	"spotify/pkg/model"
 
 	"github.com/spf13/cobra"
 )
@@ -53,24 +53,14 @@ func Repeat(api pkg.APIInterface) (string, error) {
 		return "", err
 	}
 
-	timeout := time.After(time.Second)
-	tick := time.Tick(100 * time.Millisecond)
-
-	for {
-		select {
-		case <-timeout:
-			return "", nil
-		case <-tick:
-			playback, err := api.Status()
-			if err != nil {
-				return "", err
-			}
-
-			if playback.RepeatState != state {
-				return playback.RepeatState, nil
-			}
-		}
+	playback, err = api.WaitForUpdatedPlayback(func(playback *model.Playback) bool {
+		return playback.RepeatState != state
+	})
+	if err != nil {
+		return "", err
 	}
+
+	return playback.RepeatState, nil
 }
 
 func toggle(state string) string {

@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"spotify/pkg/model"
 	"strconv"
+	"time"
 )
 
 type APIInterface interface {
@@ -20,6 +21,7 @@ type APIInterface interface {
 	Shuffle(state bool) error
 	Status() (*model.Playback, error)
 	Unsave(id string) error
+	WaitForUpdatedPlayback(isUpdated func(*model.Playback) bool) (*model.Playback, error)
 }
 
 type API struct {
@@ -100,6 +102,27 @@ func (a *API) Unsave(id string) error {
 
 	_, err := a.call(http.MethodDelete, "/me/tracks?"+q.Encode())
 	return err
+}
+
+func (a *API) WaitForUpdatedPlayback(isUpdated func(playback *model.Playback) bool) (*model.Playback, error) {
+	timeout := time.After(time.Second)
+	tick := time.Tick(100 * time.Millisecond)
+
+	for {
+		select {
+		case <-timeout:
+			return nil, errors.New("request timed out")
+		case <-tick:
+			playback, err := a.Status()
+			if err != nil {
+				return nil, err
+			}
+
+			if isUpdated(playback) {
+				return playback, nil
+			}
+		}
+	}
 }
 
 func (a *API) call(method string, endpoint string) (*http.Response, error) {

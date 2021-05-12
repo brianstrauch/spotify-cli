@@ -5,7 +5,7 @@ import (
 	"spotify/internal"
 	"spotify/internal/status"
 	"spotify/pkg"
-	"time"
+	"spotify/pkg/model"
 
 	"github.com/spf13/cobra"
 )
@@ -50,22 +50,12 @@ func back(api pkg.APIInterface) (string, error) {
 		}
 	}
 
-	timeout := time.After(time.Second)
-	tick := time.Tick(100 * time.Millisecond)
-
-	for {
-		select {
-		case <-timeout:
-			return "", nil
-		case <-tick:
-			playback, err := api.Status()
-			if err != nil {
-				return "", err
-			}
-
-			if id != playback.Item.ID {
-				return status.Show(playback), nil
-			}
-		}
+	playback, err = api.WaitForUpdatedPlayback(func(playback *model.Playback) bool {
+		return playback.Item.ID != id
+	})
+	if err != nil {
+		return "", err
 	}
+
+	return status.Show(playback), nil
 }

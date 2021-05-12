@@ -8,6 +8,7 @@ const (
 	NoNextErr                     = "No track after this one"
 	NoPreviousErr                 = "No track before this one"
 	NotLoggedInErr                = "You are not logged in. Run 'spotify login' before using this command"
+	RequestTimedOutErr            = "Request timed out"
 	RestrictionViolatedSpotifyErr = "Player command failed: Restriction violated"
 	SavePodcastErr                = "Saving podcasts is not allowed"
 	TokenExpiredErr               = "API token is expired"

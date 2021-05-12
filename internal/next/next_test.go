@@ -6,6 +6,7 @@ import (
 	"spotify/pkg/model"
 	"testing"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -30,8 +31,8 @@ func TestNextCommand(t *testing.T) {
 	*playback2 = *playback1
 	playback2.Item.ID = "1"
 
-	api.On("Status").Return(playback1, nil).Once()
-	api.On("Status").Return(playback2, nil)
+	api.On("Status").Return(playback1, nil)
+	api.On("WaitForUpdatedPlayback", mock.AnythingOfType("func(*model.Playback) bool")).Return(playback2, nil)
 	api.On("Next").Return(nil)
 
 	status, err := next(api)

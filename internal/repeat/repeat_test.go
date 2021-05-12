@@ -6,6 +6,7 @@ import (
 	"spotify/pkg/model"
 	"testing"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,8 +16,8 @@ func TestRepeatCommandOn(t *testing.T) {
 	playback1 := &model.Playback{RepeatState: "off"}
 	playback2 := &model.Playback{RepeatState: "context"}
 
-	api.On("Status").Return(playback1, nil).Once()
-	api.On("Status").Return(playback2, nil)
+	api.On("Status").Return(playback1, nil)
+	api.On("WaitForUpdatedPlayback", mock.AnythingOfType("func(*model.Playback) bool")).Return(playback2, nil)
 	api.On("Repeat", "context").Return(nil)
 
 	status, err := Repeat(api)
@@ -30,8 +31,8 @@ func TestRepeatCommandTrack(t *testing.T) {
 	playback1 := &model.Playback{RepeatState: "context"}
 	playback2 := &model.Playback{RepeatState: "track"}
 
-	api.On("Status").Return(playback1, nil).Once()
-	api.On("Status").Return(playback2, nil)
+	api.On("Status").Return(playback1, nil)
+	api.On("WaitForUpdatedPlayback", mock.AnythingOfType("func(*model.Playback) bool")).Return(playback2, nil)
 	api.On("Repeat", "track").Return(nil)
 
 	status, err := Repeat(api)
@@ -45,8 +46,8 @@ func TestRepeatCommandOff(t *testing.T) {
 	playback1 := &model.Playback{RepeatState: "track"}
 	playback2 := &model.Playback{RepeatState: "off"}
 
-	api.On("Status").Return(playback1, nil).Once()
-	api.On("Status").Return(playback2, nil)
+	api.On("Status").Return(playback1, nil)
+	api.On("WaitForUpdatedPlayback", mock.AnythingOfType("func(*model.Playback) bool")).Return(playback2, nil)
 	api.On("Repeat", "off").Return(nil)
 
 	status, err := Repeat(api)
