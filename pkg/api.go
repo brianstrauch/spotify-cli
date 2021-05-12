@@ -15,6 +15,7 @@ type APIInterface interface {
 	Next() error
 	Pause() error
 	Play() error
+	Repeat(state string) error
 	Save(id string) error
 	Shuffle(state bool) error
 	Status() (*model.Playback, error)
@@ -46,6 +47,14 @@ func (a *API) Pause() error {
 
 func (a *API) Play() error {
 	_, err := a.call(http.MethodPut, "/me/player/play")
+	return err
+}
+
+func (a *API) Repeat(state string) error {
+	q := url.Values{}
+	q.Add("state", state)
+
+	_, err := a.call(http.MethodPut, "/me/player/repeat?"+q.Encode())
 	return err
 }
 

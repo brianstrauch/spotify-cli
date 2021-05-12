@@ -9,18 +9,33 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestShuffleCommand(t *testing.T) {
+func TestShuffleCommandOn(t *testing.T) {
 	api := new(pkg.MockAPI)
 
 	playback1 := &model.Playback{ShuffleState: false}
 	playback2 := &model.Playback{ShuffleState: true}
 
 	api.On("Status").Return(playback1, nil).Once()
-	api.On("Status").Return(playback2, nil).Once()
+	api.On("Status").Return(playback2, nil)
 	api.On("Shuffle", true).Return(nil)
 
 	status, err := Shuffle(api)
 	require.Equal(t, true, status)
+	require.NoError(t, err)
+}
+
+func TestShuffleCommandOff(t *testing.T) {
+	api := new(pkg.MockAPI)
+
+	playback1 := &model.Playback{ShuffleState: true}
+	playback2 := &model.Playback{ShuffleState: false}
+
+	api.On("Status").Return(playback1, nil).Once()
+	api.On("Status").Return(playback2, nil)
+	api.On("Shuffle", false).Return(nil)
+
+	status, err := Shuffle(api)
+	require.Equal(t, false, status)
 	require.NoError(t, err)
 }
 

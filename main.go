@@ -8,6 +8,7 @@ import (
 	"spotify/internal/p"
 	"spotify/internal/pause"
 	"spotify/internal/play"
+	"spotify/internal/repeat"
 	"spotify/internal/save"
 	"spotify/internal/shuffle"
 	"spotify/internal/status"
@@ -45,6 +46,7 @@ func main() {
 	root.AddCommand(p.NewCommand())
 	root.AddCommand(pause.NewCommand())
 	root.AddCommand(play.NewCommand())
+	root.AddCommand(repeat.NewCommand())
 	root.AddCommand(save.NewCommand())
 	root.AddCommand(shuffle.NewCommand())
 	root.AddCommand(status.NewCommand())

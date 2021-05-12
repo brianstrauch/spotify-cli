@@ -30,6 +30,11 @@ func (m *MockAPI) Play() error {
 	return args.Error(0)
 }
 
+func (m *MockAPI) Repeat(state string) error {
+	args := m.Called(state)
+	return args.Error(0)
+}
+
 func (m *MockAPI) Save(id string) error {
 	args := m.Called(id)
 	return args.Error(0)
