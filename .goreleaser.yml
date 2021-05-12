@@ -13,7 +13,5 @@ builds:
       - arm64
 archives:
   - format: binary
-checksum:
-  disable: true
 changelog:
   sort: asc
