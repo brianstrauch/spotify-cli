@@ -110,7 +110,7 @@ func listenForCode(state string) (string, error) {
 
 	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("state") != state || r.URL.Query().Get("error") != "" {
-			err = errors.New("Login failed.")
+			err = errors.New("Login failed")
 			fmt.Fprintln(w, failureHTML)
 		} else {
 			code = r.URL.Query().Get("code")
