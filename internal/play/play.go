@@ -50,7 +50,7 @@ func Play(api pkg.APIInterface, query string) (string, error) {
 	var uri string
 
 	if len(query) > 0 {
-		uri, err = Search(api, query)
+		uri, err = internal.Search(api, query)
 		if err != nil {
 			return "", err
 		}
@@ -70,13 +70,4 @@ func Play(api pkg.APIInterface, query string) (string, error) {
 	}
 
 	return status.Show(playback), nil
-}
-
-func Search(api pkg.APIInterface, query string) (string, error) {
-	page, err := api.Search(query, 1)
-	if err != nil {
-		return "", err
-	}
-
-	return page.Tracks.Items[0].URI, nil
 }

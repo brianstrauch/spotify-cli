@@ -30,6 +30,11 @@ func (m *MockAPI) Play(uri string) error {
 	return args.Error(0)
 }
 
+func (m *MockAPI) Queue(uri string) error {
+	args := m.Called(uri)
+	return args.Error(0)
+}
+
 func (m *MockAPI) Repeat(state string) error {
 	args := m.Called(state)
 	return args.Error(0)

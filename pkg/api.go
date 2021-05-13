@@ -18,6 +18,7 @@ type APIInterface interface {
 	Next() error
 	Pause() error
 	Play(uri string) error
+	Queue(uri string) error
 	Repeat(state string) error
 	Save(id string) error
 	Search(queue string, limit int) (*model.Page, error)
@@ -69,6 +70,14 @@ func (a *API) Play(uri string) error {
 	}
 
 	_, err = a.call(http.MethodPut, "/me/player/play", bytes.NewReader(data))
+	return err
+}
+
+func (a *API) Queue(uri string) error {
+	q := url.Values{}
+	q.Add("uri", uri)
+
+	_, err := a.call(http.MethodPost, "/me/player/queue?"+q.Encode(), nil)
 	return err
 }
 

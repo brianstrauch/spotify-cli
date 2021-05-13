@@ -15,7 +15,7 @@ Get the latest version <a href="https://github.com/brianstrauch/spotify-cli/rele
 ```
 $ spotify login
 Success!
-$ spotify play
+$ spotify play back pocket
 🎵 Back Pocket
 🎤 Vulfpeck
 ▶️ 1:30 [========        ] 3:01
@@ -23,6 +23,8 @@ $ spotify pause
 🎵 Back Pocket
 🎤 Vulfpeck
 ⏸ 1:30 [========        ] 3:01
+$ spotify queue blinding lights
+Queued!
 $ spotify next
 🎵 Blinding Lights
 🎤 The Weeknd
@@ -39,8 +41,6 @@ $ spotify shuffle
 🔀 Shuffle on
 $ spotify repeat
 🔁 Repeat on
-$ spotify repeat
-🔂 Repeat track
 ```
 
 ## Aliases
@@ -60,6 +60,10 @@ $ spotify repeat
   <tr>
     <td><code>spotify pause</code></td>
     <td><code>spotify p</code></td>
+  </tr>
+  <tr>
+    <td><code>spotify queue</code></td>
+    <td><code>spotify q</code></td>
   </tr>
   <tr>
     <td><code>spotify status</code></td>
