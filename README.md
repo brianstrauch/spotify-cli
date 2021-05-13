@@ -19,7 +19,7 @@ Success!
 $ spotify play back pocket
 🎵 Back Pocket
 🎤 Vulfpeck
-▶️ 1:30 [========        ] 3:01
+▶️ 0:00 [                ] 3:01
 $ spotify pause
 🎵 Back Pocket
 🎤 Vulfpeck
