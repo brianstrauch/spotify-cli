@@ -32,7 +32,7 @@ func TestPCommandPlay(t *testing.T) {
 
 	api.On("Status").Return(playback1, nil)
 	api.On("WaitForUpdatedPlayback", mock.AnythingOfType("func(*model.Playback) bool")).Return(playback2, nil)
-	api.On("Play").Return(nil)
+	api.On("Play", "").Return(nil)
 
 	status, err := p(api)
 	require.Equal(t, "🎵 Song\n🎤 Artist\n▶️  0:00 [                ] 0:01\n", status)

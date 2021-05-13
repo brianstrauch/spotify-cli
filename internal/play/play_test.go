@@ -33,9 +33,9 @@ func TestPlayCommand(t *testing.T) {
 
 	api.On("Status").Return(playback1, nil)
 	api.On("WaitForUpdatedPlayback", mock.AnythingOfType("func(*model.Playback) bool")).Return(playback2, nil)
-	api.On("Play").Return(nil)
+	api.On("Play", "").Return(nil)
 
-	status, err := Play(api)
+	status, err := Play(api, "")
 	require.Equal(t, "🎵 Song\n🎤 Artist\n▶️  0:00 [                ] 0:01\n", status)
 	require.NoError(t, err)
 }
@@ -43,9 +43,9 @@ func TestPlayCommand(t *testing.T) {
 func TestAlreadyPlayingErr(t *testing.T) {
 	api := new(pkg.MockAPI)
 	api.On("Status").Return(new(model.Playback), nil)
-	api.On("Play").Return(errors.New(internal.RestrictionViolatedSpotifyErr))
+	api.On("Play", "").Return(errors.New(internal.RestrictionViolatedSpotifyErr))
 
-	_, err := Play(api)
+	_, err := Play(api, "")
 	require.Equal(t, internal.AlreadyPlayingErr, err.Error())
 }
 
@@ -53,6 +53,6 @@ func TestNoActiveDeviceErr(t *testing.T) {
 	api := new(pkg.MockAPI)
 	api.On("Status").Return(nil, nil)
 
-	_, err := Play(api)
+	_, err := Play(api, "")
 	require.Equal(t, internal.NoActiveDeviceErr, err.Error())
 }

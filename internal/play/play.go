@@ -6,21 +6,27 @@ import (
 	"spotify/internal/status"
 	"spotify/pkg"
 	"spotify/pkg/model"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
 
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "play",
-		Short: "Play music.",
-		RunE: func(cmd *cobra.Command, _ []string) error {
+		Use:   "play [song]",
+		Short: "Play current song, or a specific song.",
+		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {
 				return err
 			}
 
-			status, err := Play(api)
+			var query string
+			if len(args) > 0 {
+				query = strings.Join(args, " ")
+			}
+
+			status, err := Play(api, query)
 			if err != nil {
 				return err
 			}
@@ -31,7 +37,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func Play(api pkg.APIInterface) (string, error) {
+func Play(api pkg.APIInterface, query string) (string, error) {
 	playback, err := api.Status()
 	if err != nil {
 		return "", err
@@ -41,18 +47,36 @@ func Play(api pkg.APIInterface) (string, error) {
 		return "", errors.New(internal.NoActiveDeviceErr)
 	}
 
-	if err := api.Play(); err != nil {
+	var uri string
+
+	if len(query) > 0 {
+		uri, err = Search(api, query)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	if err := api.Play(uri); err != nil {
 		if err.Error() == internal.RestrictionViolatedSpotifyErr {
 			return "", errors.New(internal.AlreadyPlayingErr)
 		}
 	}
 
 	playback, err = api.WaitForUpdatedPlayback(func(playback *model.Playback) bool {
-		return playback.IsPlaying
+		return len(playback.Item.ID) > 0 && playback.IsPlaying
 	})
 	if err != nil {
 		return "", err
 	}
 
 	return status.Show(playback), nil
+}
+
+func Search(api pkg.APIInterface, query string) (string, error) {
+	page, err := api.Search(query, 1)
+	if err != nil {
+		return "", err
+	}
+
+	return page.Tracks.Items[0].URI, nil
 }
