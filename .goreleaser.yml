@@ -15,3 +15,5 @@ archives:
   - format: binary
 changelog:
   sort: asc
+checksum:
+  disable: true

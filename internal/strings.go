@@ -3,6 +3,7 @@ package internal
 const (
 	AlreadyPausedErr              = "Already paused"
 	AlreadyPlayingErr             = "Already playing"
+	AlreadyUpToDateErr            = "Already up to date"
 	NoActiveDeviceErr             = "Spotify is not active on any device"
 	NoActiveDeviceSpotifyErr      = "Player command failed: No active device found"
 	NoNextErr                     = "No track after this one"

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"spotify/internal/back"
 	"spotify/internal/login"
 	"spotify/internal/next"
@@ -20,11 +20,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	CommandName = "spotify"
-	FullName    = "Spotify CLI"
-)
-
 func main() {
 	// TODO: https://github.com/spf13/viper/pull/1064
 	viper.AddConfigPath("$HOME")
@@ -33,12 +28,13 @@ func main() {
 	viper.SafeWriteConfig()
 
 	if err := viper.ReadInConfig(); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	root := &cobra.Command{
-		Use:   CommandName,
-		Short: "Play music from the command line.",
+		Use:     "spotify",
+		Short:   "Spotify for the terminal 🎵",
+		Version: "1.5.1",
 	}
 
 	root.AddCommand(back.NewCommand())
@@ -55,9 +51,12 @@ func main() {
 	root.AddCommand(unsave.NewCommand())
 	root.AddCommand(update.NewCommand())
 
-	// Hide help command and rename help flag
+	// Hide help command
 	root.SetHelpCommand(&cobra.Command{Hidden: true})
-	root.Flags().BoolP("help", "h", false, fmt.Sprintf("Help for %s.", FullName))
+
+	// Rename default flag descriptions
+	root.Flags().BoolP("help", "h", false, "Help for Spotify CLI.")
+	root.Flags().BoolP("version", "v", false, "Version for Spotify CLI.")
 
 	root.Execute()
 }
