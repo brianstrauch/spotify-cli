@@ -7,6 +7,7 @@ Control an existing Spotify session without leaving the terminal.
 - Support for Linux, MacOS, and Windows
 - Download once, and keep up to date with `spotify update`
 - Control playback for music and podcasts
+- Play and queue songs by name
 
 ## Installation
 Get the latest version <a href="https://github.com/brianstrauch/spotify-cli/releases/latest">here</a>.
@@ -18,7 +19,7 @@ Success!
 $ spotify play back pocket
 🎵 Back Pocket
 🎤 Vulfpeck
-▶️ 1:30 [========        ] 3:01
+▶️ 0:00 [                ] 3:01
 $ spotify pause
 🎵 Back Pocket
 🎤 Vulfpeck
