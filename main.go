@@ -15,6 +15,7 @@ import (
 	"spotify/internal/status"
 	"spotify/internal/unsave"
 	"spotify/internal/update"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -32,9 +33,10 @@ func main() {
 	}
 
 	root := &cobra.Command{
-		Use:     "spotify",
-		Short:   "Spotify for the terminal 🎵",
-		Version: "1.5.1",
+		Use:               "spotify",
+		Short:             "Spotify for the terminal 🎵",
+		Version:           "1.5.1",
+		PersistentPreRunE: promptUpdate,
 	}
 
 	root.AddCommand(back.NewCommand())
@@ -59,4 +61,24 @@ func main() {
 	root.Flags().BoolP("version", "v", false, "Version for Spotify CLI.")
 
 	root.Execute()
+}
+
+func promptUpdate(cmd *cobra.Command, _ []string) error {
+	if time.Now().Unix() < viper.GetInt64("prompt_update_timer") {
+		return nil
+	}
+
+	isUpdated, err := update.IsUpdated(cmd)
+	if err != nil {
+		return err
+	}
+	if !isUpdated {
+		cmd.Println("Use 'spotify update' to get the latest version.")
+	}
+
+	// Wait one day before the next prompt
+	const day int64 = 24 * 60 * 60
+	viper.Set("prompt_update_timer", time.Now().Unix()+day)
+
+	return viper.WriteConfig()
 }
