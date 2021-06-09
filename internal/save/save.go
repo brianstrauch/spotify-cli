@@ -3,8 +3,8 @@ package save
 import (
 	"errors"
 	"spotify/internal"
-	"spotify/pkg"
 
+	"github.com/brianstrauch/spotify"
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +28,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func save(api pkg.APIInterface) error {
+func save(api spotify.APIInterface) error {
 	playback, err := api.Status()
 	if err != nil {
 		return err

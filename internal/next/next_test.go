@@ -2,16 +2,16 @@ package next
 
 import (
 	"spotify/internal"
-	"spotify/pkg"
-	"spotify/pkg/model"
 	"testing"
 
+	"github.com/brianstrauch/spotify"
+	"github.com/brianstrauch/spotify/model"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
 func TestNextCommand(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 
 	playback1 := &model.Playback{
 		IsPlaying:  true,
@@ -41,7 +41,7 @@ func TestNextCommand(t *testing.T) {
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 	api.On("Status").Return(nil, nil)
 
 	_, err := next(api)

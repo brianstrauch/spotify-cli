@@ -3,9 +3,9 @@ package shuffle
 import (
 	"errors"
 	"spotify/internal"
-	"spotify/pkg"
-	"spotify/pkg/model"
 
+	"github.com/brianstrauch/spotify"
+	"github.com/brianstrauch/spotify/model"
 	"github.com/spf13/cobra"
 )
 
@@ -35,7 +35,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func Shuffle(api pkg.APIInterface) (bool, error) {
+func Shuffle(api spotify.APIInterface) (bool, error) {
 	playback, err := api.Status()
 	if err != nil {
 		return false, nil

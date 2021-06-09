@@ -3,16 +3,16 @@ package play
 import (
 	"errors"
 	"spotify/internal"
-	"spotify/pkg"
-	"spotify/pkg/model"
 	"testing"
 
+	"github.com/brianstrauch/spotify"
+	"github.com/brianstrauch/spotify/model"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
 func TestPlayCommand(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 
 	playback1 := &model.Playback{
 		IsPlaying:  false,
@@ -41,7 +41,7 @@ func TestPlayCommand(t *testing.T) {
 }
 
 func TestAlreadyPlayingErr(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 	api.On("Status").Return(new(model.Playback), nil)
 	api.On("Play", "").Return(errors.New(internal.RestrictionViolatedSpotifyErr))
 
@@ -50,7 +50,7 @@ func TestAlreadyPlayingErr(t *testing.T) {
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 	api.On("Status").Return(nil, nil)
 
 	_, err := Play(api, "")

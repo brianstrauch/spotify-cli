@@ -5,9 +5,9 @@ import (
 	"spotify/internal"
 	"spotify/internal/pause"
 	"spotify/internal/play"
-	"spotify/pkg"
 	"strings"
 
+	"github.com/brianstrauch/spotify"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +40,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func p(api pkg.APIInterface) (string, error) {
+func p(api spotify.APIInterface) (string, error) {
 	playback, err := api.Status()
 	if err != nil {
 		return "", err

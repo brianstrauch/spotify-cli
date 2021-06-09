@@ -2,16 +2,16 @@ package repeat
 
 import (
 	"spotify/internal"
-	"spotify/pkg"
-	"spotify/pkg/model"
 	"testing"
 
+	"github.com/brianstrauch/spotify"
+	"github.com/brianstrauch/spotify/model"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
 func TestRepeatCommandOn(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 
 	playback1 := &model.Playback{RepeatState: StateOff}
 	playback2 := &model.Playback{RepeatState: StateOn}
@@ -26,7 +26,7 @@ func TestRepeatCommandOn(t *testing.T) {
 }
 
 func TestRepeatCommandTrack(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 
 	playback1 := &model.Playback{RepeatState: StateOn}
 	playback2 := &model.Playback{RepeatState: StateTrack}
@@ -41,7 +41,7 @@ func TestRepeatCommandTrack(t *testing.T) {
 }
 
 func TestRepeatCommandOff(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 
 	playback1 := &model.Playback{RepeatState: StateTrack}
 	playback2 := &model.Playback{RepeatState: StateOff}
@@ -56,7 +56,7 @@ func TestRepeatCommandOff(t *testing.T) {
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 	api.On("Status").Return(nil, nil)
 
 	_, err := Repeat(api)

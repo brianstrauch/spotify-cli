@@ -4,10 +4,10 @@ import (
 	"errors"
 	"spotify/internal"
 	"spotify/internal/status"
-	"spotify/pkg"
-	"spotify/pkg/model"
 	"strings"
 
+	"github.com/brianstrauch/spotify"
+	"github.com/brianstrauch/spotify/model"
 	"github.com/spf13/cobra"
 )
 
@@ -37,7 +37,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func Play(api pkg.APIInterface, query string) (string, error) {
+func Play(api spotify.APIInterface, query string) (string, error) {
 	playback, err := api.Status()
 	if err != nil {
 		return "", err

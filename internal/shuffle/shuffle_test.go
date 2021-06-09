@@ -2,16 +2,16 @@ package shuffle
 
 import (
 	"spotify/internal"
-	"spotify/pkg"
-	"spotify/pkg/model"
 	"testing"
 
+	"github.com/brianstrauch/spotify"
+	"github.com/brianstrauch/spotify/model"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
 func TestShuffleCommandOn(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 
 	playback1 := &model.Playback{ShuffleState: false}
 	playback2 := &model.Playback{ShuffleState: true}
@@ -26,7 +26,7 @@ func TestShuffleCommandOn(t *testing.T) {
 }
 
 func TestShuffleCommandOff(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 
 	playback1 := &model.Playback{ShuffleState: true}
 	playback2 := &model.Playback{ShuffleState: false}
@@ -41,7 +41,7 @@ func TestShuffleCommandOff(t *testing.T) {
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 	api.On("Status").Return(nil, nil)
 
 	_, err := Shuffle(api)

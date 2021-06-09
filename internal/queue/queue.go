@@ -2,9 +2,9 @@ package queue
 
 import (
 	"spotify/internal"
-	"spotify/pkg"
 	"strings"
 
+	"github.com/brianstrauch/spotify"
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +32,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func Queue(api pkg.APIInterface, query string) error {
+func Queue(api spotify.APIInterface, query string) error {
 	uri, err := internal.Search(api, query)
 	if err != nil {
 		return err

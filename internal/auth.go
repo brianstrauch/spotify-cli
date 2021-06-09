@@ -3,13 +3,13 @@ package internal
 import (
 	"errors"
 	"spotify/internal/login"
-	"spotify/pkg"
 	"time"
 
+	"github.com/brianstrauch/spotify"
 	"github.com/spf13/viper"
 )
 
-func Authenticate() (*pkg.API, error) {
+func Authenticate() (*spotify.API, error) {
 	if time.Now().Unix() > viper.GetInt64("expiration") {
 		if err := refresh(); err != nil {
 			return nil, err
@@ -21,13 +21,13 @@ func Authenticate() (*pkg.API, error) {
 		return nil, errors.New(NotLoggedInErr)
 	}
 
-	return pkg.NewAPI(token), nil
+	return spotify.NewAPI(token), nil
 }
 
 func refresh() error {
 	refresh := viper.GetString("refresh_token")
 
-	token, err := pkg.RefreshToken(refresh)
+	token, err := spotify.RefreshToken(refresh)
 	if err != nil {
 		return err
 	}

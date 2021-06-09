@@ -1,8 +1,8 @@
 package internal
 
-import "spotify/pkg"
+import "github.com/brianstrauch/spotify"
 
-func Search(api pkg.APIInterface, query string) (string, error) {
+func Search(api spotify.APIInterface, query string) (string, error) {
 	page, err := api.Search(query, 1)
 	if err != nil {
 		return "", err

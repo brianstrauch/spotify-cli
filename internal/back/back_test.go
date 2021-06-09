@@ -3,16 +3,16 @@ package back
 import (
 	"errors"
 	"spotify/internal"
-	"spotify/pkg"
-	"spotify/pkg/model"
 	"testing"
 
+	"github.com/brianstrauch/spotify"
+	"github.com/brianstrauch/spotify/model"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
 func TestBackCommand(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 
 	playback1 := &model.Playback{
 		IsPlaying:  true,
@@ -42,7 +42,7 @@ func TestBackCommand(t *testing.T) {
 }
 
 func TestNoPreviousErr(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 	api.On("Status").Return(new(model.Playback), nil)
 	api.On("Back").Return(errors.New(internal.RestrictionViolatedSpotifyErr))
 
@@ -51,7 +51,7 @@ func TestNoPreviousErr(t *testing.T) {
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 	api.On("Status").Return(nil, nil)
 
 	_, err := back(api)

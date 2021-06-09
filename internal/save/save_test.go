@@ -2,15 +2,15 @@ package save
 
 import (
 	"spotify/internal"
-	"spotify/pkg"
-	"spotify/pkg/model"
 	"testing"
 
+	"github.com/brianstrauch/spotify"
+	"github.com/brianstrauch/spotify/model"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSaveCommand(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 
 	id := ""
 
@@ -28,7 +28,7 @@ func TestSaveCommand(t *testing.T) {
 }
 
 func TestSavePodcast(t *testing.T) {
-	api := new(pkg.MockAPI)
+	api := new(spotify.MockAPI)
 
 	playback := &model.Playback{
 		Item: model.Item{

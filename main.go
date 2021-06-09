@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"spotify/internal/back"
 	"spotify/internal/login"
 	"spotify/internal/next"
@@ -27,10 +26,7 @@ func main() {
 	viper.SetConfigName(".spotify-cli")
 	viper.SetConfigType("json")
 	viper.SafeWriteConfig()
-
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatal(err)
-	}
+	viper.ReadInConfig()
 
 	root := &cobra.Command{
 		Use:               "spotify",
