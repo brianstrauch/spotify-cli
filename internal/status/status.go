@@ -46,22 +46,26 @@ func status(api spotify.APIInterface) (string, error) {
 }
 
 func Show(playback *model.Playback) string {
-	status := fmt.Sprintf("🎵 %s\n", playback.Item.Name)
-
+	var artistLine string
 	switch playback.Item.Type {
 	case "track":
-		status += fmt.Sprintf("🎤 %s\n", joinArtists(playback.Item.Artists))
+		artistLine = joinArtists(playback.Item.Artists)
 	case "episode":
-		status += fmt.Sprintf("🎤 %s\n", playback.Item.Show.Name)
+		artistLine = playback.Item.Show.Name
 	}
 
+	var isPlayingEmoji string
 	if playback.IsPlaying {
-		status += "▶️  "
+		isPlayingEmoji = "▶️"
 	} else {
-		status += "⏸  "
+		isPlayingEmoji = "⏸"
 	}
 
-	status += showProgressBar(playback.ProgressMs, playback.Item.DurationMs)
+	progressBar := showProgressBar(playback.ProgressMs, playback.Item.DurationMs)
+
+	status := prefixLineWithEmoji("🎵", playback.Item.Name)
+	status += prefixLineWithEmoji("🎤", artistLine)
+	status += prefixLineWithEmoji(isPlayingEmoji, progressBar)
 
 	return status
 }
@@ -85,7 +89,7 @@ func showProgressBar(progress, duration int) string {
 	for i := bars; i < length; i++ {
 		status += " "
 	}
-	status += fmt.Sprintf("] %s\n", formatTime(duration))
+	status += fmt.Sprintf("] %s", formatTime(duration))
 
 	return status
 }
@@ -93,4 +97,9 @@ func showProgressBar(progress, duration int) string {
 func formatTime(ms int) string {
 	s := ms / 1000
 	return fmt.Sprintf("%d:%02d", s/60, s%60)
+}
+
+func prefixLineWithEmoji(emoji, line string) string {
+	// Carriage return jumps to start of line because emojis can have variable widths
+	return fmt.Sprintf("   %s\r%s\n", line, emoji)
 }

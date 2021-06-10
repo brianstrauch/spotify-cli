@@ -35,7 +35,7 @@ func TestPCommandPlay(t *testing.T) {
 	api.On("Play", "").Return(nil)
 
 	status, err := p(api)
-	require.Equal(t, "🎵 Song\n🎤 Artist\n▶️  0:00 [                ] 0:01\n", status)
+	require.Equal(t, "   Song\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r▶️\n", status)
 	require.NoError(t, err)
 }
 
@@ -64,7 +64,7 @@ func TestPCommandPause(t *testing.T) {
 	api.On("Pause").Return(nil)
 
 	status, err := p(api)
-	require.Equal(t, "🎵 Song\n🎤 Artist\n⏸  0:00 [                ] 0:01\n", status)
+	require.Equal(t, "   Song\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r⏸\n", status)
 	require.NoError(t, err)
 }
 
