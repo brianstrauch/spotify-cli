@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/brianstrauch/spotify"
-	"github.com/brianstrauch/spotify/model"
 	"github.com/spf13/cobra"
 )
 
@@ -21,10 +20,7 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			var query string
-			if len(args) > 0 {
-				query = strings.Join(args, " ")
-			}
+			query := strings.Join(args, " ")
 
 			status, err := Play(api, query)
 			if err != nil {
@@ -38,7 +34,7 @@ func NewCommand() *cobra.Command {
 }
 
 func Play(api spotify.APIInterface, query string) (string, error) {
-	playback, err := api.Status()
+	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err
 	}
@@ -47,22 +43,25 @@ func Play(api spotify.APIInterface, query string) (string, error) {
 		return "", errors.New(internal.NoActiveDeviceErr)
 	}
 
-	var uri string
-
 	if len(query) > 0 {
-		uri, err = internal.Search(api, query)
+		uri, err := internal.Search(api, query)
 		if err != nil {
 			return "", err
 		}
+
+		err = api.Play(uri)
+	} else {
+		err = api.Play()
 	}
 
-	if err := api.Play(uri); err != nil {
+	if err != nil {
 		if err.Error() == internal.RestrictionViolatedSpotifyErr {
 			return "", errors.New(internal.AlreadyPlayingErr)
 		}
 	}
 
-	playback, err = api.WaitForUpdatedPlayback(func(playback *model.Playback) bool {
+	playback, err = internal.WaitForUpdatedPlayback(api, func(playback *spotify.Playback) bool {
+		// The first check safeguards against empty playback objects
 		return len(playback.Item.ID) > 0 && playback.IsPlaying
 	})
 	if err != nil {

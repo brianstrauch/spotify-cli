@@ -5,7 +5,6 @@ import (
 	"spotify/internal"
 
 	"github.com/brianstrauch/spotify"
-	"github.com/brianstrauch/spotify/model"
 	"github.com/spf13/cobra"
 )
 
@@ -36,7 +35,7 @@ func NewCommand() *cobra.Command {
 }
 
 func Shuffle(api spotify.APIInterface) (bool, error) {
-	playback, err := api.Status()
+	playback, err := api.GetPlayback()
 	if err != nil {
 		return false, nil
 	}
@@ -50,7 +49,7 @@ func Shuffle(api spotify.APIInterface) (bool, error) {
 		return false, err
 	}
 
-	playback, err = api.WaitForUpdatedPlayback(func(playback *model.Playback) bool {
+	playback, err = internal.WaitForUpdatedPlayback(api, func(playback *spotify.Playback) bool {
 		return playback.ShuffleState != state
 	})
 	if err != nil {

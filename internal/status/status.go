@@ -6,7 +6,6 @@ import (
 	"spotify/internal"
 
 	"github.com/brianstrauch/spotify"
-	"github.com/brianstrauch/spotify/model"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +32,7 @@ func NewCommand() *cobra.Command {
 }
 
 func status(api spotify.APIInterface) (string, error) {
-	playback, err := api.Status()
+	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err
 	}
@@ -45,7 +44,7 @@ func status(api spotify.APIInterface) (string, error) {
 	return Show(playback), nil
 }
 
-func Show(playback *model.Playback) string {
+func Show(playback *spotify.Playback) string {
 	var artistLine string
 	switch playback.Item.Type {
 	case "track":
@@ -70,7 +69,7 @@ func Show(playback *model.Playback) string {
 	return status
 }
 
-func joinArtists(artists []model.Artist) string {
+func joinArtists(artists []spotify.Artist) string {
 	list := artists[0].Name
 	for i := 1; i < len(artists); i++ {
 		list += ", " + artists[i].Name

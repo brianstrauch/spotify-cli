@@ -5,23 +5,22 @@ import (
 	"testing"
 
 	"github.com/brianstrauch/spotify"
-	"github.com/brianstrauch/spotify/model"
 	"github.com/stretchr/testify/require"
 )
 
 func TestUnsaveCommand(t *testing.T) {
 	api := new(spotify.MockAPI)
 
-	id := ""
+	var id string
 
-	playback := &model.Playback{
-		Item: model.Item{
+	playback := &spotify.Playback{
+		Item: spotify.Item{
 			ID: id,
 		},
 	}
 
-	api.On("Status").Return(playback, nil)
-	api.On("Unsave", id).Return(nil)
+	api.On("GetPlayback").Return(playback, nil)
+	api.On("RemoveSavedTracks", []string{id}).Return(nil)
 
 	err := unsave(api)
 	require.NoError(t, err)
@@ -30,13 +29,13 @@ func TestUnsaveCommand(t *testing.T) {
 func TestSavePodcast(t *testing.T) {
 	api := new(spotify.MockAPI)
 
-	playback := &model.Playback{
-		Item: model.Item{
+	playback := &spotify.Playback{
+		Item: spotify.Item{
 			Type: "episode",
 		},
 	}
 
-	api.On("Status").Return(playback, nil)
+	api.On("GetPlayback").Return(playback, nil)
 
 	err := unsave(api)
 	require.Equal(t, internal.SavePodcastErr, err.Error())

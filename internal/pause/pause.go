@@ -6,7 +6,6 @@ import (
 	"spotify/internal/status"
 
 	"github.com/brianstrauch/spotify"
-	"github.com/brianstrauch/spotify/model"
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +31,7 @@ func NewCommand() *cobra.Command {
 }
 
 func Pause(api spotify.APIInterface) (string, error) {
-	playback, err := api.Status()
+	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err
 	}
@@ -47,7 +46,7 @@ func Pause(api spotify.APIInterface) (string, error) {
 		}
 	}
 
-	playback, err = api.WaitForUpdatedPlayback(func(playback *model.Playback) bool {
+	playback, err = internal.WaitForUpdatedPlayback(api, func(playback *spotify.Playback) bool {
 		return !playback.IsPlaying
 	})
 	if err != nil {

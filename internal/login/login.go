@@ -7,14 +7,11 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"net/http"
-	"time"
-
 	"github.com/brianstrauch/spotify"
-	"github.com/brianstrauch/spotify/model"
 	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	"net/http"
+	"spotify/internal"
 )
 
 var (
@@ -36,7 +33,7 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			if err := SaveToken(token); err != nil {
+			if err := internal.SaveToken(token); err != nil {
 				return err
 			}
 
@@ -46,17 +43,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func SaveToken(token *model.Token) error {
-	expiration := time.Now().Unix() + int64(token.ExpiresIn)
-
-	viper.Set("expiration", expiration)
-	viper.Set("token", token.AccessToken)
-	viper.Set("refresh_token", token.RefreshToken)
-
-	return viper.WriteConfig()
-}
-
-func authorize() (*model.Token, error) {
+func authorize() (*spotify.Token, error) {
 	// https://developer.spotify.com/documentation/general/guides/authorization-guide/#authorization-code-flow-with-proof-key-for-code-exchange-pkce
 
 	// 1. Create the code verifier and challenge
@@ -112,7 +99,7 @@ func listenForCode(state string) (string, error) {
 
 	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("state") != state || r.URL.Query().Get("error") != "" {
-			err = errors.New("Login failed")
+			err = errors.New(internal.LoginFailedErr)
 			fmt.Fprintln(w, failureHTML)
 		} else {
 			code = r.URL.Query().Get("code")

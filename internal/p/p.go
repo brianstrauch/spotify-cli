@@ -22,16 +22,11 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			var status string
+			query := strings.Join(args, " ")
 
-			if len(args) > 0 {
-				query := strings.Join(args, " ")
-				status, err = play.Play(api, query)
-			} else {
-				status, err = p(api)
-				if err != nil {
-					return err
-				}
+			status, err := p(api, query)
+			if err != nil {
+				return err
 			}
 
 			cmd.Print(status)
@@ -40,8 +35,12 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func p(api spotify.APIInterface) (string, error) {
-	playback, err := api.Status()
+func p(api spotify.APIInterface, query string) (string, error) {
+	if len(query) > 0 {
+		return play.Play(api, query)
+	}
+
+	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err
 	}

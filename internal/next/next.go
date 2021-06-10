@@ -6,7 +6,6 @@ import (
 	"spotify/internal/status"
 
 	"github.com/brianstrauch/spotify"
-	"github.com/brianstrauch/spotify/model"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +32,7 @@ func NewCommand() *cobra.Command {
 }
 
 func next(api spotify.APIInterface) (string, error) {
-	playback, err := api.Status()
+	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err
 	}
@@ -44,11 +43,11 @@ func next(api spotify.APIInterface) (string, error) {
 
 	id := playback.Item.ID
 
-	if err := api.Next(); err != nil {
+	if err := api.SkipToNextTrack(); err != nil {
 		return "", err
 	}
 
-	playback, err = api.WaitForUpdatedPlayback(func(playback *model.Playback) bool {
+	playback, err = internal.WaitForUpdatedPlayback(api, func(playback *spotify.Playback) bool {
 		return playback.Item.ID != id
 	})
 	if err != nil {

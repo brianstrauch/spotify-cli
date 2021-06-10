@@ -5,44 +5,42 @@ import (
 	"testing"
 
 	"github.com/brianstrauch/spotify"
-	"github.com/brianstrauch/spotify/model"
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
 func TestShuffleCommandOn(t *testing.T) {
 	api := new(spotify.MockAPI)
 
-	playback1 := &model.Playback{ShuffleState: false}
-	playback2 := &model.Playback{ShuffleState: true}
+	playback1 := &spotify.Playback{ShuffleState: false}
+	playback2 := &spotify.Playback{ShuffleState: true}
 
-	api.On("Status").Return(playback1, nil)
-	api.On("WaitForUpdatedPlayback", mock.AnythingOfType("func(*model.Playback) bool")).Return(playback2, nil)
+	api.On("GetPlayback").Return(playback1, nil).Once()
+	api.On("GetPlayback").Return(playback2, nil).Once()
 	api.On("Shuffle", true).Return(nil)
 
 	status, err := Shuffle(api)
-	require.Equal(t, true, status)
 	require.NoError(t, err)
+	require.Equal(t, true, status)
 }
 
 func TestShuffleCommandOff(t *testing.T) {
 	api := new(spotify.MockAPI)
 
-	playback1 := &model.Playback{ShuffleState: true}
-	playback2 := &model.Playback{ShuffleState: false}
+	playback1 := &spotify.Playback{ShuffleState: true}
+	playback2 := &spotify.Playback{ShuffleState: false}
 
-	api.On("Status").Return(playback1, nil)
-	api.On("WaitForUpdatedPlayback", mock.AnythingOfType("func(*model.Playback) bool")).Return(playback2, nil)
+	api.On("GetPlayback").Return(playback1, nil).Once()
+	api.On("GetPlayback").Return(playback2, nil).Once()
 	api.On("Shuffle", false).Return(nil)
 
 	status, err := Shuffle(api)
-	require.Equal(t, false, status)
 	require.NoError(t, err)
+	require.Equal(t, false, status)
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
 	api := new(spotify.MockAPI)
-	api.On("Status").Return(nil, nil)
+	api.On("GetPlayback").Return(nil, nil)
 
 	_, err := Shuffle(api)
 	require.Equal(t, internal.NoActiveDeviceErr, err.Error())

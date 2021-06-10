@@ -29,7 +29,7 @@ func NewCommand() *cobra.Command {
 }
 
 func unsave(api spotify.APIInterface) error {
-	playback, err := api.Status()
+	playback, err := api.GetPlayback()
 	if err != nil {
 		return err
 	}
@@ -38,5 +38,5 @@ func unsave(api spotify.APIInterface) error {
 		return errors.New(internal.SavePodcastErr)
 	}
 
-	return api.Unsave(playback.Item.ID)
+	return api.RemoveSavedTracks(playback.Item.ID)
 }
