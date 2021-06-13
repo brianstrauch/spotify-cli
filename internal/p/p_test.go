@@ -9,13 +9,13 @@ import (
 )
 
 func TestPCommandPlay(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{
 		IsPlaying:  false,
 		ProgressMs: 0,
 		Item: spotify.Item{
-			ID: "0",
+			ID:   "0",
 			Type: "track",
 			Name: "Song",
 			Artists: []spotify.Artist{
@@ -39,7 +39,7 @@ func TestPCommandPlay(t *testing.T) {
 }
 
 func TestPCommandPause(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{
 		IsPlaying:  true,
@@ -68,7 +68,7 @@ func TestPCommandPause(t *testing.T) {
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(nil, nil)
 
 	_, err := p(api, "")

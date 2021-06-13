@@ -30,7 +30,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func Pause(api spotify.APIInterface) (string, error) {
+func Pause(api internal.APIInterface) (string, error) {
 	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err

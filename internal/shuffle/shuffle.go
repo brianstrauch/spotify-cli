@@ -34,7 +34,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func Shuffle(api spotify.APIInterface) (bool, error) {
+func Shuffle(api internal.APIInterface) (bool, error) {
 	playback, err := api.GetPlayback()
 	if err != nil {
 		return false, nil

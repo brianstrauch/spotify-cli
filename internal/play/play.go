@@ -33,7 +33,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func Play(api spotify.APIInterface, query string) (string, error) {
+func Play(api internal.APIInterface, query string) (string, error) {
 	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err

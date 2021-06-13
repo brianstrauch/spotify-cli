@@ -9,7 +9,7 @@ import (
 )
 
 func TestNextCommand(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{
 		IsPlaying:  true,
@@ -39,7 +39,7 @@ func TestNextCommand(t *testing.T) {
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(nil, nil)
 
 	_, err := next(api)

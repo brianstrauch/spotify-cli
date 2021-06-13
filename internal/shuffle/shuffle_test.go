@@ -9,7 +9,7 @@ import (
 )
 
 func TestShuffleCommandOn(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{ShuffleState: false}
 	playback2 := &spotify.Playback{ShuffleState: true}
@@ -24,7 +24,7 @@ func TestShuffleCommandOn(t *testing.T) {
 }
 
 func TestShuffleCommandOff(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{ShuffleState: true}
 	playback2 := &spotify.Playback{ShuffleState: false}
@@ -39,7 +39,7 @@ func TestShuffleCommandOff(t *testing.T) {
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(nil, nil)
 
 	_, err := Shuffle(api)

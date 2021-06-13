@@ -4,7 +4,6 @@ import (
 	"errors"
 	"spotify/internal"
 
-	"github.com/brianstrauch/spotify"
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +27,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func unsave(api spotify.APIInterface) error {
+func unsave(api internal.APIInterface) error {
 	playback, err := api.GetPlayback()
 	if err != nil {
 		return err

@@ -9,7 +9,7 @@ import (
 )
 
 func TestRepeatCommandOn(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{RepeatState: StateOff}
 	playback2 := &spotify.Playback{RepeatState: StateOn}
@@ -24,7 +24,7 @@ func TestRepeatCommandOn(t *testing.T) {
 }
 
 func TestRepeatCommandTrack(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{RepeatState: StateOn}
 	playback2 := &spotify.Playback{RepeatState: StateTrack}
@@ -39,7 +39,7 @@ func TestRepeatCommandTrack(t *testing.T) {
 }
 
 func TestRepeatCommandOff(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{RepeatState: StateTrack}
 	playback2 := &spotify.Playback{RepeatState: StateOff}
@@ -54,7 +54,7 @@ func TestRepeatCommandOff(t *testing.T) {
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(nil, nil)
 
 	_, err := Repeat(api)

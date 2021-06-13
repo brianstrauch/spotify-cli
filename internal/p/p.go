@@ -7,7 +7,6 @@ import (
 	"spotify/internal/play"
 	"strings"
 
-	"github.com/brianstrauch/spotify"
 	"github.com/spf13/cobra"
 )
 
@@ -35,7 +34,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func p(api spotify.APIInterface, query string) (string, error) {
+func p(api internal.APIInterface, query string) (string, error) {
 	if len(query) > 0 {
 		return play.Play(api, query)
 	}

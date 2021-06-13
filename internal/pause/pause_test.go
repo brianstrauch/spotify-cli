@@ -10,7 +10,7 @@ import (
 )
 
 func TestPauseCommand(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{
 		IsPlaying:  true,
@@ -39,7 +39,7 @@ func TestPauseCommand(t *testing.T) {
 }
 
 func TestAlreadyPaused(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(new(spotify.Playback), nil)
 	api.On("Pause").Return(errors.New(internal.RestrictionViolatedSpotifyErr))
 
@@ -48,7 +48,7 @@ func TestAlreadyPaused(t *testing.T) {
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(nil, nil)
 
 	_, err := Pause(api)

@@ -9,7 +9,7 @@ import (
 )
 
 func TestSaveCommand(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 
 	var id string
 
@@ -27,7 +27,7 @@ func TestSaveCommand(t *testing.T) {
 }
 
 func TestSavePodcast(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 
 	playback := &spotify.Playback{
 		Item: spotify.Item{

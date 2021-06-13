@@ -7,11 +7,12 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"net/http"
+	"spotify/internal"
+
 	"github.com/brianstrauch/spotify"
 	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
-	"net/http"
-	"spotify/internal"
 )
 
 var (
@@ -44,10 +45,8 @@ func NewCommand() *cobra.Command {
 }
 
 func authorize() (*spotify.Token, error) {
-	// https://developer.spotify.com/documentation/general/guides/authorization-guide/#authorization-code-flow-with-proof-key-for-code-exchange-pkce
-
 	// 1. Create the code verifier and challenge
-	verifier, challenge, err := spotify.StartProof()
+	verifier, challenge, err := spotify.CreateVerifierAndChallenge()
 	if err != nil {
 		return nil, err
 	}
@@ -58,8 +57,13 @@ func authorize() (*spotify.Token, error) {
 		return nil, err
 	}
 
-	scope := "user-library-modify user-modify-playback-state user-read-playback-state"
-	uri := spotify.BuildAuthURI(RedirectURI, challenge, state, scope)
+	scopes := []string{
+		spotify.ScopeUserLibraryModify,
+		spotify.ScopeUserModifyPlaybackState,
+		spotify.ScopeUserReadPlaybackState,
+	}
+
+	uri := spotify.BuildAuthURI(internal.ClientID, RedirectURI, challenge, state, scopes...)
 
 	// 3. Your app redirects the user to the authorization URI
 	if err := browser.OpenURL(uri); err != nil {
@@ -72,7 +76,7 @@ func authorize() (*spotify.Token, error) {
 	}
 
 	// 4. Your app exchanges the code for an access token
-	token, err := spotify.RequestToken(code, RedirectURI, verifier)
+	token, err := spotify.RequestToken(internal.ClientID, code, RedirectURI, verifier)
 	if err != nil {
 		return nil, err
 	}

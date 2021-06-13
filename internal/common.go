@@ -2,11 +2,13 @@ package internal
 
 import (
 	"errors"
-	"github.com/spf13/viper"
 	"time"
 
 	"github.com/brianstrauch/spotify"
+	"github.com/spf13/viper"
 )
+
+const ClientID = "81dddfee3e8d47d89b7902ba616f3357"
 
 func Authenticate() (*spotify.API, error) {
 	if time.Now().Unix() > viper.GetInt64("expiration") {
@@ -26,7 +28,7 @@ func Authenticate() (*spotify.API, error) {
 func refresh() error {
 	refresh := viper.GetString("refresh_token")
 
-	token, err := spotify.RefreshToken(refresh)
+	token, err := spotify.RefreshToken(refresh, ClientID)
 	if err != nil {
 		return err
 	}
@@ -44,7 +46,7 @@ func SaveToken(token *spotify.Token) error {
 	return viper.WriteConfig()
 }
 
-func WaitForUpdatedPlayback(api spotify.APIInterface, isUpdated func(playback *spotify.Playback) bool) (*spotify.Playback, error) {
+func WaitForUpdatedPlayback(api APIInterface, isUpdated func(playback *spotify.Playback) bool) (*spotify.Playback, error) {
 	timeout := time.After(time.Second)
 	tick := time.Tick(100 * time.Millisecond)
 
@@ -65,7 +67,7 @@ func WaitForUpdatedPlayback(api spotify.APIInterface, isUpdated func(playback *s
 	}
 }
 
-func Search(api spotify.APIInterface, query string) (string, error) {
+func Search(api APIInterface, query string) (string, error) {
 	page, err := api.Search(query, 1)
 	if err != nil {
 		return "", err

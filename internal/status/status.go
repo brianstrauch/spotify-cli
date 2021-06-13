@@ -31,7 +31,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func status(api spotify.APIInterface) (string, error) {
+func status(api internal.APIInterface) (string, error) {
 	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err

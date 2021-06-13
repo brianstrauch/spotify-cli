@@ -45,7 +45,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func Repeat(api spotify.APIInterface) (string, error) {
+func Repeat(api internal.APIInterface) (string, error) {
 	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", nil

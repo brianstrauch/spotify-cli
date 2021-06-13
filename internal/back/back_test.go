@@ -10,7 +10,7 @@ import (
 )
 
 func TestBackCommand(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{
 		IsPlaying:  true,
@@ -40,7 +40,7 @@ func TestBackCommand(t *testing.T) {
 }
 
 func TestNoPreviousErr(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(new(spotify.Playback), nil)
 	api.On("SkipToPreviousTrack").Return(errors.New(internal.RestrictionViolatedSpotifyErr))
 
@@ -49,7 +49,7 @@ func TestNoPreviousErr(t *testing.T) {
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
-	api := new(spotify.MockAPI)
+	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(nil, nil)
 
 	_, err := back(api)
