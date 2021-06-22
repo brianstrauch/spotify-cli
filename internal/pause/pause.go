@@ -37,12 +37,12 @@ func Pause(api internal.APIInterface) (string, error) {
 	}
 
 	if playback == nil {
-		return "", errors.New(internal.NoActiveDeviceErr)
+		return "", errors.New(internal.ErrNoActiveDevice)
 	}
 
 	if err := api.Pause(); err != nil {
-		if err.Error() == internal.RestrictionViolatedSpotifyErr {
-			return "", errors.New(internal.AlreadyPausedErr)
+		if err.Error() == internal.ErrRestrictionViolated {
+			return "", errors.New(internal.ErrAlreadyPaused)
 		}
 	}
 

@@ -39,8 +39,8 @@ func TestShuffleCommandOff(t *testing.T) {
 
 func TestNoActiveDeviceErr(t *testing.T) {
 	api := new(internal.MockAPI)
-	api.On("Shuffle", true).Return(errors.New(internal.NoActiveDeviceErr))
+	api.On("Shuffle", true).Return(errors.New(internal.ErrNoActiveDevice))
 
 	err := Shuffle(api, true)
-	require.Equal(t, internal.NoActiveDeviceErr, err.Error())
+	require.Equal(t, internal.ErrNoActiveDevice, err.Error())
 }

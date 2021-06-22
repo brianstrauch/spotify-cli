@@ -42,10 +42,10 @@ func TestBackCommand(t *testing.T) {
 func TestNoPreviousErr(t *testing.T) {
 	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(new(spotify.Playback), nil)
-	api.On("SkipToPreviousTrack").Return(errors.New(internal.RestrictionViolatedSpotifyErr))
+	api.On("SkipToPreviousTrack").Return(errors.New(internal.ErrRestrictionViolated))
 
 	_, err := back(api)
-	require.Equal(t, internal.NoPreviousErr, err.Error())
+	require.Equal(t, internal.ErrNoPrevious, err.Error())
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
@@ -53,5 +53,5 @@ func TestNoActiveDeviceErr(t *testing.T) {
 	api.On("GetPlayback").Return(nil, nil)
 
 	_, err := back(api)
-	require.Equal(t, internal.NoActiveDeviceErr, err.Error())
+	require.Equal(t, internal.ErrNoActiveDevice, err.Error())
 }

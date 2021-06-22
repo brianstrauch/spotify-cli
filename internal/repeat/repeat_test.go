@@ -53,8 +53,8 @@ func TestRepeatCommandTrack(t *testing.T) {
 
 func TestNoActiveDeviceErr(t *testing.T) {
 	api := new(internal.MockAPI)
-	api.On("Repeat", StateOn).Return(errors.New(internal.NoActiveDeviceErr))
+	api.On("Repeat", StateOn).Return(errors.New(internal.ErrNoActiveDevice))
 
 	err := Repeat(api, StateOn)
-	require.Equal(t, internal.NoActiveDeviceErr, err.Error())
+	require.Equal(t, internal.ErrNoActiveDevice, err.Error())
 }

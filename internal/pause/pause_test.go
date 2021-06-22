@@ -41,10 +41,10 @@ func TestPauseCommand(t *testing.T) {
 func TestAlreadyPaused(t *testing.T) {
 	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(new(spotify.Playback), nil)
-	api.On("Pause").Return(errors.New(internal.RestrictionViolatedSpotifyErr))
+	api.On("Pause").Return(errors.New(internal.ErrRestrictionViolated))
 
 	_, err := Pause(api)
-	require.Equal(t, internal.AlreadyPausedErr, err.Error())
+	require.Equal(t, internal.ErrAlreadyPaused, err.Error())
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
@@ -52,5 +52,5 @@ func TestNoActiveDeviceErr(t *testing.T) {
 	api.On("GetPlayback").Return(nil, nil)
 
 	_, err := Pause(api)
-	require.Equal(t, internal.NoActiveDeviceErr, err.Error())
+	require.Equal(t, internal.ErrNoActiveDevice, err.Error())
 }

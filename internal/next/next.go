@@ -38,7 +38,7 @@ func next(api internal.APIInterface) (string, error) {
 	}
 
 	if playback == nil {
-		return "", errors.New(internal.NoActiveDeviceErr)
+		return "", errors.New(internal.ErrNoActiveDevice)
 	}
 
 	progressMs := playback.ProgressMs

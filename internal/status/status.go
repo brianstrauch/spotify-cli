@@ -38,7 +38,7 @@ func status(api internal.APIInterface) (string, error) {
 	}
 
 	if playback == nil {
-		return "", errors.New(internal.NoActiveDeviceErr)
+		return "", errors.New(internal.ErrNoActiveDevice)
 	}
 
 	return Show(playback), nil

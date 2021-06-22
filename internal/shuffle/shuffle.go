@@ -27,7 +27,7 @@ func NewCommand() *cobra.Command {
 			case "off":
 				state = false
 			default:
-				return errors.New(internal.ShuffleArgErr)
+				return errors.New(internal.ErrShuffleArg)
 			}
 
 			if err := Shuffle(api, state); err != nil {

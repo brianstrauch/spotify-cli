@@ -38,14 +38,14 @@ func back(api internal.APIInterface) (string, error) {
 	}
 
 	if playback == nil {
-		return "", errors.New(internal.NoActiveDeviceErr)
+		return "", errors.New(internal.ErrNoActiveDevice)
 	}
 
 	id := playback.Item.ID
 
 	if err := api.SkipToPreviousTrack(); err != nil {
-		if err.Error() == internal.RestrictionViolatedSpotifyErr {
-			return "", errors.New(internal.NoPreviousErr)
+		if err.Error() == internal.ErrRestrictionViolated {
+			return "", errors.New(internal.ErrNoPrevious)
 		}
 	}
 

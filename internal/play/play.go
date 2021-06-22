@@ -40,7 +40,7 @@ func Play(api internal.APIInterface, query string) (string, error) {
 	}
 
 	if playback == nil {
-		return "", errors.New(internal.NoActiveDeviceErr)
+		return "", errors.New(internal.ErrNoActiveDevice)
 	}
 
 	if len(query) > 0 {
@@ -55,8 +55,8 @@ func Play(api internal.APIInterface, query string) (string, error) {
 	}
 
 	if err != nil {
-		if err.Error() == internal.RestrictionViolatedSpotifyErr {
-			return "", errors.New(internal.AlreadyPlayingErr)
+		if err.Error() == internal.ErrRestrictionViolated {
+			return "", errors.New(internal.ErrAlreadyPlaying)
 		}
 	}
 

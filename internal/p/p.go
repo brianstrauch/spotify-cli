@@ -45,7 +45,7 @@ func p(api internal.APIInterface, query string) (string, error) {
 	}
 
 	if playback == nil {
-		return "", errors.New(internal.NoActiveDeviceErr)
+		return "", errors.New(internal.ErrNoActiveDevice)
 	}
 
 	if playback.IsPlaying {

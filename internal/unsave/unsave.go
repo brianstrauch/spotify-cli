@@ -34,7 +34,7 @@ func unsave(api internal.APIInterface) error {
 	}
 
 	if playback.Item.Type == "episode" {
-		return errors.New(internal.SavePodcastErr)
+		return errors.New(internal.ErrSavePodcast)
 	}
 
 	return api.RemoveSavedTracks(playback.Item.ID)

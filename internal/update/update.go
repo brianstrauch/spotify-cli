@@ -21,7 +21,7 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 			if isUpdated {
-				return errors.New(internal.AlreadyUpToDateErr)
+				return errors.New(internal.ErrAlreadyUpToDate)
 			}
 
 			current, err := semver.Parse(cmd.Root().Version)

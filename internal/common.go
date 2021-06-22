@@ -19,7 +19,7 @@ func Authenticate() (*spotify.API, error) {
 
 	token := viper.GetString("token")
 	if token == "" {
-		return nil, errors.New(NotLoggedInErr)
+		return nil, errors.New(ErrNotLoggedIn)
 	}
 
 	return spotify.NewAPI(token), nil

@@ -43,5 +43,5 @@ func TestNoActiveDeviceErr(t *testing.T) {
 	api.On("GetPlayback").Return(nil, nil)
 
 	_, err := next(api)
-	require.Equal(t, internal.NoActiveDeviceErr, err.Error())
+	require.Equal(t, internal.ErrNoActiveDevice, err.Error())
 }

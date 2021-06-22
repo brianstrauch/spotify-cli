@@ -38,5 +38,5 @@ func TestSavePodcast(t *testing.T) {
 	api.On("GetPlayback").Return(playback, nil)
 
 	err := unsave(api)
-	require.Equal(t, internal.SavePodcastErr, err.Error())
+	require.Equal(t, internal.ErrSavePodcast, err.Error())
 }

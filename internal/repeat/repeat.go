@@ -37,7 +37,7 @@ func NewCommand() *cobra.Command {
 			case "track":
 				state = StateTrack
 			default:
-				return errors.New(internal.RepeatArgErr)
+				return errors.New(internal.ErrRepeatArg)
 			}
 
 			if err := Repeat(api, state); err != nil {
