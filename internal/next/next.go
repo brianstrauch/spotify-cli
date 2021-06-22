@@ -41,6 +41,7 @@ func next(api internal.APIInterface) (string, error) {
 		return "", errors.New(internal.NoActiveDeviceErr)
 	}
 
+	progressMs := playback.ProgressMs
 	id := playback.Item.ID
 
 	if err := api.SkipToNextTrack(); err != nil {
@@ -48,7 +49,8 @@ func next(api internal.APIInterface) (string, error) {
 	}
 
 	playback, err = internal.WaitForUpdatedPlayback(api, func(playback *spotify.Playback) bool {
-		return playback.Item.ID != id
+		// TODO: Handle edge case where the next song is the same and progressMs = 0
+		return playback.Item.ID != id || playback.ProgressMs < progressMs
 	})
 	if err != nil {
 		return "", err
