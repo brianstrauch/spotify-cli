@@ -1,6 +1,7 @@
 package repeat
 
 import (
+	"errors"
 	"spotify/internal"
 	"testing"
 
@@ -18,9 +19,22 @@ func TestRepeatCommandOn(t *testing.T) {
 	api.On("GetPlayback").Return(playback2, nil).Once()
 	api.On("Repeat", StateOn).Return(nil)
 
-	status, err := Repeat(api)
+	err := Repeat(api, StateOn)
 	require.NoError(t, err)
-	require.Equal(t, StateOn, status)
+}
+
+func TestRepeatCommandOff(t *testing.T) {
+	api := new(internal.MockAPI)
+
+	playback1 := &spotify.Playback{RepeatState: StateOn}
+	playback2 := &spotify.Playback{RepeatState: StateOff}
+
+	api.On("GetPlayback").Return(playback1, nil).Once()
+	api.On("GetPlayback").Return(playback2, nil).Once()
+	api.On("Repeat", StateOff).Return(nil)
+
+	err := Repeat(api, StateOff)
+	require.NoError(t, err)
 }
 
 func TestRepeatCommandTrack(t *testing.T) {
@@ -33,30 +47,14 @@ func TestRepeatCommandTrack(t *testing.T) {
 	api.On("GetPlayback").Return(playback2, nil).Once()
 	api.On("Repeat", StateTrack).Return(nil)
 
-	status, err := Repeat(api)
+	err := Repeat(api, StateTrack)
 	require.NoError(t, err)
-	require.Equal(t, StateTrack, status)
-}
-
-func TestRepeatCommandOff(t *testing.T) {
-	api := new(internal.MockAPI)
-
-	playback1 := &spotify.Playback{RepeatState: StateTrack}
-	playback2 := &spotify.Playback{RepeatState: StateOff}
-
-	api.On("GetPlayback").Return(playback1, nil).Once()
-	api.On("GetPlayback").Return(playback2, nil).Once()
-	api.On("Repeat", StateOff).Return(nil)
-
-	status, err := Repeat(api)
-	require.NoError(t, err)
-	require.Equal(t, StateOff, status)
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
 	api := new(internal.MockAPI)
-	api.On("GetPlayback").Return(nil, nil)
+	api.On("Repeat", StateOn).Return(errors.New(internal.NoActiveDeviceErr))
 
-	_, err := Repeat(api)
+	err := Repeat(api, StateOn)
 	require.Equal(t, internal.NoActiveDeviceErr, err.Error())
 }

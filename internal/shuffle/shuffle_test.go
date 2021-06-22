@@ -1,6 +1,7 @@
 package shuffle
 
 import (
+	"errors"
 	"spotify/internal"
 	"testing"
 
@@ -18,9 +19,8 @@ func TestShuffleCommandOn(t *testing.T) {
 	api.On("GetPlayback").Return(playback2, nil).Once()
 	api.On("Shuffle", true).Return(nil)
 
-	status, err := Shuffle(api)
+	err := Shuffle(api, true)
 	require.NoError(t, err)
-	require.Equal(t, true, status)
 }
 
 func TestShuffleCommandOff(t *testing.T) {
@@ -33,15 +33,14 @@ func TestShuffleCommandOff(t *testing.T) {
 	api.On("GetPlayback").Return(playback2, nil).Once()
 	api.On("Shuffle", false).Return(nil)
 
-	status, err := Shuffle(api)
+	err := Shuffle(api, false)
 	require.NoError(t, err)
-	require.Equal(t, false, status)
 }
 
 func TestNoActiveDeviceErr(t *testing.T) {
 	api := new(internal.MockAPI)
-	api.On("GetPlayback").Return(nil, nil)
+	api.On("Shuffle", true).Return(errors.New(internal.NoActiveDeviceErr))
 
-	_, err := Shuffle(api)
+	err := Shuffle(api, true)
 	require.Equal(t, internal.NoActiveDeviceErr, err.Error())
 }

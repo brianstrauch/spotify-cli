@@ -19,15 +19,28 @@ var states = []string{StateOff, StateOn, StateTrack}
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "repeat",
-		Short: "Cycle repeat through on, off, or track.",
-		RunE: func(cmd *cobra.Command, _ []string) error {
+		Short: "Set repeat to on, off, or track.",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {
 				return err
 			}
 
-			state, err := Repeat(api)
-			if err != nil {
+			var state string
+
+			switch args[0] {
+			case "on":
+				state = StateOn
+			case "off":
+				state = StateOff
+			case "track":
+				state = StateTrack
+			default:
+				return errors.New(internal.RepeatArgErr)
+			}
+
+			if err := Repeat(api, state); err != nil {
 				return err
 			}
 
@@ -45,37 +58,13 @@ func NewCommand() *cobra.Command {
 	}
 }
 
-func Repeat(api internal.APIInterface) (string, error) {
-	playback, err := api.GetPlayback()
-	if err != nil {
-		return "", nil
+func Repeat(api internal.APIInterface, state string) error {
+	if err := api.Repeat(state); err != nil {
+		return err
 	}
 
-	if playback == nil {
-		return "", errors.New(internal.NoActiveDeviceErr)
-	}
-
-	state := playback.RepeatState
-	if err := api.Repeat(cycle(state)); err != nil {
-		return "", err
-	}
-
-	playback, err = internal.WaitForUpdatedPlayback(api, func(playback *spotify.Playback) bool {
-		return playback.RepeatState != state
+	_, err := internal.WaitForUpdatedPlayback(api, func(playback *spotify.Playback) bool {
+		return playback.RepeatState == state
 	})
-	if err != nil {
-		return "", err
-	}
-
-	return playback.RepeatState, nil
-}
-
-func cycle(state string) string {
-	for i := range states {
-		if states[i] == state {
-			j := (i + 1) % len(states)
-			return states[j]
-		}
-	}
-	return ""
+	return err
 }
