@@ -15,7 +15,7 @@ Get the latest version <a href="https://github.com/brianstrauch/spotify-cli/rele
 ## Usage
 ```
 $ spotify login
-Success!
+Logged in as Brian Strauch.
 $ spotify play back pocket
 🎵 Back Pocket
 🎤 Vulfpeck
