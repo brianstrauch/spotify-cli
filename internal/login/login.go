@@ -95,11 +95,8 @@ func generateRandomState() (string, error) {
 	return state, nil
 }
 
-func listenForCode(state string) (string, error) {
+func listenForCode(state string) (code string, err error) {
 	server := &http.Server{Addr: ":1024"}
-
-	var code string
-	var err error
 
 	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("state") != state || r.URL.Query().Get("error") != "" {
@@ -120,5 +117,5 @@ func listenForCode(state string) (string, error) {
 		return "", err
 	}
 
-	return code, err
+	return
 }
