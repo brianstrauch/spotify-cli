@@ -29,7 +29,7 @@ func NewCommand() *cobra.Command {
 		Use:   "login",
 		Short: "Log in to Spotify.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			token, err := authorize()
+			token, err := login()
 			if err != nil {
 				return err
 			}
@@ -38,13 +38,23 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			cmd.Println("Success!")
+			api, err := internal.Authenticate()
+			if err != nil {
+				return err
+			}
+
+			user, err := api.GetUserProfile()
+			if err != nil {
+				return err
+			}
+
+			cmd.Printf("Logged in as %s.\n", user.DisplayName)
 			return nil
 		},
 	}
 }
 
-func authorize() (*spotify.Token, error) {
+func login() (*spotify.Token, error) {
 	// 1. Create the code verifier and challenge
 	verifier, challenge, err := spotify.CreateVerifierAndChallenge()
 	if err != nil {
