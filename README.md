@@ -38,10 +38,10 @@ $ spotify back
 🎵 Back Pocket
 🎤 Vulfpeck
 ▶️ 0:00 [                ] 3:01
-$ spotify shuffle
+$ spotify shuffle on
 🔀 Shuffle on
-$ spotify repeat
-🔁 Repeat on
+$ spotify repeat off
+🔁 Repeat off
 ```
 
 ## Aliases
