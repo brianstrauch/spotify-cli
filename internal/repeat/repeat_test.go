@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRepeatCommandOn(t *testing.T) {
+func TestRepeat_On(t *testing.T) {
 	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{RepeatState: StateOff}
@@ -23,7 +23,7 @@ func TestRepeatCommandOn(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestRepeatCommandOff(t *testing.T) {
+func TestRepeat_Off(t *testing.T) {
 	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{RepeatState: StateOn}
@@ -37,7 +37,7 @@ func TestRepeatCommandOff(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestRepeatCommandTrack(t *testing.T) {
+func TestRepeat_Track(t *testing.T) {
 	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{RepeatState: StateOn}
@@ -51,10 +51,11 @@ func TestRepeatCommandTrack(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestNoActiveDeviceErr(t *testing.T) {
+func TestRepeat_ErrNoActiveDevice(t *testing.T) {
 	api := new(internal.MockAPI)
 	api.On("Repeat", StateOn).Return(errors.New(internal.ErrNoActiveDevice))
 
 	err := Repeat(api, StateOn)
+	require.Error(t, err)
 	require.Equal(t, internal.ErrNoActiveDevice, err.Error())
 }

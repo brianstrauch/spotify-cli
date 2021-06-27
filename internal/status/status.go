@@ -95,7 +95,14 @@ func showProgressBar(progress, duration int) string {
 
 func formatTime(ms int) string {
 	s := ms / 1000
-	return fmt.Sprintf("%d:%02d", s/60, s%60)
+	m := s / 60
+	h := m / 60
+
+	if h == 0 {
+		return fmt.Sprintf("%d:%02d", m, s%60)
+	} else {
+		return fmt.Sprintf("%d:%02d:%02d", h, m%60, s%60)
+	}
 }
 
 func prefixLineWithEmoji(emoji, line string) string {

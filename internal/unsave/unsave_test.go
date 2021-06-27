@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestUnsaveCommand(t *testing.T) {
+func TestUnsave(t *testing.T) {
 	api := new(internal.MockAPI)
 
 	var id string
@@ -26,7 +26,7 @@ func TestUnsaveCommand(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestSavePodcast(t *testing.T) {
+func TestUnsave_ErrSavePodcast(t *testing.T) {
 	api := new(internal.MockAPI)
 
 	playback := &spotify.Playback{
@@ -38,5 +38,6 @@ func TestSavePodcast(t *testing.T) {
 	api.On("GetPlayback").Return(playback, nil)
 
 	err := unsave(api)
+	require.Error(t, err)
 	require.Equal(t, internal.ErrSavePodcast, err.Error())
 }

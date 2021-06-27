@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestShuffleCommandOn(t *testing.T) {
+func TestShuffle_On(t *testing.T) {
 	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{ShuffleState: false}
@@ -23,7 +23,7 @@ func TestShuffleCommandOn(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestShuffleCommandOff(t *testing.T) {
+func TestShuffle_Off(t *testing.T) {
 	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{ShuffleState: true}
@@ -37,10 +37,11 @@ func TestShuffleCommandOff(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestNoActiveDeviceErr(t *testing.T) {
+func TestShuffle_ErrNoActiveDevice(t *testing.T) {
 	api := new(internal.MockAPI)
 	api.On("Shuffle", true).Return(errors.New(internal.ErrNoActiveDevice))
 
 	err := Shuffle(api, true)
+	require.Error(t, err)
 	require.Equal(t, internal.ErrNoActiveDevice, err.Error())
 }

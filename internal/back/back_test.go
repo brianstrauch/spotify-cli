@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestBackCommand(t *testing.T) {
+func TestBack(t *testing.T) {
 	api := new(internal.MockAPI)
 
 	playback1 := &spotify.Playback{
@@ -39,19 +39,21 @@ func TestBackCommand(t *testing.T) {
 	require.Equal(t, "   Song\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r▶️\n", status)
 }
 
-func TestNoPreviousErr(t *testing.T) {
+func TestBack_ErrNoPrevious(t *testing.T) {
 	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(new(spotify.Playback), nil)
 	api.On("SkipToPreviousTrack").Return(errors.New(internal.ErrRestrictionViolated))
 
 	_, err := back(api)
+	require.Error(t, err)
 	require.Equal(t, internal.ErrNoPrevious, err.Error())
 }
 
-func TestNoActiveDeviceErr(t *testing.T) {
+func TestBack_ErrNoActiveDevice(t *testing.T) {
 	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(nil, nil)
 
 	_, err := back(api)
+	require.Error(t, err)
 	require.Equal(t, internal.ErrNoActiveDevice, err.Error())
 }
