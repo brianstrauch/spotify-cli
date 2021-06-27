@@ -1,7 +1,6 @@
 package repeat
 
 import (
-	"errors"
 	"spotify/internal"
 
 	"github.com/brianstrauch/spotify"
@@ -18,9 +17,10 @@ var states = []string{StateOff, StateOn, StateTrack}
 
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "repeat",
-		Short: "Set repeat to on, off, or track.",
-		Args:  cobra.ExactArgs(1),
+		Use:       "repeat [on|off|track]",
+		Short:     "Set repeat to on, off, or track.",
+		Args:      cobra.ExactValidArgs(1),
+		ValidArgs: []string{"on", "off", "track"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {
@@ -36,8 +36,6 @@ func NewCommand() *cobra.Command {
 				state = StateOff
 			case "track":
 				state = StateTrack
-			default:
-				return errors.New(internal.ErrRepeatArg)
 			}
 
 			if err := Repeat(api, state); err != nil {

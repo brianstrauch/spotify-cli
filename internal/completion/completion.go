@@ -40,9 +40,8 @@ $ spotify completion fish | source
 # To load completions for each session, execute once:
 $ spotify completion fish > ~/.config/fish/completions/spotify.fish
 `,
-		DisableFlagsInUseLine: true,
-		ValidArgs:             []string{"bash", "zsh", "fish", "powershell"},
-		Args:                  cobra.ExactValidArgs(1),
+		Args:      cobra.ExactValidArgs(1),
+		ValidArgs: []string{"bash", "zsh", "fish", "powershell"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			switch args[0] {
 			case "bash":

@@ -1,7 +1,6 @@
 package shuffle
 
 import (
-	"errors"
 	"spotify/internal"
 
 	"github.com/brianstrauch/spotify"
@@ -10,9 +9,10 @@ import (
 
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "shuffle",
-		Short: "Turn shuffle on or off.",
-		Args:  cobra.ExactArgs(1),
+		Use:       "shuffle",
+		Short:     "Turn shuffle on or off.",
+		Args:      cobra.ExactArgs(1),
+		ValidArgs: []string{"on", "off"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {
@@ -26,8 +26,6 @@ func NewCommand() *cobra.Command {
 				state = true
 			case "off":
 				state = false
-			default:
-				return errors.New(internal.ErrShuffleArg)
 			}
 
 			if err := Shuffle(api, state); err != nil {
