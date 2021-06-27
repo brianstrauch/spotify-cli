@@ -13,8 +13,6 @@ const (
 	StateTrack = "track"
 )
 
-var states = []string{StateOff, StateOn, StateTrack}
-
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:       "repeat [on|off|track]",
