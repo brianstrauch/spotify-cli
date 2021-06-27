@@ -14,36 +14,7 @@ Control an existing Spotify session without leaving the terminal.
 Get the latest version <a href="https://github.com/brianstrauch/spotify-cli/releases/latest">here</a>.
 
 ## Usage
-```
-$ spotify login
-Logged in as Brian Strauch.
-$ spotify play back pocket
-🎵 Back Pocket
-🎤 Vulfpeck
-▶️ 0:00 [                ] 3:01
-$ spotify pause
-🎵 Back Pocket
-🎤 Vulfpeck
-⏸ 1:30 [========        ] 3:01
-$ spotify queue blinding lights
-Queued!
-$ spotify next
-🎵 Blinding Lights
-🎤 The Weeknd
-▶️ 0:00 [                ] 3:20
-$ spotify status
-🎵 Blinding Lights
-🎤 The Weeknd
-▶️ 0:20 [==              ] 3:20
-$ spotify back
-🎵 Back Pocket
-🎤 Vulfpeck
-▶️ 0:00 [                ] 3:01
-$ spotify shuffle on
-🔀 Shuffle on
-$ spotify repeat off
-🔁 Repeat off
-```
+<img src="https://user-images.githubusercontent.com/7474900/123560711-8eaa5e80-d769-11eb-989f-3f4acb520688.gif" width="50%" />
 
 ## Aliases
 <table>
