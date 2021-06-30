@@ -8,6 +8,7 @@ import (
 	"spotify/internal/p"
 	"spotify/internal/pause"
 	"spotify/internal/play"
+	"spotify/internal/playlist"
 	"spotify/internal/queue"
 	"spotify/internal/repeat"
 	"spotify/internal/save"
@@ -50,6 +51,7 @@ func main() {
 	root.AddCommand(status.NewCommand())
 	root.AddCommand(unsave.NewCommand())
 	root.AddCommand(update.NewCommand())
+	root.AddCommand(playlist.NewCommand())
 
 	// Hide help command
 	root.SetHelpCommand(&cobra.Command{Hidden: true})

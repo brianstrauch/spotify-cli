@@ -60,7 +60,7 @@ func Show(playback *spotify.Playback) string {
 		isPlayingEmoji = "⏸"
 	}
 
-	progressBar := showProgressBar(playback.ProgressMs, playback.Item.DurationMs)
+	progressBar := showProgressBar(playback.ProgressMs, playback.Item.Duration)
 
 	status := prefixLineWithEmoji("🎵", playback.Item.Name)
 	status += prefixLineWithEmoji("🎤", artistLine)
@@ -77,9 +77,9 @@ func joinArtists(artists []spotify.Artist) string {
 	return list
 }
 
-func showProgressBar(progress, duration int) string {
+func showProgressBar(progress int, duration *spotify.Duration) string {
 	const length = 16
-	bars := length * progress / duration
+	bars := length * progress / int(duration.Milliseconds())
 
 	status := fmt.Sprintf("%s [", formatTime(progress))
 	for i := 0; i < bars; i++ {
@@ -88,7 +88,7 @@ func showProgressBar(progress, duration int) string {
 	for i := bars; i < length; i++ {
 		status += " "
 	}
-	status += fmt.Sprintf("] %s", formatTime(duration))
+	status += fmt.Sprintf("] %s", formatTime(int(duration.Milliseconds())))
 
 	return status
 }
