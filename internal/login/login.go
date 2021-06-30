@@ -56,7 +56,7 @@ func NewCommand() *cobra.Command {
 
 func login() (*spotify.Token, error) {
 	// 1. Create the code verifier and challenge
-	verifier, challenge, err := spotify.CreateVerifierAndChallenge()
+	verifier, challenge, err := spotify.CreatePKCEVerifierAndChallenge()
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func login() (*spotify.Token, error) {
 		spotify.ScopeUserReadPlaybackState,
 	}
 
-	uri := spotify.BuildAuthURI(internal.ClientID, RedirectURI, challenge, state, scopes...)
+	uri := spotify.BuildPKCEAuthURI(internal.ClientID, RedirectURI, challenge, state, scopes...)
 
 	// 3. Your app redirects the user to the authorization URI
 	if err := browser.OpenURL(uri); err != nil {

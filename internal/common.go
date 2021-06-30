@@ -28,7 +28,7 @@ func Authenticate() (*spotify.API, error) {
 func refresh() error {
 	refresh := viper.GetString("refresh_token")
 
-	token, err := spotify.RefreshToken(refresh, ClientID)
+	token, err := spotify.RefreshPKCEToken(refresh, ClientID)
 	if err != nil {
 		return err
 	}
