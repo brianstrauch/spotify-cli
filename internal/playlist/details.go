@@ -11,9 +11,8 @@ import (
 
 func NewDetailsCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:     "details",
-		Aliases: []string{"e"},
-		Short:   "Get information on a playlist",
+		Use:   "show",
+		Short: "Show playlist artist and songs.",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()
@@ -24,11 +23,10 @@ func NewDetailsCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argLower := strings.ToLower(args[0])
-			playlistID := ""
-			for _, pl := range playlists {
-				if strings.ToLower(pl.Name) == argLower {
-					playlistID = pl.ID
+			id := ""
+			for _, playlist := range playlists {
+				if strings.ToLower(playlist.Name) == strings.ToLower(args[0]) {
+					id = playlist.ID
 				}
 			}
 			if playlistID == "" {
