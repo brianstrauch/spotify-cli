@@ -2,7 +2,6 @@ module spotify
 
 go 1.16
 
-
 require (
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/brianstrauch/spotify v0.4.0
