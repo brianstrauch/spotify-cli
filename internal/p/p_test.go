@@ -3,6 +3,7 @@ package p
 import (
 	"spotify/internal"
 	"testing"
+	"time"
 
 	"github.com/brianstrauch/spotify"
 	"github.com/stretchr/testify/require"
@@ -15,13 +16,15 @@ func TestP_Play(t *testing.T) {
 		IsPlaying:  false,
 		ProgressMs: 0,
 		Item: spotify.Item{
-			ID:   "0",
-			Type: "track",
-			Name: "Song",
-			Artists: []spotify.Artist{
-				{Name: "Artist"},
+			Track: spotify.Track{
+				Meta: spotify.Meta{ID: "0"},
+				Name: "Song",
+				Artists: []spotify.Artist{
+					{Name: "Artist"},
+				},
+				Duration: &spotify.Duration{Duration: time.Second},
 			},
-			DurationMs: 1000,
+			Type: "track",
 		},
 	}
 
@@ -45,12 +48,14 @@ func TestP_Pause(t *testing.T) {
 		IsPlaying:  true,
 		ProgressMs: 0,
 		Item: spotify.Item{
-			Type: "track",
-			Name: "Song",
-			Artists: []spotify.Artist{
-				{Name: "Artist"},
+			Track: spotify.Track{
+				Name: "Song",
+				Artists: []spotify.Artist{
+					{Name: "Artist"},
+				},
+				Duration: &spotify.Duration{Duration: time.Second},
 			},
-			DurationMs: 1000,
+			Type: "track",
 		},
 	}
 

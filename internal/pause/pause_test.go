@@ -4,6 +4,7 @@ import (
 	"errors"
 	"spotify/internal"
 	"testing"
+	"time"
 
 	"github.com/brianstrauch/spotify"
 	"github.com/stretchr/testify/require"
@@ -16,12 +17,14 @@ func TestPause(t *testing.T) {
 		IsPlaying:  true,
 		ProgressMs: 0,
 		Item: spotify.Item{
-			Type: "track",
-			Name: "Song",
-			Artists: []spotify.Artist{
-				{Name: "Artist"},
+			Track: spotify.Track{
+				Name: "Song",
+				Artists: []spotify.Artist{
+					{Name: "Artist"},
+				},
+				Duration: &spotify.Duration{Duration: time.Second},
 			},
-			DurationMs: 1000,
+			Type: "track",
 		},
 	}
 

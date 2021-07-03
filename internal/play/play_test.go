@@ -4,6 +4,7 @@ import (
 	"errors"
 	"spotify/internal"
 	"testing"
+	"time"
 
 	"github.com/brianstrauch/spotify"
 	"github.com/stretchr/testify/require"
@@ -16,13 +17,15 @@ func TestPlay(t *testing.T) {
 		IsPlaying:  false,
 		ProgressMs: 0,
 		Item: spotify.Item{
-			ID:   "0",
-			Type: "track",
-			Name: "Song",
-			Artists: []spotify.Artist{
-				{Name: "Artist"},
+			Track: spotify.Track{
+				Meta: spotify.Meta{ID: "0"},
+				Name: "Song",
+				Artists: []spotify.Artist{
+					{Name: "Artist"},
+				},
+				Duration: &spotify.Duration{Duration: time.Second},
 			},
-			DurationMs: 1000,
+			Type: "track",
 		},
 	}
 

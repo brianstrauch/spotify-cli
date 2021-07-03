@@ -3,6 +3,7 @@ package status
 import (
 	"spotify/internal"
 	"testing"
+	"time"
 
 	"github.com/brianstrauch/spotify"
 	"github.com/stretchr/testify/require"
@@ -15,12 +16,14 @@ func TestStatus_Track(t *testing.T) {
 		IsPlaying:  true,
 		ProgressMs: 0,
 		Item: spotify.Item{
-			Type: "track",
-			Name: "Track",
-			Artists: []spotify.Artist{
-				{Name: "Artist"},
+			Track: spotify.Track{
+				Name: "Track",
+				Artists: []spotify.Artist{
+					{Name: "Artist"},
+				},
+				Duration: &spotify.Duration{Duration: time.Second},
 			},
-			DurationMs: 1000,
+			Type: "track",
 		},
 	}
 
@@ -38,12 +41,14 @@ func TestStatus_Podcast(t *testing.T) {
 		IsPlaying:  true,
 		ProgressMs: 0,
 		Item: spotify.Item{
-			Type: "episode",
-			Name: "Episode",
+			Track: spotify.Track{
+				Name:     "Episode",
+				Duration: &spotify.Duration{Duration: time.Second},
+			},
 			Show: spotify.Show{
 				Name: "Podcast",
 			},
-			DurationMs: 1000,
+			Type: "episode",
 		},
 	}
 

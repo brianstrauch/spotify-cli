@@ -15,7 +15,9 @@ func TestSave(t *testing.T) {
 
 	playback := &spotify.Playback{
 		Item: spotify.Item{
-			ID: id,
+			Track: spotify.Track{
+				Meta: spotify.Meta{ID: id},
+			},
 		},
 	}
 
