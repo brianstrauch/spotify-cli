@@ -33,7 +33,7 @@ func main() {
 	root := &cobra.Command{
 		Use:               "spotify",
 		Short:             "Spotify for the terminal 🎵",
-		Version:           "1.9.0",
+		Version:           "1.9.1",
 		PersistentPreRunE: promptUpdate,
 	}
 
