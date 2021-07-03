@@ -2,8 +2,10 @@ package queue
 
 import (
 	"spotify/internal"
+	"spotify/internal/status"
 	"strings"
 
+	"github.com/brianstrauch/spotify"
 	"github.com/spf13/cobra"
 )
 
@@ -21,21 +23,32 @@ func NewCommand() *cobra.Command {
 
 			query := strings.Join(args, " ")
 
-			if err := Queue(api, query); err != nil {
+			output, err := Queue(api, query)
+			if err != nil {
 				return err
 			}
 
-			cmd.Println("Queued!")
+			cmd.Print(output)
 			return nil
 		},
 	}
 }
 
-func Queue(api internal.APIInterface, query string) error {
-	uri, err := internal.Search(api, query)
+func Queue(api internal.APIInterface, query string) (string, error) {
+	track, err := internal.Search(api, query)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return api.Queue(uri)
+	if err := api.Queue(track.URI); err != nil {
+		return "", err
+	}
+
+	return show(track), nil
+}
+
+func show(track *spotify.Track) string {
+	output := status.PrefixLineWithEmoji("🎵", track.Name)
+	output += status.PrefixLineWithEmoji("🎤", status.JoinArtists(track.Artists))
+	return output
 }

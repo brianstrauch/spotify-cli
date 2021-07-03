@@ -48,7 +48,7 @@ func Show(playback *spotify.Playback) string {
 	var artistLine string
 	switch playback.Item.Type {
 	case "track":
-		artistLine = joinArtists(playback.Item.Artists)
+		artistLine = JoinArtists(playback.Item.Artists)
 	case "episode":
 		artistLine = playback.Item.Show.Name
 	}
@@ -62,14 +62,14 @@ func Show(playback *spotify.Playback) string {
 
 	progressBar := showProgressBar(playback.ProgressMs, playback.Item.Duration)
 
-	status := prefixLineWithEmoji("🎵", playback.Item.Name)
-	status += prefixLineWithEmoji("🎤", artistLine)
-	status += prefixLineWithEmoji(isPlayingEmoji, progressBar)
+	status := PrefixLineWithEmoji("🎵", playback.Item.Name)
+	status += PrefixLineWithEmoji("🎤", artistLine)
+	status += PrefixLineWithEmoji(isPlayingEmoji, progressBar)
 
 	return status
 }
 
-func joinArtists(artists []spotify.Artist) string {
+func JoinArtists(artists []spotify.Artist) string {
 	list := artists[0].Name
 	for i := 1; i < len(artists); i++ {
 		list += ", " + artists[i].Name
@@ -105,7 +105,7 @@ func formatTime(ms int) string {
 	}
 }
 
-func prefixLineWithEmoji(emoji, line string) string {
+func PrefixLineWithEmoji(emoji, line string) string {
 	// Carriage return jumps to start of line because emojis can have variable widths
 	return fmt.Sprintf("   %s\r%s\n", line, emoji)
 }

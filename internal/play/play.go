@@ -44,12 +44,12 @@ func Play(api internal.APIInterface, query string) (string, error) {
 	}
 
 	if len(query) > 0 {
-		uri, err := internal.Search(api, query)
+		track, err := internal.Search(api, query)
 		if err != nil {
 			return "", err
 		}
 
-		err = api.Play(uri)
+		err = api.Play(track.URI)
 	} else {
 		err = api.Play()
 	}

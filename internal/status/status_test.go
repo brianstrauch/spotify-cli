@@ -73,7 +73,7 @@ func TestJoinArtists(t *testing.T) {
 		{Name: "Artist 1"},
 		{Name: "Artist 2"},
 	}
-	require.Equal(t, "Artist 1, Artist 2", joinArtists(artists))
+	require.Equal(t, "Artist 1, Artist 2", JoinArtists(artists))
 }
 
 func TestFormatTime_OneMinute(t *testing.T) {

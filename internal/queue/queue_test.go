@@ -14,10 +14,14 @@ func TestQueue(t *testing.T) {
 	var uri string
 
 	paging := &spotify.Paging{
-		Tracks: spotify.Tracks{
-			Items: []spotify.PlaylistTrack{
+		Tracks: spotify.TrackPage{
+			Items: []*spotify.Track{
 				{
-					URI: uri,
+					Meta: spotify.Meta{URI: uri},
+					Name: "Track",
+					Artists: []spotify.Artist{
+						{Name: "Artist"},
+					},
 				},
 			},
 		},
@@ -26,6 +30,7 @@ func TestQueue(t *testing.T) {
 	api.On("Search", query, 1).Return(paging, nil).Once()
 	api.On("Queue", uri).Return(nil)
 
-	err := Queue(api, query)
+	output, err := Queue(api, query)
 	require.NoError(t, err)
+	require.Equal(t, "   Track\r🎵\n   Artist\r🎤\n", output)
 }
