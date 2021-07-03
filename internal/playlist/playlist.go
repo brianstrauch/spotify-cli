@@ -6,10 +6,10 @@ import (
 
 func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "playlist",
-		Short:   "do things with playlists",
+		Use:   "playlist",
+		Short: "do things with playlists",
 	}
 	cmd.AddCommand(NewListCommand())
-	cmd.AddCommand(NewDetailsCommand())
+	cmd.AddCommand(NewShowCommand())
 	return cmd
 }
