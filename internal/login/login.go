@@ -86,7 +86,7 @@ func login() (*spotify.Token, error) {
 	}
 
 	// 4. Your app exchanges the code for an access token
-	token, err := spotify.RequestToken(internal.ClientID, code, RedirectURI, verifier)
+	token, err := spotify.RequestPKCEToken(internal.ClientID, code, RedirectURI, verifier)
 	if err != nil {
 		return nil, err
 	}
