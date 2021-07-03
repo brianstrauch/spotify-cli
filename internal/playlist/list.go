@@ -3,7 +3,10 @@ package playlist
 import (
 	"errors"
 	"fmt"
+	"github.com/olekukonko/tablewriter"
 	"spotify/internal"
+	"strconv"
+	"strings"
 
 	"github.com/brianstrauch/spotify"
 	"github.com/spf13/cobra"
@@ -40,10 +43,17 @@ func List(api *spotify.API) (string, error) {
 		return "", errors.New(internal.ErrNoPlaylists)
 	}
 
-	list := ""
-	for _, playlist := range playlists {
-		list += playlist.Name + "\n"
-	}
+	output := new(strings.Builder)
 
-	return list, nil
+	table := tablewriter.NewWriter(output)
+	table.SetBorder(false)
+
+	table.SetHeader([]string{"#", "Playlist"})
+
+	for i, playlist := range playlists {
+		table.Append([]string{strconv.Itoa(i + 1), playlist.Name})
+	}
+	table.Render()
+
+	return output.String(), nil
 }

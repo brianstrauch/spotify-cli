@@ -4,9 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"spotify/internal"
+	"strconv"
 	"strings"
 
 	"github.com/brianstrauch/spotify"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
@@ -49,7 +51,7 @@ func Show(api *spotify.API, name string) error {
 		return err
 	}
 
-	output, err := formatPlaylist(api, playlist)
+	output, err := formatPlaylist(playlist)
 	if err != nil {
 		return err
 	}
@@ -58,20 +60,25 @@ func Show(api *spotify.API, name string) error {
 	return nil
 }
 
-func formatPlaylist(api *spotify.API, playlist *spotify.Playlist) (string, error) {
-	list := fmt.Sprintf("💿 %s\n", playlist.Name)
+func formatPlaylist(playlist *spotify.Playlist) (string, error) {
+	output := new(strings.Builder)
 
-	for i, track := range playlist.Tracks.Items {
-		artists := make([]string, len(track.Track.Artists))
-		for j, artist := range track.Track.Artists {
-			if err := artist.Get(api, &artist); err != nil {
-				return "", err
-			}
+	table := tablewriter.NewWriter(output)
+	table.SetBorder(false)
+
+	table.SetHeader([]string{"#", "Title", "Artist(s)"})
+
+	for i, playlistTrack := range playlist.Tracks.Items {
+		track := playlistTrack.Track
+
+		artists := make([]string, len(track.Artists))
+		for j, artist := range track.Artists {
 			artists[j] = artist.Name
 		}
 
-		list += fmt.Sprintf("%d. %s - %s\n", i+1, track.Track.Name, strings.Join(artists, ", "))
+		table.Append([]string{strconv.Itoa(i + 1), track.Name, strings.Join(artists, ", ")})
 	}
+	table.Render()
 
-	return list, nil
+	return output.String(), nil
 }
