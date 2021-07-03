@@ -28,6 +28,8 @@ github.com/blang/semver v3.5.1+incompatible h1:cQNTCjp13qL8KC3Nbxr/y2Bqb63oX6wdn
 github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=
 github.com/brianstrauch/spotify v0.3.1 h1:IBd0vkal0bs+yilvp+6VR4aL9q94qiionwYHETcOHS4=
 github.com/brianstrauch/spotify v0.3.1/go.mod h1:sImRT74obai+LNgFVxr+qNVq2yt5KEfvNxz6ZDfYWaA=
+github.com/brianstrauch/spotify v0.4.0 h1:yy3CSBmM17klWsRemfqlDI9Ai8wuw7tVntVH1XQcHhc=
+github.com/brianstrauch/spotify v0.4.0/go.mod h1:sImRT74obai+LNgFVxr+qNVq2yt5KEfvNxz6ZDfYWaA=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/coreos/bbolt v1.3.2/go.mod h1:iRUV2dpdMOn7Bo10OQBFzIJO9kkE559Wcmn+qkEiiKk=
