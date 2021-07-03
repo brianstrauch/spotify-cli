@@ -13,64 +13,65 @@ import (
 func NewShowCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "show",
-		Short: "Show playlist artist and songs.",
-		Args:  cobra.ExactArgs(1),
+		Short: "Show artist and songs.",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {
 				return err
 			}
-			return Show(api, args)
+
+			name := strings.Join(args, " ")
+
+			return Show(api, name)
 		},
 	}
 }
 
-func Show(api *spotify.API, args []string) error {
+func Show(api *spotify.API, name string) error {
 	playlists, err := api.GetPlaylists()
 	if err != nil {
 		return err
 	}
+
 	id := ""
 	for _, playlist := range playlists {
-		if strings.EqualFold(strings.ToLower(playlist.Name), strings.ToLower(args[0])) {
+		if strings.EqualFold(playlist.Name, name) {
 			id = playlist.ID
 		}
 	}
 	if id == "" {
 		return errors.New("no such playlist")
 	}
+
 	playlist, err := api.GetPlaylist(id)
 	if err != nil {
 		return err
 	}
+
 	output, err := formatPlaylist(api, playlist)
 	if err != nil {
 		return err
 	}
+
 	fmt.Print(output)
 	return nil
 }
 
 func formatPlaylist(api *spotify.API, playlist *spotify.Playlist) (string, error) {
-	var builder strings.Builder
-	builder.WriteString(fmt.Sprintf("📝: %s\n", playlist.Name))
-	builder.WriteString(fmt.Sprintln("💿 Tracks:"))
+	list := fmt.Sprintf("💿 %s\n", playlist.Name)
+
 	for i, track := range playlist.Tracks.Items {
-		artistNames := make([]string, len(track.Track.Artists))
-		for i, artist := range track.Track.Artists {
+		artists := make([]string, len(track.Track.Artists))
+		for j, artist := range track.Track.Artists {
 			if err := artist.Get(api, &artist); err != nil {
 				return "", err
 			}
-			artistNames[i] = artist.Name
+			artists[j] = artist.Name
 		}
-		builder.WriteString(
-			fmt.Sprintf(
-				"%d. %s - %s\n",
-				i+1,
-				strings.Join(artistNames, ". "),
-				track.Track.Name,
-			),
-		)
+
+		list += fmt.Sprintf("%d. %s - %s\n", i+1, track.Track.Name, strings.Join(artists, ", "))
 	}
-	return builder.String(), nil
+
+	return list, nil
 }

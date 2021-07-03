@@ -1,9 +1,9 @@
 package playlist
 
 import (
+	"errors"
 	"fmt"
 	"spotify/internal"
-	"strings"
 
 	"github.com/brianstrauch/spotify"
 	"github.com/spf13/cobra"
@@ -12,17 +12,19 @@ import (
 func NewListCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
-		Short: "List playlists.",
+		Short: "List your playlists.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {
 				return err
 			}
-			output, err := List(api)
+
+			list, err := List(api)
 			if err != nil {
 				return err
 			}
-			fmt.Print(output)
+
+			fmt.Print(list)
 			return nil
 		},
 	}
@@ -33,9 +35,15 @@ func List(api *spotify.API) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	var builder strings.Builder
-	for _, pl := range playlists {
-		builder.WriteString(fmt.Sprintln(pl.Name))
+
+	if len(playlists) == 0 {
+		return "", errors.New(internal.ErrNoPlaylists)
 	}
-	return builder.String(), nil
+
+	list := ""
+	for _, playlist := range playlists {
+		list += playlist.Name + "\n"
+	}
+
+	return list, nil
 }
