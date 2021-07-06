@@ -50,6 +50,9 @@ func Play(api internal.APIInterface, query string) (string, error) {
 		}
 
 		err = api.Play(track.URI)
+		if err != nil {
+			return "", err
+		}
 	} else {
 		err = api.Play()
 	}

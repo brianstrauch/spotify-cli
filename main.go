@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"github.com/pkg/errors"
+	"os"
 	"spotify/internal/back"
 	"spotify/internal/completion"
 	"spotify/internal/login"
@@ -27,8 +30,9 @@ func main() {
 	viper.AddConfigPath("$HOME")
 	viper.SetConfigName(".spotify-cli")
 	viper.SetConfigType("json")
-	viper.SafeWriteConfig()
-	viper.ReadInConfig()
+	_ = viper.SafeWriteConfig()
+	err := viper.ReadInConfig()
+	cobra.CheckErr(errors.Wrap(err, "Failed to re-read configuration file."))
 
 	root := &cobra.Command{
 		Use:               "spotify",
@@ -60,7 +64,12 @@ func main() {
 	root.Flags().BoolP("help", "h", false, "Help for Spotify CLI.")
 	root.Flags().BoolP("version", "v", false, "Version for Spotify CLI.")
 
-	root.Execute()
+	err = root.Execute()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
 }
 
 func promptUpdate(cmd *cobra.Command, _ []string) error {

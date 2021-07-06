@@ -48,13 +48,13 @@ func SaveToken(token *spotify.Token) error {
 
 func WaitForUpdatedPlayback(api APIInterface, isUpdated func(playback *spotify.Playback) bool) (*spotify.Playback, error) {
 	timeout := time.After(time.Second)
-	tick := time.Tick(100 * time.Millisecond)
+	tick := time.NewTicker(100 * time.Millisecond)
 
 	for {
 		select {
 		case <-timeout:
 			return nil, errors.New("request timed out")
-		case <-tick:
+		case <-tick.C:
 			playback, err := api.GetPlayback()
 			if err != nil {
 				return nil, err
