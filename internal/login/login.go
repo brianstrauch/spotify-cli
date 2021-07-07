@@ -119,10 +119,7 @@ func listenForCode(state string) (code string, err error) {
 
 		// Use a separate thread so browser doesn't show a "No Connection" message
 		go func() {
-			 err := server.Shutdown(context.TODO())
-			 if err != nil {
-				 fmt.Printf("Server shutdown error.")
-			 }
+			 _ = server.Shutdown(context.TODO())
 		}()
 	})
 
