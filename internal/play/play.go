@@ -55,11 +55,11 @@ func Play(api internal.APIInterface, query string) (string, error) {
 		}
 	} else {
 		err = api.Play()
-	}
 
-	if err != nil {
-		if err.Error() == internal.ErrRestrictionViolated {
-			return "", errors.New(internal.ErrAlreadyPlaying)
+		if err != nil {
+			if err.Error() == internal.ErrRestrictionViolated {
+				return "", errors.New(internal.ErrAlreadyPlaying)
+			}
 		}
 	}
 
