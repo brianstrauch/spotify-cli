@@ -27,8 +27,8 @@ func main() {
 	viper.AddConfigPath("$HOME")
 	viper.SetConfigName(".spotify-cli")
 	viper.SetConfigType("json")
-	viper.SafeWriteConfig()
-	viper.ReadInConfig()
+	_ = viper.SafeWriteConfig()
+	_ = viper.ReadInConfig()
 
 	root := &cobra.Command{
 		Use:               "spotify",
@@ -60,7 +60,8 @@ func main() {
 	root.Flags().BoolP("help", "h", false, "Help for Spotify CLI.")
 	root.Flags().BoolP("version", "v", false, "Version for Spotify CLI.")
 
-	root.Execute()
+	err := root.Execute()
+	cobra.CheckErr(err)
 }
 
 func promptUpdate(cmd *cobra.Command, _ []string) error {
