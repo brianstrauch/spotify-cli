@@ -1,9 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"github.com/pkg/errors"
-	"os"
 	"spotify/internal/back"
 	"spotify/internal/completion"
 	"spotify/internal/login"
@@ -63,7 +60,7 @@ func main() {
 	root.Flags().BoolP("help", "h", false, "Help for Spotify CLI.")
 	root.Flags().BoolP("version", "v", false, "Version for Spotify CLI.")
 
-	err = root.Execute()
+	err := root.Execute()
 	cobra.CheckErr(err)
 }
 
