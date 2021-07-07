@@ -31,8 +31,7 @@ func main() {
 	viper.SetConfigName(".spotify-cli")
 	viper.SetConfigType("json")
 	_ = viper.SafeWriteConfig()
-	err := viper.ReadInConfig()
-	cobra.CheckErr(errors.Wrap(err, "Failed to re-read configuration file."))
+	_ = viper.ReadInConfig()
 
 	root := &cobra.Command{
 		Use:               "spotify",
