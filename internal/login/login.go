@@ -18,8 +18,8 @@ import (
 var (
 	//go:embed success.html
 	successHTML string
-	//go:embed failure.html
-	failureHTML string
+	//go:embed error.html
+	errorHTML string
 )
 
 const RedirectURI = "http://localhost:1024/callback"
@@ -111,7 +111,7 @@ func listenForCode(state string) (code string, err error) {
 	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("state") != state || r.URL.Query().Get("error") != "" {
 			err = errors.New(internal.ErrLoginFailed)
-			fmt.Fprintln(w, failureHTML)
+			fmt.Fprintln(w, errorHTML)
 		} else {
 			code = r.URL.Query().Get("code")
 			fmt.Fprintln(w, successHTML)
@@ -119,7 +119,7 @@ func listenForCode(state string) (code string, err error) {
 
 		// Use a separate thread so browser doesn't show a "No Connection" message
 		go func() {
-			 _ = server.Shutdown(context.TODO())
+			_ = server.Shutdown(context.Background())
 		}()
 	})
 
