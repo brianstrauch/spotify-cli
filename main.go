@@ -60,8 +60,7 @@ func main() {
 	root.Flags().BoolP("help", "h", false, "Help for Spotify CLI.")
 	root.Flags().BoolP("version", "v", false, "Version for Spotify CLI.")
 
-	err := root.Execute()
-	cobra.CheckErr(err)
+	_ = root.Execute()
 }
 
 func promptUpdate(cmd *cobra.Command, _ []string) error {
