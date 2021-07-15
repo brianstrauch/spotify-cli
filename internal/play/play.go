@@ -11,7 +11,7 @@ import (
 )
 
 func NewCommand() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "play [song]",
 		Short: "Play current song, or a specific song.",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -22,7 +22,12 @@ func NewCommand() *cobra.Command {
 
 			query := strings.Join(args, " ")
 
-			status, err := Play(api, query)
+			deviceID, err := cmd.Flags().GetString("device-id")
+			if err != nil {
+				return err
+			}
+
+			status, err := Play(api, query, deviceID)
 			if err != nil {
 				return err
 			}
@@ -31,9 +36,13 @@ func NewCommand() *cobra.Command {
 			return nil
 		},
 	}
+
+	cmd.Flags().String("device-id", "", "Device ID from 'spotify device list'.")
+
+	return cmd
 }
 
-func Play(api internal.APIInterface, query string) (string, error) {
+func Play(api internal.APIInterface, query, deviceID string) (string, error) {
 	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err
@@ -49,17 +58,12 @@ func Play(api internal.APIInterface, query string) (string, error) {
 			return "", err
 		}
 
-		err = api.Play(track.URI)
-		if err != nil {
+		if err := api.Play(deviceID, track.URI); err != nil {
 			return "", err
 		}
 	} else {
-		err = api.Play()
-
-		if err != nil {
-			if err.Error() == internal.ErrRestrictionViolated {
-				return "", errors.New(internal.ErrAlreadyPlaying)
-			}
+		if err := api.Play(deviceID); err != nil {
+			return "", err
 		}
 	}
 

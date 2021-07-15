@@ -10,7 +10,7 @@ import (
 )
 
 func NewCommand() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "pause",
 		Short: "Pause music.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
@@ -19,7 +19,12 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			status, err := Pause(api)
+			deviceID, err := cmd.Flags().GetString("device-id")
+			if err != nil {
+				return err
+			}
+
+			status, err := Pause(api, deviceID)
 			if err != nil {
 				return err
 			}
@@ -28,9 +33,13 @@ func NewCommand() *cobra.Command {
 			return nil
 		},
 	}
+
+	cmd.Flags().String("device-id", "", "Device ID from 'spotify device list'.")
+
+	return cmd
 }
 
-func Pause(api internal.APIInterface) (string, error) {
+func Pause(api internal.APIInterface, deviceID string) (string, error) {
 	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err
@@ -40,10 +49,8 @@ func Pause(api internal.APIInterface) (string, error) {
 		return "", errors.New(internal.ErrNoActiveDevice)
 	}
 
-	if err := api.Pause(); err != nil {
-		if err.Error() == internal.ErrRestrictionViolated {
-			return "", errors.New(internal.ErrAlreadyPaused)
-		}
+	if err := api.Pause(deviceID); err != nil {
+		return "", err
 	}
 
 	playback, err = internal.WaitForUpdatedPlayback(api, func(playback *spotify.Playback) bool {

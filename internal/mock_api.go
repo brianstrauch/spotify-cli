@@ -6,21 +6,33 @@ import (
 )
 
 type APIInterface interface {
-	GetPlayback() (*spotify.Playback, error)
-	Pause() error
-	Play(uris ...string) error
-	Queue(uri string) error
-	RemoveSavedTracks(ids ...string) error
-	Repeat(state string) error
 	SaveTracks(ids ...string) error
-	Search(q string, limit int) (*spotify.Paging, error)
-	Shuffle(state bool) error
+	RemoveSavedTracks(ids ...string) error
+
+	GetPlayback() (*spotify.Playback, error)
+	Play(deviceID string, uris ...string) error
+	Pause(deviceID string) error
 	SkipToNextTrack() error
 	SkipToPreviousTrack() error
+	Repeat(state string) error
+	Shuffle(state bool) error
+	Queue(uri string) error
+
+	Search(q string, limit int) (*spotify.Paging, error)
 }
 
 type MockAPI struct {
 	mock.Mock
+}
+
+func (m *MockAPI) SaveTracks(ids ...string) error {
+	args := m.Called(ids)
+	return args.Error(0)
+}
+
+func (m *MockAPI) RemoveSavedTracks(ids ...string) error {
+	args := m.Called(ids)
+	return args.Error(0)
 }
 
 func (m *MockAPI) GetPlayback() (*spotify.Playback, error) {
@@ -36,23 +48,23 @@ func (m *MockAPI) GetPlayback() (*spotify.Playback, error) {
 	return playback.(*spotify.Playback), err
 }
 
-func (m *MockAPI) Pause() error {
+func (m *MockAPI) Play(deviceID string, uris ...string) error {
+	args := m.Called(deviceID, uris)
+	return args.Error(0)
+}
+
+func (m *MockAPI) Pause(deviceID string) error {
+	args := m.Called(deviceID)
+	return args.Error(0)
+}
+
+func (m *MockAPI) SkipToNextTrack() error {
 	args := m.Called()
 	return args.Error(0)
 }
 
-func (m *MockAPI) Play(uris ...string) error {
-	args := m.Called(uris)
-	return args.Error(0)
-}
-
-func (m *MockAPI) Queue(uri string) error {
-	args := m.Called(uri)
-	return args.Error(0)
-}
-
-func (m *MockAPI) RemoveSavedTracks(ids ...string) error {
-	args := m.Called(ids)
+func (m *MockAPI) SkipToPreviousTrack() error {
+	args := m.Called()
 	return args.Error(0)
 }
 
@@ -61,8 +73,13 @@ func (m *MockAPI) Repeat(state string) error {
 	return args.Error(0)
 }
 
-func (m *MockAPI) SaveTracks(ids ...string) error {
-	args := m.Called(ids)
+func (m *MockAPI) Shuffle(state bool) error {
+	args := m.Called(state)
+	return args.Error(0)
+}
+
+func (m *MockAPI) Queue(uri string) error {
+	args := m.Called(uri)
 	return args.Error(0)
 }
 
@@ -77,19 +94,4 @@ func (m *MockAPI) Search(q string, limit int) (*spotify.Paging, error) {
 	}
 
 	return page.(*spotify.Paging), err
-}
-
-func (m *MockAPI) Shuffle(state bool) error {
-	args := m.Called(state)
-	return args.Error(0)
-}
-
-func (m *MockAPI) SkipToNextTrack() error {
-	args := m.Called()
-	return args.Error(0)
-}
-
-func (m *MockAPI) SkipToPreviousTrack() error {
-	args := m.Called()
-	return args.Error(0)
 }

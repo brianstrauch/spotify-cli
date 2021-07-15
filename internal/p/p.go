@@ -11,7 +11,7 @@ import (
 )
 
 func NewCommand() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use: "p [song]",
 		// Keep hidden, since this command is an alias.
 		Hidden: true,
@@ -23,7 +23,12 @@ func NewCommand() *cobra.Command {
 
 			query := strings.Join(args, " ")
 
-			status, err := p(api, query)
+			deviceID, err := cmd.Flags().GetString("device-id")
+			if err != nil {
+				return err
+			}
+
+			status, err := p(api, query, deviceID)
 			if err != nil {
 				return err
 			}
@@ -32,11 +37,15 @@ func NewCommand() *cobra.Command {
 			return nil
 		},
 	}
+
+	cmd.Flags().String("device-id", "", "Device ID from 'spotify device list'.")
+
+	return cmd
 }
 
-func p(api internal.APIInterface, query string) (string, error) {
+func p(api internal.APIInterface, query, deviceID string) (string, error) {
 	if len(query) > 0 {
-		return play.Play(api, query)
+		return play.Play(api, query, deviceID)
 	}
 
 	playback, err := api.GetPlayback()
@@ -49,8 +58,8 @@ func p(api internal.APIInterface, query string) (string, error) {
 	}
 
 	if playback.IsPlaying {
-		return pause.Pause(api)
+		return pause.Pause(api, deviceID)
 	} else {
-		return play.Play(api, "")
+		return play.Play(api, "", deviceID)
 	}
 }

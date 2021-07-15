@@ -34,9 +34,9 @@ func TestP_Play(t *testing.T) {
 
 	api.On("GetPlayback").Return(playback1, nil).Twice()
 	api.On("GetPlayback").Return(playback2, nil).Once()
-	api.On("Play", []string(nil)).Return(nil)
+	api.On("Play", "", []string(nil)).Return(nil)
 
-	status, err := p(api, "")
+	status, err := p(api, "", "")
 	require.NoError(t, err)
 	require.Equal(t, "   Song\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r▶️\n", status)
 }
@@ -65,9 +65,9 @@ func TestP_Pause(t *testing.T) {
 
 	api.On("GetPlayback").Return(playback1, nil).Twice()
 	api.On("GetPlayback").Return(playback2, nil).Once()
-	api.On("Pause").Return(nil)
+	api.On("Pause", "").Return(nil)
 
-	status, err := p(api, "")
+	status, err := p(api, "", "")
 	require.NoError(t, err)
 	require.Equal(t, "   Song\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r⏸\n", status)
 }
@@ -76,7 +76,7 @@ func TestP_ErrNoActiveDevice(t *testing.T) {
 	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(nil, nil)
 
-	_, err := p(api, "")
+	_, err := p(api, "", "")
 	require.Error(t, err)
 	require.Equal(t, internal.ErrNoActiveDevice, err.Error())
 }

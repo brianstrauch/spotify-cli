@@ -3,6 +3,7 @@ package main
 import (
 	"spotify/internal/back"
 	"spotify/internal/completion"
+	"spotify/internal/device"
 	"spotify/internal/login"
 	"spotify/internal/next"
 	"spotify/internal/p"
@@ -39,11 +40,13 @@ func main() {
 
 	root.AddCommand(back.NewCommand())
 	root.AddCommand(completion.NewCommand())
+	root.AddCommand(device.NewCommand())
 	root.AddCommand(login.NewCommand())
 	root.AddCommand(next.NewCommand())
 	root.AddCommand(p.NewCommand())
 	root.AddCommand(pause.NewCommand())
 	root.AddCommand(play.NewCommand())
+	root.AddCommand(playlist.NewCommand())
 	root.AddCommand(queue.NewCommand())
 	root.AddCommand(repeat.NewCommand())
 	root.AddCommand(save.NewCommand())
@@ -51,7 +54,6 @@ func main() {
 	root.AddCommand(status.NewCommand())
 	root.AddCommand(unsave.NewCommand())
 	root.AddCommand(update.NewCommand())
-	root.AddCommand(playlist.NewCommand())
 
 	// Hide help command
 	root.SetHelpCommand(&cobra.Command{Hidden: true})
