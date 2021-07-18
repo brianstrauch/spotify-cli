@@ -17,11 +17,9 @@ func TestP_Play(t *testing.T) {
 		ProgressMs: 0,
 		Item: spotify.Item{
 			Track: spotify.Track{
-				Meta: spotify.Meta{ID: "0"},
-				Name: "Song",
-				Artists: []spotify.Artist{
-					{Name: "Artist"},
-				},
+				Meta:     spotify.Meta{ID: "0"},
+				Name:     "Track",
+				Artists:  []spotify.Artist{{Name: "Artist"}},
 				Duration: &spotify.Duration{Duration: time.Second},
 			},
 			Type: "track",
@@ -38,7 +36,52 @@ func TestP_Play(t *testing.T) {
 
 	status, err := p(api, "", "")
 	require.NoError(t, err)
-	require.Equal(t, "   Song\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r▶️\n", status)
+	require.Equal(t, "   Track\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r▶️\n", status)
+}
+
+func TestP_Play_WithArgs(t *testing.T) {
+	api := new(internal.MockAPI)
+
+	uri := "uri"
+	name := "Track"
+
+	paging := &spotify.Paging{
+		Tracks: spotify.TrackPage{
+			Items: []*spotify.Track{
+				{
+					Meta:    spotify.Meta{URI: uri},
+					Name:    name,
+					Artists: []spotify.Artist{{Name: "Artist"}},
+				},
+			},
+		},
+	}
+
+	playback1 := &spotify.Playback{}
+	playback2 := &spotify.Playback{
+		IsPlaying:  true,
+		ProgressMs: 0,
+		Item: spotify.Item{
+			Track: spotify.Track{
+				Meta:     spotify.Meta{ID: "0"},
+				Name:     name,
+				Artists:  []spotify.Artist{{Name: "Artist"}},
+				Duration: &spotify.Duration{Duration: time.Second},
+			},
+			Type: "track",
+		},
+	}
+
+	query := "track"
+
+	api.On("Search", query, 1).Return(paging, nil)
+	api.On("Play", "", []string{uri}).Return(nil)
+	api.On("GetPlayback").Return(playback1, nil).Twice()
+	api.On("GetPlayback").Return(playback2, nil).Once()
+
+	status, err := p(api, query, "")
+	require.NoError(t, err)
+	require.Equal(t, "   Track\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r▶️\n", status)
 }
 
 func TestP_Pause(t *testing.T) {
@@ -49,10 +92,8 @@ func TestP_Pause(t *testing.T) {
 		ProgressMs: 0,
 		Item: spotify.Item{
 			Track: spotify.Track{
-				Name: "Song",
-				Artists: []spotify.Artist{
-					{Name: "Artist"},
-				},
+				Name:     "Track",
+				Artists:  []spotify.Artist{{Name: "Artist"}},
 				Duration: &spotify.Duration{Duration: time.Second},
 			},
 			Type: "track",
@@ -69,7 +110,7 @@ func TestP_Pause(t *testing.T) {
 
 	status, err := p(api, "", "")
 	require.NoError(t, err)
-	require.Equal(t, "   Song\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r⏸\n", status)
+	require.Equal(t, "   Track\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r⏸\n", status)
 }
 
 func TestP_ErrNoActiveDevice(t *testing.T) {

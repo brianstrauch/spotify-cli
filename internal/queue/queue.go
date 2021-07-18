@@ -48,7 +48,7 @@ func Queue(api internal.APIInterface, query string) (string, error) {
 }
 
 func show(track *spotify.Track) string {
-	output := status.PrefixLineWithEmoji("🎵", track.Name)
-	output += status.PrefixLineWithEmoji("🎤", status.JoinArtists(track.Artists))
-	return output
+	out := status.PrefixLineWithEmoji("🎵", track.Name)
+	out += status.PrefixLineWithEmoji("🎤", status.JoinArtists(track.Artists))
+	return out
 }

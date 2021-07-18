@@ -17,11 +17,9 @@ func TestNext(t *testing.T) {
 		ProgressMs: 0,
 		Item: spotify.Item{
 			Track: spotify.Track{
-				Meta: spotify.Meta{ID: "0"},
-				Name: "Song",
-				Artists: []spotify.Artist{
-					{Name: "Artist"},
-				},
+				Meta:     spotify.Meta{ID: "0"},
+				Name:     "Track",
+				Artists:  []spotify.Artist{{Name: "Artist"}},
 				Duration: &spotify.Duration{Duration: time.Second},
 			},
 			Type: "track",
@@ -38,7 +36,7 @@ func TestNext(t *testing.T) {
 
 	status, err := next(api)
 	require.NoError(t, err)
-	require.Equal(t, "   Song\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r▶️\n", status)
+	require.Equal(t, "   Track\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r▶️\n", status)
 }
 
 func TestNext_ErrNoActiveDevice(t *testing.T) {

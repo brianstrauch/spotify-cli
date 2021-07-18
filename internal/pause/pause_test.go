@@ -18,10 +18,8 @@ func TestPause(t *testing.T) {
 		ProgressMs: 0,
 		Item: spotify.Item{
 			Track: spotify.Track{
-				Name: "Song",
-				Artists: []spotify.Artist{
-					{Name: "Artist"},
-				},
+				Name:     "Track",
+				Artists:  []spotify.Artist{{Name: "Artist"}},
 				Duration: &spotify.Duration{Duration: time.Second},
 			},
 			Type: "track",
@@ -38,7 +36,7 @@ func TestPause(t *testing.T) {
 
 	status, err := Pause(api, "")
 	require.NoError(t, err)
-	require.Equal(t, "   Song\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r⏸\n", status)
+	require.Equal(t, "   Track\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r⏸\n", status)
 }
 
 func TestPause_ErrAlreadyPaused(t *testing.T) {

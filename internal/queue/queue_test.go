@@ -10,22 +10,21 @@ import (
 func TestQueue(t *testing.T) {
 	api := new(internal.MockAPI)
 
-	query := "song"
-	var uri string
+	uri := "uri"
 
 	paging := &spotify.Paging{
 		Tracks: spotify.TrackPage{
 			Items: []*spotify.Track{
 				{
-					Meta: spotify.Meta{URI: uri},
-					Name: "Track",
-					Artists: []spotify.Artist{
-						{Name: "Artist"},
-					},
+					Meta:    spotify.Meta{URI: uri},
+					Name:    "Track",
+					Artists: []spotify.Artist{{Name: "Artist"}},
 				},
 			},
 		},
 	}
+
+	query := "track"
 
 	api.On("Search", query, 1).Return(paging, nil).Once()
 	api.On("Queue", uri).Return(nil)

@@ -6,7 +6,6 @@ import (
 	"spotify/internal"
 	"strings"
 
-	"github.com/brianstrauch/spotify"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
@@ -32,7 +31,7 @@ func NewListCommand() *cobra.Command {
 	}
 }
 
-func List(api *spotify.API) (string, error) {
+func List(api internal.APIInterface) (string, error) {
 	devices, err := api.GetDevices()
 	if err != nil {
 		return "", err

@@ -10,6 +10,7 @@ type APIInterface interface {
 	RemoveSavedTracks(ids ...string) error
 
 	GetPlayback() (*spotify.Playback, error)
+	GetDevices() ([]*spotify.Device, error)
 	Play(deviceID string, uris ...string) error
 	Pause(deviceID string) error
 	SkipToNextTrack() error
@@ -46,6 +47,15 @@ func (m *MockAPI) GetPlayback() (*spotify.Playback, error) {
 	}
 
 	return playback.(*spotify.Playback), err
+}
+
+func (m *MockAPI) GetDevices() ([]*spotify.Device, error) {
+	args := m.Called()
+
+	devices := args.Get(0)
+	err := args.Error(1)
+
+	return devices.([]*spotify.Device), err
 }
 
 func (m *MockAPI) Play(deviceID string, uris ...string) error {
