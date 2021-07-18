@@ -15,7 +15,7 @@ import (
 func NewShowCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "show",
-		Short: "Show artist and songs.",
+		Short: "show artist and songs",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()

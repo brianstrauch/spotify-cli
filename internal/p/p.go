@@ -38,7 +38,7 @@ func NewCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String("device-id", "", "Device ID from 'spotify device list'.")
+	cmd.Flags().String("device-id", "", "device ID from 'spotify device list'")
 
 	return cmd
 }

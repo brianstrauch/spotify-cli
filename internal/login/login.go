@@ -27,7 +27,7 @@ const RedirectURI = "http://localhost:1024/callback"
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "login",
-		Short: "Log in to Spotify.",
+		Short: "log in to spotify",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			token, err := login()
 			if err != nil {

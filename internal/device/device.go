@@ -7,7 +7,7 @@ import (
 func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "device",
-		Short: "Manage devices.",
+		Short: "manage devices",
 	}
 
 	cmd.AddCommand(NewListCommand())

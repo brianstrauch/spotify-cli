@@ -2,7 +2,6 @@ package main
 
 import (
 	"spotify/internal/back"
-	"spotify/internal/completion"
 	"spotify/internal/device"
 	"spotify/internal/login"
 	"spotify/internal/next"
@@ -39,7 +38,6 @@ func main() {
 	}
 
 	root.AddCommand(back.NewCommand())
-	root.AddCommand(completion.NewCommand())
 	root.AddCommand(device.NewCommand())
 	root.AddCommand(login.NewCommand())
 	root.AddCommand(next.NewCommand())
@@ -57,10 +55,6 @@ func main() {
 
 	// Hide help command
 	root.SetHelpCommand(&cobra.Command{Hidden: true})
-
-	// Rename default flag descriptions
-	root.Flags().BoolP("help", "h", false, "Help for Spotify CLI.")
-	root.Flags().BoolP("version", "v", false, "Version for Spotify CLI.")
 
 	_ = root.Execute()
 }

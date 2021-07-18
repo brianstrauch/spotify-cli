@@ -13,7 +13,7 @@ import (
 func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "play [song]",
-		Short: "Play current song, or a specific song.",
+		Short: "play current song, or a specific song",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {
@@ -37,7 +37,7 @@ func NewCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String("device-id", "", "Device ID from 'spotify device list'.")
+	cmd.Flags().String("device-id", "", "device ID from 'spotify device list'")
 
 	return cmd
 }

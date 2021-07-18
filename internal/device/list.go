@@ -14,7 +14,7 @@ import (
 func NewListCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
-		Short: "List your devices.",
+		Short: "list your devices",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {

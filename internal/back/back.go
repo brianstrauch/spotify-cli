@@ -13,7 +13,7 @@ func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:     "back",
 		Aliases: []string{"b"},
-		Short:   "Skip to previous song.",
+		Short:   "skip to previous song",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {

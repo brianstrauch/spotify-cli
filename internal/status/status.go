@@ -13,7 +13,7 @@ func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:     "status",
 		Aliases: []string{"s"},
-		Short:   "Show the current song or episode.",
+		Short:   "show the current song or episode",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {

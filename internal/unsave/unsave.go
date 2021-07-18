@@ -10,7 +10,7 @@ import (
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "unsave",
-		Short: "Unsave the current song.",
+		Short: "unsave the current song",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {

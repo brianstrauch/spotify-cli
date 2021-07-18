@@ -12,7 +12,7 @@ import (
 func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pause",
-		Short: "Pause music.",
+		Short: "pause music",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {
@@ -34,7 +34,7 @@ func NewCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String("device-id", "", "Device ID from 'spotify device list'.")
+	cmd.Flags().String("device-id", "", "device ID from 'spotify device list'")
 
 	return cmd
 }

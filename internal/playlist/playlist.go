@@ -7,7 +7,7 @@ import (
 func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "playlist",
-		Short: "Manage playlists.",
+		Short: "manage playlists",
 	}
 
 	cmd.AddCommand(NewListCommand())
