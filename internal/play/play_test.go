@@ -76,7 +76,7 @@ func TestPlay_WithArgs(t *testing.T) {
 	query := "track"
 
 	api.On("Search", query, "track", 1).Return(paging, nil)
-	api.On("Play", "","", []string{uri}).Return(nil)
+	api.On("Play", "", "", []string{uri}).Return(nil)
 	api.On("GetPlayback").Return(playback1, nil).Twice()
 	api.On("GetPlayback").Return(playback2, nil).Once()
 
