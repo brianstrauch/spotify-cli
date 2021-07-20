@@ -3,7 +3,11 @@ package status
 import (
 	"errors"
 	"fmt"
+	"os"
+	"os/exec"
+	"runtime"
 	"spotify/internal"
+	"time"
 
 	"github.com/brianstrauch/spotify"
 	"github.com/spf13/cobra"
@@ -15,17 +19,65 @@ func NewCommand() *cobra.Command {
 		Aliases: []string{"s"},
 		Short:   "show the current song or episode",
 		RunE: func(cmd *cobra.Command, _ []string) error {
+
+			watch, _ := cmd.Flags().GetBool("watch")
+
 			api, err := internal.Authenticate()
 			if err != nil {
 				return err
 			}
 
-			status, err := status(api)
-			if err != nil {
-				return err
+			if watch {
+
+				ticker := time.NewTicker(1000 * time.Millisecond)
+				stopWatching := make(chan bool)
+
+				go func() {
+					os.Stdin.Read([]byte{0x0})
+					stopWatching <- true
+				}()
+
+				go func() {
+					for {
+						select {
+						case <-stopWatching:
+							return
+						case <-ticker.C:
+							status, err := status(api)
+
+							if err != nil {
+								fmt.Println(err)
+								return
+							}
+
+							if runtime.GOOS == "windows" {
+								cmd := exec.Command("cmd", "/c", "cls")
+								cmd.Stdout = os.Stdout
+								cmd.Run()
+							} else {
+								cmd := exec.Command("clear")
+								cmd.Stdout = os.Stdout
+								cmd.Run()
+							}
+
+							cmd.Print(status)
+						}
+					}
+				}()
+
+				<-stopWatching
+				ticker.Stop()
+				fmt.Println()
+			} else {
+				status, err := status(api)
+
+				if err != nil {
+					return err
+				}
+
+				cmd.Print(status)
 			}
 
-			cmd.Print(status)
 			return nil
 		},
 	}

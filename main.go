@@ -37,6 +37,9 @@ func main() {
 		PersistentPreRunE: promptUpdate,
 	}
 
+	statusCmd := status.NewCommand()
+	statusCmd.Flags().BoolP("watch", "w", false, "keep the status bar shown and autoupdating.")
+
 	root.AddCommand(back.NewCommand())
 	root.AddCommand(device.NewCommand())
 	root.AddCommand(login.NewCommand())
@@ -49,7 +52,7 @@ func main() {
 	root.AddCommand(repeat.NewCommand())
 	root.AddCommand(save.NewCommand())
 	root.AddCommand(shuffle.NewCommand())
-	root.AddCommand(status.NewCommand())
+	root.AddCommand(statusCmd)
 	root.AddCommand(unsave.NewCommand())
 	root.AddCommand(update.NewCommand())
 
