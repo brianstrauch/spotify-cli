@@ -19,7 +19,7 @@ type APIInterface interface {
 	Shuffle(state bool) error
 	Queue(uri string) error
 
-	Search(q,searchType string, limit int) (*spotify.Paging, error)
+	Search(q, searchType string, limit int) (*spotify.Paging, error)
 }
 
 type MockAPI struct {
