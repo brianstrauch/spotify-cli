@@ -27,7 +27,12 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			status, err := Play(api, query, deviceID)
+			playlistName, err := cmd.Flags().GetString("playlist")
+			if err != nil {
+				return err
+			}
+
+			status, err := Play(api, query, playlistName,  deviceID)
 			if err != nil {
 				return err
 			}
@@ -38,11 +43,12 @@ func NewCommand() *cobra.Command {
 	}
 
 	cmd.Flags().String("device-id", "", "device ID from 'spotify device list'")
+	cmd.Flags().String("playlist", "", "playlist name from 'spotify playlist list'")
 
 	return cmd
 }
 
-func Play(api internal.APIInterface, query, deviceID string) (string, error) {
+func Play(api internal.APIInterface, query, contextQuery , deviceID string) (string, error) {
 	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err
@@ -53,16 +59,36 @@ func Play(api internal.APIInterface, query, deviceID string) (string, error) {
 	}
 
 	if len(query) > 0 {
-		track, err := internal.Search(api, query)
+		track, err := internal.Search(api, query, "track")
 		if err != nil {
 			return "", err
 		}
 
-		if err := api.Play(deviceID, track.URI); err != nil {
+		if err := api.Play(deviceID,"",track.URI); err != nil {
 			return "", err
 		}
+	} else if len(contextQuery) > 0  {
+		// Return a different API interface required for the playlist commands?
+		api, err := internal.Authenticate()
+		if err != nil {
+			return "", err
+		}
+
+		playlists, err := api.GetPlaylists()
+		if err != nil {
+			return "", err
+		}
+
+		for _, playlist := range playlists {
+			if strings.EqualFold(playlist.Name, contextQuery) {
+				if err := api.Play(deviceID, playlist.URI); err != nil {
+					return "", err
+				}
+				break
+			}
+		}
 	} else {
-		if err := api.Play(deviceID); err != nil {
+		if err := api.Play(deviceID, ""); err != nil {
 			return "", err
 		}
 	}

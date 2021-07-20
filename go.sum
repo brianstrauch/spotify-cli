@@ -49,6 +49,8 @@ github.com/blang/semver v3.5.1+incompatible h1:cQNTCjp13qL8KC3Nbxr/y2Bqb63oX6wdn
 github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=
 github.com/brianstrauch/spotify v0.5.0 h1:IUEY5JPEPJJJdyVdpcH8ZzviGxI3Ra3huWPN+517MbU=
 github.com/brianstrauch/spotify v0.5.0/go.mod h1:sImRT74obai+LNgFVxr+qNVq2yt5KEfvNxz6ZDfYWaA=
+github.com/brianstrauch/spotify v0.6.0 h1:PGD6W9lJtKd8BUpgT+s/F1k8pFMoQ8fihM4vKbYkjCI=
+github.com/brianstrauch/spotify v0.6.0/go.mod h1:KGmim5eCKSgu5y+jOrJPa8fxTFfy0GzeidodVnjGnUM=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=

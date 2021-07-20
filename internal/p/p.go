@@ -45,7 +45,7 @@ func NewCommand() *cobra.Command {
 
 func p(api internal.APIInterface, query, deviceID string) (string, error) {
 	if len(query) > 0 {
-		return play.Play(api, query, deviceID)
+		return play.Play(api, query, "", deviceID)
 	}
 
 	playback, err := api.GetPlayback()
@@ -60,6 +60,6 @@ func p(api internal.APIInterface, query, deviceID string) (string, error) {
 	if playback.IsPlaying {
 		return pause.Pause(api, deviceID)
 	} else {
-		return play.Play(api, "", deviceID)
+		return play.Play(api, "","", deviceID)
 	}
 }

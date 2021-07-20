@@ -11,7 +11,7 @@ type APIInterface interface {
 
 	GetPlayback() (*spotify.Playback, error)
 	GetDevices() ([]*spotify.Device, error)
-	Play(deviceID string, uris ...string) error
+	Play(deviceID, contextURI string, uris ...string) error
 	Pause(deviceID string) error
 	SkipToNextTrack() error
 	SkipToPreviousTrack() error
@@ -19,7 +19,7 @@ type APIInterface interface {
 	Shuffle(state bool) error
 	Queue(uri string) error
 
-	Search(q string, limit int) (*spotify.Paging, error)
+	Search(q,searchType string, limit int) (*spotify.Paging, error)
 }
 
 type MockAPI struct {
@@ -58,8 +58,8 @@ func (m *MockAPI) GetDevices() ([]*spotify.Device, error) {
 	return devices.([]*spotify.Device), err
 }
 
-func (m *MockAPI) Play(deviceID string, uris ...string) error {
-	args := m.Called(deviceID, uris)
+func (m *MockAPI) Play(deviceID, contextURI string, uris ...string) error {
+	args := m.Called(deviceID, contextURI, uris)
 	return args.Error(0)
 }
 
@@ -93,8 +93,8 @@ func (m *MockAPI) Queue(uri string) error {
 	return args.Error(0)
 }
 
-func (m *MockAPI) Search(q string, limit int) (*spotify.Paging, error) {
-	args := m.Called(q, limit)
+func (m *MockAPI) Search(q, searchType string, limit int) (*spotify.Paging, error) {
+	args := m.Called(q, searchType, limit)
 
 	page := args.Get(0)
 	err := args.Error(1)
