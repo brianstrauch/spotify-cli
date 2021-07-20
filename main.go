@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"spotify/internal/back"
 	"spotify/internal/device"
 	"spotify/internal/login"
@@ -33,7 +34,7 @@ func main() {
 	root := &cobra.Command{
 		Use:               "spotify",
 		Short:             "Spotify for the terminal 🎵",
-		Version:           "1.9.2",
+		Version:           buildVersion(version, commit, date),
 		PersistentPreRunE: promptUpdate,
 	}
 
@@ -57,6 +58,24 @@ func main() {
 	root.SetHelpCommand(&cobra.Command{Hidden: true})
 
 	_ = root.Execute()
+}
+
+// Sets ldflags by goreleaser https://goreleaser.com/customization/build/ (default values)
+var (
+	version = "dev"
+	commit  string
+	date    string
+)
+
+func buildVersion(version, commit, date string) string {
+	result := version
+	if commit != "" {
+		result = fmt.Sprintf("%s\ncommit: %s", result, commit)
+	}
+	if date != "" {
+		result = fmt.Sprintf("%s\nbuilt at: %s", result, date)
+	}
+	return result
 }
 
 func promptUpdate(cmd *cobra.Command, _ []string) error {
