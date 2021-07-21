@@ -57,8 +57,8 @@ func main() {
 	root.AddCommand(unsave.NewCommand())
 	root.AddCommand(update.NewCommand())
 
-	// Hide help command
 	root.SetHelpCommand(&cobra.Command{Hidden: true})
+	root.SetVersionTemplate("{{.Version}}\n")
 
 	_ = root.Execute()
 }
