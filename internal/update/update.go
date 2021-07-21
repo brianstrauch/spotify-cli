@@ -14,7 +14,7 @@ const repo = "brianstrauch/spotify-cli"
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "update",
-		Short: "update to the latest version",
+		Short: "update CLI to the latest version",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			isUpdated, err := IsUpdated(cmd)
 			if err != nil {
@@ -34,7 +34,7 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			cmd.Printf("Updated CLI to version %s!\n", latest.Version.String())
+			cmd.Printf("🎁 v%s\n", latest.Version.String())
 			return nil
 		},
 	}
