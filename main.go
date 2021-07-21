@@ -24,7 +24,7 @@ import (
 )
 
 // version is a linker flag set by goreleaser
-var version = "v0.0.0"
+var version = "0.0.0"
 
 func main() {
 	// TODO: https://github.com/spf13/viper/pull/1064
@@ -58,7 +58,7 @@ func main() {
 	root.AddCommand(update.NewCommand())
 
 	root.SetHelpCommand(&cobra.Command{Hidden: true})
-	root.SetVersionTemplate("{{.Version}}\n")
+	root.SetVersionTemplate("v{{.Version}}\n")
 
 	_ = root.Execute()
 }
