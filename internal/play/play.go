@@ -21,18 +21,29 @@ func NewCommand() *cobra.Command {
 			}
 
 			query := strings.Join(args, " ")
+			queryType := "track"
 
 			deviceID, err := cmd.Flags().GetString("device-id")
 			if err != nil {
 				return err
 			}
 
-			playlistName, err := cmd.Flags().GetString("playlist")
+			contextQuery, err := cmd.Flags().GetString("playlist")
 			if err != nil {
 				return err
 			}
 
-			status, err := Play(api, query, playlistName,  deviceID)
+			if contextQuery == "" {
+				contextQuery, err = cmd.Flags().GetString("album")
+				if err != nil {
+					return err
+				}
+				queryType = "album"
+			} else {
+				queryType = "playlist"
+			}
+
+			status, err := Play(api, query, contextQuery, queryType, deviceID)
 			if err != nil {
 				return err
 			}
@@ -44,11 +55,12 @@ func NewCommand() *cobra.Command {
 
 	cmd.Flags().String("device-id", "", "device ID from 'spotify device list'")
 	cmd.Flags().String("playlist", "", "playlist name from 'spotify playlist list'")
+	cmd.Flags().String("album", "", "album name that you wish to play'")
 
 	return cmd
 }
 
-func Play(api internal.APIInterface, query, contextQuery , deviceID string) (string, error) {
+func Play(api internal.APIInterface, query, contextQuery, queryType, deviceID string) (string, error) {
 	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err
@@ -58,16 +70,28 @@ func Play(api internal.APIInterface, query, contextQuery , deviceID string) (str
 		return "", errors.New(internal.ErrNoActiveDevice)
 	}
 
-	if len(query) > 0 {
-		track, err := internal.Search(api, query, "track")
+	switch queryType {
+	case "album":
+		api, err := internal.Authenticate()
 		if err != nil {
 			return "", err
 		}
 
-		if err := api.Play(deviceID,"",track.URI); err != nil {
+		paging, err := api.Search(contextQuery, "album", 1)
+		if err != nil {
 			return "", err
 		}
-	} else if len(contextQuery) > 0  {
+
+		albums := paging.Albums.Items
+		if len(albums) > 0 {
+			return "", errors.New(internal.ErrNoAlbums)
+		}
+
+		if err := api.Play(deviceID, albums[0].URI); err != nil {
+			return "", err
+		}
+
+	case "playlist":
 		// Return a different API interface required for the playlist commands?
 		api, err := internal.Authenticate()
 		if err != nil {
@@ -87,8 +111,14 @@ func Play(api internal.APIInterface, query, contextQuery , deviceID string) (str
 				break
 			}
 		}
-	} else {
-		if err := api.Play(deviceID, ""); err != nil {
+
+	default:
+		track, err := internal.Search(api, query, "track")
+		if err != nil {
+			return "", err
+		}
+
+		if err := api.Play(deviceID, "", track.URI); err != nil {
 			return "", err
 		}
 	}
@@ -102,4 +132,5 @@ func Play(api internal.APIInterface, query, contextQuery , deviceID string) (str
 	}
 
 	return status.Show(playback), nil
+
 }
