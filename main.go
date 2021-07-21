@@ -24,7 +24,7 @@ import (
 )
 
 // version is a linker flag set by goreleaser
-var version = "0.0.0"
+var version = "v0.0.0"
 
 func main() {
 	// TODO: https://github.com/spf13/viper/pull/1064
