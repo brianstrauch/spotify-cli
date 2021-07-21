@@ -1,7 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"time"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
 	"spotify/internal/back"
 	"spotify/internal/device"
 	"spotify/internal/login"
@@ -17,11 +21,10 @@ import (
 	"spotify/internal/status"
 	"spotify/internal/unsave"
 	"spotify/internal/update"
-	"time"
-
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
+
+// version is a linker flag set by goreleaser
+var version = "0.0.0"
 
 func main() {
 	// TODO: https://github.com/spf13/viper/pull/1064
@@ -34,7 +37,7 @@ func main() {
 	root := &cobra.Command{
 		Use:               "spotify",
 		Short:             "Spotify for the terminal 🎵",
-		Version:           buildVersion(version, commit, date),
+		Version:           version,
 		PersistentPreRunE: promptUpdate,
 	}
 
@@ -58,24 +61,6 @@ func main() {
 	root.SetHelpCommand(&cobra.Command{Hidden: true})
 
 	_ = root.Execute()
-}
-
-// Sets ldflags by goreleaser https://goreleaser.com/customization/build/ (default values)
-var (
-	version = "dev"
-	commit  string
-	date    string
-)
-
-func buildVersion(version, commit, date string) string {
-	result := version
-	if commit != "" {
-		result = fmt.Sprintf("%s\ncommit: %s", result, commit)
-	}
-	if date != "" {
-		result = fmt.Sprintf("%s\nbuilt at: %s", result, date)
-	}
-	return result
 }
 
 func promptUpdate(cmd *cobra.Command, _ []string) error {
