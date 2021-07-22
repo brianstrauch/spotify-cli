@@ -34,7 +34,7 @@ func TestP_Play(t *testing.T) {
 	api.On("GetPlayback").Return(playback2, nil).Once()
 	api.On("Play", "", "","",  []string(nil)).Return(nil)
 
-	status, err := p(api, "", "", "","")
+	status, err := p(api, "", "", "", "")
 	require.NoError(t, err)
 	require.Equal(t, "   Track\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r▶️\n", status)
 }
