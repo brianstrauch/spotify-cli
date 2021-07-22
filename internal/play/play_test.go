@@ -33,7 +33,7 @@ func TestPlay(t *testing.T) {
 
 	api.On("GetPlayback").Return(playback1, nil).Once()
 	api.On("GetPlayback").Return(playback2, nil).Once()
-	api.On("Play", "","","", []string(nil)).Return(nil)
+	api.On("Play", "", "", "", []string(nil)).Return(nil)
 
 	status, err := Play(api, "", "", "", "")
 	require.NoError(t, err)
