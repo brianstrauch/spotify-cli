@@ -88,7 +88,7 @@ func TestPlay_WithArgs(t *testing.T) {
 func TestPlay_ErrAlreadyPlaying(t *testing.T) {
 	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(new(spotify.Playback), nil)
-	api.On("Play", "", "","", []string(nil)).Return(errors.New(internal.ErrRestrictionViolated))
+	api.On("Play", "", "", "", []string(nil)).Return(errors.New(internal.ErrRestrictionViolated))
 
 	_, err := Play(api, "", "", "", "")
 	require.Error(t, err)
