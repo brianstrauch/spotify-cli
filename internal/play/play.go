@@ -72,6 +72,7 @@ func Play(api internal.APIInterface, query, contextQuery, queryType, deviceID st
 
 	switch queryType {
 	case "album":
+
 		api, err := internal.Authenticate()
 		if err != nil {
 			return "", err
