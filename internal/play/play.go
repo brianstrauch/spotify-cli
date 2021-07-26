@@ -83,7 +83,9 @@ func Play(api internal.APIInterface, query, contextQuery, queryType, deviceID st
 		}
 
 		albums := paging.Albums.Items
-		//TODO: Implement Checking of no returns of albums
+		if len(albums) == 0 {
+			return "", errors.New(internal.ErrNoAlbums)
+		}
 
 		if err := api.Play(deviceID, albums[0].URI); err != nil {
 			return "", err

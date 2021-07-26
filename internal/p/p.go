@@ -54,7 +54,7 @@ func NewCommand() *cobra.Command {
 
 	cmd.Flags().String("device-id", "", "device ID from 'spotify device list'")
 	cmd.Flags().String("playlist", "", "playlist name from 'spotify playlist list'")
-	cmd.Flags().String("album", "", "album name that you wish to play")
+	cmd.Flags().String("album", "", "album name")
 
 	return cmd
 }
