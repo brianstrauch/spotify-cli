@@ -3,6 +3,7 @@ package update
 import (
 	"errors"
 	"spotify/internal"
+	"strings"
 
 	"github.com/blang/semver"
 	"github.com/rhysd/go-github-selfupdate/selfupdate"
@@ -14,7 +15,7 @@ const repo = "brianstrauch/spotify-cli"
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "update",
-		Short: "update to the latest version",
+		Short: "update CLI to the latest version",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			isUpdated, err := IsUpdated(cmd)
 			if err != nil {
@@ -24,7 +25,7 @@ func NewCommand() *cobra.Command {
 				return errors.New(internal.ErrAlreadyUpToDate)
 			}
 
-			current, err := semver.Parse(cmd.Root().Version)
+			current, err := parseVersion(cmd)
 			if err != nil {
 				return err
 			}
@@ -34,14 +35,14 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			cmd.Printf("Updated CLI to version %s!\n", latest.Version.String())
+			cmd.Printf("🎁 v%s\n", latest.Version.String())
 			return nil
 		},
 	}
 }
 
 func IsUpdated(cmd *cobra.Command) (bool, error) {
-	current, err := semver.Parse(cmd.Root().Version)
+	current, err := parseVersion(cmd)
 	if err != nil {
 		return true, err
 	}
@@ -53,4 +54,9 @@ func IsUpdated(cmd *cobra.Command) (bool, error) {
 
 	isUpdated := !found || current.Equals(latest.Version)
 	return isUpdated, nil
+}
+
+func parseVersion(cmd *cobra.Command) (semver.Version, error) {
+	version := strings.TrimPrefix(cmd.Root().Version, "v")
+	return semver.Parse(version)
 }
