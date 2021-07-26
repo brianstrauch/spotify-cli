@@ -55,7 +55,7 @@ func NewCommand() *cobra.Command {
 
 	cmd.Flags().String("device-id", "", "device ID from 'spotify device list'")
 	cmd.Flags().String("playlist", "", "playlist name from 'spotify playlist list'")
-	cmd.Flags().String("album", "", "album name that you wish to play'")
+	cmd.Flags().String("album", "", "album name that you wish to play")
 
 	return cmd
 }
@@ -83,9 +83,7 @@ func Play(api internal.APIInterface, query, contextQuery, queryType, deviceID st
 		}
 
 		albums := paging.Albums.Items
-		if len(albums) > 0 {
-			return "", errors.New(internal.ErrNoAlbums)
-		}
+		//TODO: Implement Checking of no returns of albums
 
 		if err := api.Play(deviceID, albums[0].URI); err != nil {
 			return "", err
