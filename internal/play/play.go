@@ -130,4 +130,5 @@ func Play(api internal.APIInterface, query, contextQuery, queryType, deviceID st
 	}
 
 	return status.Show(playback), nil
+
 }

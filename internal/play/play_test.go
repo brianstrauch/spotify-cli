@@ -33,7 +33,7 @@ func TestPlay(t *testing.T) {
 
 	api.On("GetPlayback").Return(playback1, nil).Once()
 	api.On("GetPlayback").Return(playback2, nil).Once()
-	api.On("Play", "", "", "", []string(nil)).Return(nil)
+	api.On("Play", "","","", []string(nil)).Return(nil)
 
 	status, err := Play(api, "", "", "", "")
 	require.NoError(t, err)
@@ -76,7 +76,7 @@ func TestPlay_WithArgs(t *testing.T) {
 	query := "track"
 
 	api.On("Search", query, "track", 1).Return(paging, nil)
-	api.On("Play", "", "", "", []string{uri}).Return(nil)
+	api.On("Play", "", "","", []string{uri}).Return(nil)
 	api.On("GetPlayback").Return(playback1, nil).Twice()
 	api.On("GetPlayback").Return(playback2, nil).Once()
 
@@ -88,7 +88,7 @@ func TestPlay_WithArgs(t *testing.T) {
 func TestPlay_ErrAlreadyPlaying(t *testing.T) {
 	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(new(spotify.Playback), nil)
-	api.On("Play", "", "", "", []string(nil)).Return(errors.New(internal.ErrRestrictionViolated))
+	api.On("Play", "", "","", []string(nil)).Return(errors.New(internal.ErrRestrictionViolated))
 
 	_, err := Play(api, "", "", "", "")
 	require.Error(t, err)
