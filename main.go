@@ -1,6 +1,11 @@
 package main
 
 import (
+	"time"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
 	"spotify/internal/back"
 	"spotify/internal/device"
 	"spotify/internal/login"
@@ -16,11 +21,10 @@ import (
 	"spotify/internal/status"
 	"spotify/internal/unsave"
 	"spotify/internal/update"
-	"time"
-
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
+
+// version is a linker flag set by goreleaser
+var version = "0.0.0"
 
 func main() {
 	// TODO: https://github.com/spf13/viper/pull/1064
@@ -33,7 +37,7 @@ func main() {
 	root := &cobra.Command{
 		Use:               "spotify",
 		Short:             "Spotify for the terminal 🎵",
-		Version:           "1.9.2",
+		Version:           version,
 		PersistentPreRunE: promptUpdate,
 	}
 
@@ -53,8 +57,8 @@ func main() {
 	root.AddCommand(unsave.NewCommand())
 	root.AddCommand(update.NewCommand())
 
-	// Hide help command
 	root.SetHelpCommand(&cobra.Command{Hidden: true})
+	root.SetVersionTemplate("v{{.Version}}\n")
 
 	_ = root.Execute()
 }

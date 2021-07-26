@@ -9,9 +9,9 @@ import (
 
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:       "shuffle",
+		Use:       "shuffle [on|off]",
 		Short:     "turn shuffle on or off",
-		Args:      cobra.ExactArgs(1),
+		Args:      cobra.ExactValidArgs(1),
 		ValidArgs: []string{"on", "off"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()
