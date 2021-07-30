@@ -60,7 +60,7 @@ func NewCommand() *cobra.Command {
 }
 
 func p(api internal.APIInterface, query, contextQuery, queryType, deviceID string) (string, error) {
-	if len(query) > 0 {
+	if len(query) > 0 || len(contextQuery) > 0 {
 		return play.Play(api, query, contextQuery, queryType, deviceID)
 	}
 
