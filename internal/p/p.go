@@ -2,12 +2,11 @@ package p
 
 import (
 	"errors"
+	"github.com/spf13/cobra"
 	"spotify/internal"
 	"spotify/internal/pause"
 	"spotify/internal/play"
 	"strings"
-
-	"github.com/spf13/cobra"
 )
 
 func NewCommand() *cobra.Command {
@@ -20,15 +19,30 @@ func NewCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
 			query := strings.Join(args, " ")
+			queryType := "track"
 
 			deviceID, err := cmd.Flags().GetString("device-id")
 			if err != nil {
 				return err
 			}
 
-			status, err := p(api, query, deviceID)
+			contextQuery, err := cmd.Flags().GetString("playlist")
+			if err != nil {
+				return err
+			}
+
+			if contextQuery == "" {
+				contextQuery, err = cmd.Flags().GetString("album")
+				if err != nil {
+					return err
+				}
+				queryType = "album"
+			} else {
+				queryType = "playlist"
+			}
+
+			status, err := p(api, query, contextQuery, queryType, deviceID)
 			if err != nil {
 				return err
 			}
@@ -39,13 +53,15 @@ func NewCommand() *cobra.Command {
 	}
 
 	cmd.Flags().String("device-id", "", "device ID from 'spotify device list'")
+	cmd.Flags().String("playlist", "", "playlist name from 'spotify playlist list'")
+	cmd.Flags().String("album", "", "album name")
 
 	return cmd
 }
 
-func p(api internal.APIInterface, query, deviceID string) (string, error) {
-	if len(query) > 0 {
-		return play.Play(api, query, deviceID)
+func p(api internal.APIInterface, query, contextQuery, queryType, deviceID string) (string, error) {
+	if len(query) > 0 || len(contextQuery) > 0 {
+		return play.Play(api, query, contextQuery, queryType, deviceID)
 	}
 
 	playback, err := api.GetPlayback()
@@ -60,6 +76,6 @@ func p(api internal.APIInterface, query, deviceID string) (string, error) {
 	if playback.IsPlaying {
 		return pause.Pause(api, deviceID)
 	} else {
-		return play.Play(api, "", deviceID)
+		return play.Play(api, query, contextQuery, queryType, deviceID)
 	}
 }

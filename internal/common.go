@@ -67,8 +67,8 @@ func WaitForUpdatedPlayback(api APIInterface, isUpdated func(playback *spotify.P
 	}
 }
 
-func Search(api APIInterface, query string) (*spotify.Track, error) {
-	page, err := api.Search(query, 1)
+func Search(api APIInterface, query, searchType string) (*spotify.Track, error) {
+	page, err := api.Search(query, searchType, 1)
 	if err != nil {
 		return nil, err
 	}

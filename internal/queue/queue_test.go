@@ -26,7 +26,7 @@ func TestQueue(t *testing.T) {
 
 	query := "track"
 
-	api.On("Search", query, 1).Return(paging, nil).Once()
+	api.On("Search", query, "track", 1).Return(paging, nil).Once()
 	api.On("Queue", uri).Return(nil)
 
 	output, err := Queue(api, query)
