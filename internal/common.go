@@ -2,6 +2,7 @@ package internal
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/brianstrauch/spotify"
@@ -46,14 +47,14 @@ func SaveToken(token *spotify.Token) error {
 	return viper.WriteConfig()
 }
 
-func WaitForUpdatedPlayback(api APIInterface, isUpdated func(playback *spotify.Playback) bool) (*spotify.Playback, error) {
+func WaitForUpdatedPlayback(api APIInterface, isUpdated func(*spotify.Playback) bool) (*spotify.Playback, error) {
 	timeout := time.After(time.Second)
 	tick := time.NewTicker(100 * time.Millisecond)
 
 	for {
 		select {
 		case <-timeout:
-			return nil, errors.New("request timed out")
+			return nil, errors.New(ErrRequestTimedOut)
 		case <-tick.C:
 			playback, err := api.GetPlayback()
 			if err != nil {
@@ -67,10 +68,45 @@ func WaitForUpdatedPlayback(api APIInterface, isUpdated func(playback *spotify.P
 	}
 }
 
-func Search(api APIInterface, query, searchType string) (*spotify.Track, error) {
-	page, err := api.Search(query, searchType, 1)
+func SearchTrack(api APIInterface, query string) (*spotify.Track, error) {
+	paging, err := api.Search(query, "track", 1)
 	if err != nil {
 		return nil, err
 	}
-	return page.Tracks.Items[0], nil
+
+	tracks := paging.Tracks.Items
+	if len(tracks) == 0 {
+		return nil, errors.New(ErrTrackNotFound)
+	}
+
+	return paging.Tracks.Items[0], nil
+}
+
+func SearchAlbum(api APIInterface, query string) (*spotify.Album, error) {
+	paging, err := api.Search(query, "album", 1)
+	if err != nil {
+		return nil, err
+	}
+
+	albums := paging.Albums.Items
+	if len(albums) == 0 {
+		return nil, errors.New(ErrAlbumNotFound)
+	}
+
+	return albums[0], nil
+}
+
+func SearchPlaylist(api APIInterface, query string) (*spotify.Playlist, error) {
+	playlists, err := api.GetPlaylists()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, playlist := range playlists {
+		if strings.EqualFold(playlist.Name, query) {
+			return playlist, nil
+		}
+	}
+
+	return nil, errors.New(ErrPlaylistNotFound)
 }

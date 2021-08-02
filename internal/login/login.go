@@ -68,6 +68,7 @@ func login() (*spotify.Token, error) {
 	}
 
 	scopes := []string{
+		spotify.ScopePlaylistReadPrivate,
 		spotify.ScopeUserLibraryModify,
 		spotify.ScopeUserModifyPlaybackState,
 		spotify.ScopeUserReadPlaybackState,

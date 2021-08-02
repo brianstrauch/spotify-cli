@@ -20,30 +20,23 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			query := strings.Join(args, " ")
-			queryType := "track"
+			track := strings.Join(args, " ")
 
-			deviceID, err := cmd.Flags().GetString("device-id")
+			playlist, err := cmd.Flags().GetString("playlist")
 			if err != nil {
 				return err
 			}
 
-			contextQuery, err := cmd.Flags().GetString("playlist")
+			album, err := cmd.Flags().GetString("album")
 			if err != nil {
 				return err
 			}
 
-			if contextQuery == "" {
-				contextQuery, err = cmd.Flags().GetString("album")
-				if err != nil {
-					return err
-				}
-				queryType = "album"
-			} else {
-				queryType = "playlist"
+			if track != "" && playlist != "" || track != "" && album != "" || playlist != "" && album != "" {
+				return errors.New(internal.ErrInvalidPlayArgs)
 			}
 
-			status, err := Play(api, query, contextQuery, queryType, deviceID)
+			status, err := Play(api, track, playlist, album)
 			if err != nil {
 				return err
 			}
@@ -53,85 +46,65 @@ func NewCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String("device-id", "", "device ID from 'spotify device list'")
 	cmd.Flags().String("playlist", "", "playlist name from 'spotify playlist list'")
 	cmd.Flags().String("album", "", "album name that you wish to play")
 
 	return cmd
 }
 
-func Play(api internal.APIInterface, query, contextQuery, queryType, deviceID string) (string, error) {
+func Play(api internal.APIInterface, track, playlist, album string) (string, error) {
 	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err
 	}
-
 	if playback == nil {
 		return "", errors.New(internal.ErrNoActiveDevice)
 	}
 
-	switch queryType {
-	case "album":
+	isPlaying := playback.IsPlaying
+	id := playback.Item.ID
+	progressMs := playback.ProgressMs
 
-		api, err := internal.Authenticate()
+	if track != "" {
+		track, err := internal.SearchTrack(api, track)
 		if err != nil {
 			return "", err
 		}
 
-		paging, err := api.Search(contextQuery, "album", 1)
+		if err := api.Play("", track.URI); err != nil {
+			return "", err
+		}
+	}
+
+	if album != "" {
+		album, err := internal.SearchAlbum(api, album)
 		if err != nil {
 			return "", err
 		}
 
-		albums := paging.Albums.Items
-		if len(albums) == 0 {
-			return "", errors.New(internal.ErrNoAlbums)
-		}
-
-		if err := api.Play(deviceID, albums[0].URI); err != nil {
+		if err := api.Play(album.URI); err != nil {
 			return "", err
 		}
+	}
 
-	case "playlist":
-		// Return a different API interface required for the playlist commands?
-		api, err := internal.Authenticate()
+	if playlist != "" {
+		playlist, err := internal.SearchPlaylist(api, playlist)
 		if err != nil {
 			return "", err
 		}
 
-		playlists, err := api.GetPlaylists()
-		if err != nil {
-			return "", err
-		}
-
-		for _, playlist := range playlists {
-			if strings.EqualFold(playlist.Name, contextQuery) {
-				if err := api.Play(deviceID, playlist.URI); err != nil {
-					return "", err
-				}
-				break
-			}
-		}
-
-	default:
-		track, err := internal.Search(api, query, "track")
-		if err != nil {
-			return "", err
-		}
-
-		if err := api.Play(deviceID, "", track.URI); err != nil {
+		if err := api.Play(playlist.URI); err != nil {
 			return "", err
 		}
 	}
 
 	playback, err = internal.WaitForUpdatedPlayback(api, func(playback *spotify.Playback) bool {
-		// The first check safeguards against empty playback objects
-		return len(playback.Item.ID) > 0 && playback.IsPlaying
+		hasChanged := len(playback.Item.ID) > 0 && (playback.Item.ID != id || playback.ProgressMs < progressMs)
+		return !isPlaying && playback.IsPlaying || hasChanged
 	})
 	if err != nil {
 		return "", err
 	}
 
 	return status.Show(playback), nil
-
 }

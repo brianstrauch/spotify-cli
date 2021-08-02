@@ -17,12 +17,14 @@ func TestNext(t *testing.T) {
 		ProgressMs: 0,
 		Item: spotify.Item{
 			Track: spotify.Track{
-				Meta:     spotify.Meta{ID: "0"},
+				Meta: spotify.Meta{
+					ID:   "0",
+					Type: "track",
+				},
 				Name:     "Track",
 				Artists:  []spotify.Artist{{Name: "Artist"}},
 				Duration: &spotify.Duration{Duration: time.Second},
 			},
-			Type: "track",
 		},
 	}
 

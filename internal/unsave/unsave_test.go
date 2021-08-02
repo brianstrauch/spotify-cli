@@ -31,11 +31,7 @@ func TestUnsave(t *testing.T) {
 func TestUnsave_ErrSavePodcast(t *testing.T) {
 	api := new(internal.MockAPI)
 
-	playback := &spotify.Playback{
-		Item: spotify.Item{
-			Type: "episode",
-		},
-	}
+	playback := &spotify.Playback{Item: spotify.Item{Track: spotify.Track{Meta: spotify.Meta{Type: "episode"}}}}
 
 	api.On("GetPlayback").Return(playback, nil)
 

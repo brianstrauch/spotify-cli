@@ -1,7 +1,6 @@
 package pause
 
 import (
-	"errors"
 	"spotify/internal"
 	"testing"
 	"time"
@@ -18,11 +17,11 @@ func TestPause(t *testing.T) {
 		ProgressMs: 0,
 		Item: spotify.Item{
 			Track: spotify.Track{
+				Meta:     spotify.Meta{Type: "track"},
 				Name:     "Track",
 				Artists:  []spotify.Artist{{Name: "Artist"}},
 				Duration: &spotify.Duration{Duration: time.Second},
 			},
-			Type: "track",
 		},
 	}
 
@@ -32,28 +31,18 @@ func TestPause(t *testing.T) {
 
 	api.On("GetPlayback").Return(playback1, nil).Once()
 	api.On("GetPlayback").Return(playback2, nil).Once()
-	api.On("Pause", "").Return(nil)
+	api.On("Pause").Return(nil)
 
-	status, err := Pause(api, "")
+	status, err := Pause(api)
 	require.NoError(t, err)
 	require.Equal(t, "   Track\r🎵\n   Artist\r🎤\n   0:00 [                ] 0:01\r⏸\n", status)
-}
-
-func TestPause_ErrAlreadyPaused(t *testing.T) {
-	api := new(internal.MockAPI)
-	api.On("GetPlayback").Return(new(spotify.Playback), nil)
-	api.On("Pause", "").Return(errors.New(internal.ErrRestrictionViolated))
-
-	_, err := Pause(api, "")
-	require.Error(t, err)
-	require.Equal(t, internal.ErrRestrictionViolated, err.Error())
 }
 
 func TestPause_ErrNoActiveDevice(t *testing.T) {
 	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(nil, nil)
 
-	_, err := Pause(api, "")
+	_, err := Pause(api)
 	require.Error(t, err)
 	require.Equal(t, internal.ErrNoActiveDevice, err.Error())
 }

@@ -12,14 +12,7 @@ func TestSave(t *testing.T) {
 	api := new(internal.MockAPI)
 
 	var id string
-
-	playback := &spotify.Playback{
-		Item: spotify.Item{
-			Track: spotify.Track{
-				Meta: spotify.Meta{ID: id},
-			},
-		},
-	}
+	playback := &spotify.Playback{Item: spotify.Item{Track: spotify.Track{Meta: spotify.Meta{ID: id}}}}
 
 	api.On("GetPlayback").Return(playback, nil)
 	api.On("SaveTracks", []string{id}).Return(nil)
@@ -31,11 +24,7 @@ func TestSave(t *testing.T) {
 func TestSave_ErrSavePodcast(t *testing.T) {
 	api := new(internal.MockAPI)
 
-	playback := &spotify.Playback{
-		Item: spotify.Item{
-			Type: "episode",
-		},
-	}
+	playback := &spotify.Playback{Item: spotify.Item{Track: spotify.Track{Meta: spotify.Meta{Type: "episode"}}}}
 
 	api.On("GetPlayback").Return(playback, nil)
 

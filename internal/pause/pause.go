@@ -19,12 +19,7 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			deviceID, err := cmd.Flags().GetString("device-id")
-			if err != nil {
-				return err
-			}
-
-			status, err := Pause(api, deviceID)
+			status, err := Pause(api)
 			if err != nil {
 				return err
 			}
@@ -34,12 +29,10 @@ func NewCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String("device-id", "", "device ID from 'spotify device list'")
-
 	return cmd
 }
 
-func Pause(api internal.APIInterface, deviceID string) (string, error) {
+func Pause(api internal.APIInterface) (string, error) {
 	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err
@@ -49,7 +42,7 @@ func Pause(api internal.APIInterface, deviceID string) (string, error) {
 		return "", errors.New(internal.ErrNoActiveDevice)
 	}
 
-	if err := api.Pause(deviceID); err != nil {
+	if err := api.Pause(); err != nil {
 		return "", err
 	}
 

@@ -17,13 +17,11 @@ func TestStatus_Track(t *testing.T) {
 		ProgressMs: 0,
 		Item: spotify.Item{
 			Track: spotify.Track{
-				Name: "Track",
-				Artists: []spotify.Artist{
-					{Name: "Artist"},
-				},
+				Meta:     spotify.Meta{Type: "track"},
+				Name:     "Track",
+				Artists:  []spotify.Artist{{Name: "Artist"}},
 				Duration: &spotify.Duration{Duration: time.Second},
 			},
-			Type: "track",
 		},
 	}
 
@@ -42,13 +40,11 @@ func TestStatus_Podcast(t *testing.T) {
 		ProgressMs: 0,
 		Item: spotify.Item{
 			Track: spotify.Track{
+				Meta:     spotify.Meta{Type: "episode"},
 				Name:     "Episode",
 				Duration: &spotify.Duration{Duration: time.Second},
 			},
-			Show: spotify.Show{
-				Name: "Podcast",
-			},
-			Type: "episode",
+			Show: spotify.Show{Name: "Podcast"},
 		},
 	}
 

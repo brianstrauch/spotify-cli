@@ -42,15 +42,16 @@ func back(api internal.APIInterface) (string, error) {
 	}
 
 	id := playback.Item.ID
+	progressMs := playback.ProgressMs
 
 	if err := api.SkipToPreviousTrack(); err != nil {
-		if err.Error() == internal.ErrRestrictionViolated {
+		if err.Error() == "Player command failed: Restriction violated" {
 			return "", errors.New(internal.ErrNoPrevious)
 		}
 	}
 
 	playback, err = internal.WaitForUpdatedPlayback(api, func(playback *spotify.Playback) bool {
-		return playback.Item.ID != id
+		return playback.Item.ID != id || playback.ProgressMs < progressMs
 	})
 	if err != nil {
 		return "", err

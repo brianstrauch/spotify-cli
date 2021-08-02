@@ -18,12 +18,14 @@ func TestBack(t *testing.T) {
 		ProgressMs: 0,
 		Item: spotify.Item{
 			Track: spotify.Track{
-				Meta:     spotify.Meta{ID: "1"},
+				Meta: spotify.Meta{
+					ID:   "1",
+					Type: "track",
+				},
 				Name:     "Track",
 				Artists:  []spotify.Artist{{Name: "Artist"}},
 				Duration: &spotify.Duration{Duration: time.Second},
 			},
-			Type: "track",
 		},
 	}
 
@@ -43,7 +45,7 @@ func TestBack(t *testing.T) {
 func TestBack_ErrNoPrevious(t *testing.T) {
 	api := new(internal.MockAPI)
 	api.On("GetPlayback").Return(new(spotify.Playback), nil)
-	api.On("SkipToPreviousTrack").Return(errors.New(internal.ErrRestrictionViolated))
+	api.On("SkipToPreviousTrack").Return(errors.New("Player command failed: Restriction violated"))
 
 	_, err := back(api)
 	require.Error(t, err)

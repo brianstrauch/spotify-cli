@@ -19,30 +19,24 @@ func NewCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			query := strings.Join(args, " ")
-			queryType := "track"
 
-			deviceID, err := cmd.Flags().GetString("device-id")
+			track := strings.Join(args, " ")
+
+			playlist, err := cmd.Flags().GetString("playlist")
 			if err != nil {
 				return err
 			}
 
-			contextQuery, err := cmd.Flags().GetString("playlist")
+			album, err := cmd.Flags().GetString("album")
 			if err != nil {
 				return err
 			}
 
-			if contextQuery == "" {
-				contextQuery, err = cmd.Flags().GetString("album")
-				if err != nil {
-					return err
-				}
-				queryType = "album"
-			} else {
-				queryType = "playlist"
+			if track != "" && playlist != "" || track != "" && album != "" || playlist != "" && album != "" {
+				return errors.New(internal.ErrInvalidPlayArgs)
 			}
 
-			status, err := p(api, query, contextQuery, queryType, deviceID)
+			status, err := p(api, track, playlist, album)
 			if err != nil {
 				return err
 			}
@@ -52,30 +46,28 @@ func NewCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String("device-id", "", "device ID from 'spotify device list'")
 	cmd.Flags().String("playlist", "", "playlist name from 'spotify playlist list'")
 	cmd.Flags().String("album", "", "album name")
 
 	return cmd
 }
 
-func p(api internal.APIInterface, query, contextQuery, queryType, deviceID string) (string, error) {
-	if len(query) > 0 || len(contextQuery) > 0 {
-		return play.Play(api, query, contextQuery, queryType, deviceID)
+func p(api internal.APIInterface, track, playlist, album string) (string, error) {
+	if track != "" || playlist != "" || album != "" {
+		return play.Play(api, track, playlist, album)
 	}
 
 	playback, err := api.GetPlayback()
 	if err != nil {
 		return "", err
 	}
-
 	if playback == nil {
 		return "", errors.New(internal.ErrNoActiveDevice)
 	}
 
 	if playback.IsPlaying {
-		return pause.Pause(api, deviceID)
+		return pause.Pause(api)
 	} else {
-		return play.Play(api, query, contextQuery, queryType, deviceID)
+		return play.Play(api, "", "", "")
 	}
 }

@@ -1,7 +1,6 @@
 package playlist
 
 import (
-	"errors"
 	"fmt"
 	"spotify/internal"
 	"strconv"
@@ -14,7 +13,7 @@ import (
 
 func NewShowCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "show",
+		Use:   "show [playlist]",
 		Short: "show artist and songs",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -23,31 +22,20 @@ func NewShowCommand() *cobra.Command {
 				return err
 			}
 
-			name := strings.Join(args, " ")
+			playlist := strings.Join(args, " ")
 
-			return Show(api, name)
+			return show(api, playlist)
 		},
 	}
 }
 
-func Show(api *spotify.API, name string) error {
-	playlists, err := api.GetPlaylists()
+func show(api *spotify.API, name string) error {
+	playlist, err := internal.SearchPlaylist(api, name)
 	if err != nil {
 		return err
 	}
 
-	id := ""
-	for _, playlist := range playlists {
-		if strings.EqualFold(playlist.Name, name) {
-			id = playlist.ID
-		}
-	}
-	if id == "" {
-		return errors.New("no such playlist")
-	}
-
-	playlist, err := api.GetPlaylist(id)
-	if err != nil {
+	if err := playlist.HREF.Get(api, playlist); err != nil {
 		return err
 	}
 

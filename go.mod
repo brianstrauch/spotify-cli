@@ -12,3 +12,5 @@ require (
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 )
+
+replace github.com/brianstrauch/spotify => /Users/brianstrauch/Documents/go/src/github.com/brianstrauch/spotify
