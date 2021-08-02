@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/brianstrauch/spotify v0.7.0
+	github.com/brianstrauch/spotify v0.7.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/pkg/browser v0.0.0-20210706143420-7d21f8c997e2
 	github.com/rhysd/go-github-selfupdate v1.2.3
@@ -12,5 +12,3 @@ require (
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 )
-
-replace github.com/brianstrauch/spotify => /Users/brianstrauch/Documents/go/src/github.com/brianstrauch/spotify
