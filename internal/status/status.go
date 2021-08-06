@@ -3,11 +3,19 @@ package status
 import (
 	"errors"
 	"fmt"
-	"spotify/internal"
-
 	"github.com/brianstrauch/spotify"
 	"github.com/spf13/cobra"
+	"spotify/internal"
 )
+
+type EmojiLine struct {
+	Emoji string
+	Line  string
+}
+
+func (e EmojiLine) String() string {
+	return fmt.Sprintf("   %s\r%s\n", e.Line, e.Emoji)
+}
 
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
@@ -62,11 +70,10 @@ func Show(playback *spotify.Playback) string {
 
 	progressBar := showProgressBar(playback.ProgressMs, playback.Item.Duration)
 
-	status := PrefixLineWithEmoji("🎵", playback.Item.Name)
-	status += PrefixLineWithEmoji("🎤", artistLine)
-	status += PrefixLineWithEmoji(isPlayingEmoji, progressBar)
-
-	return status
+	output := EmojiLine{Emoji: "🎵", Line: playback.Item.Name}.String()
+	output += EmojiLine{Emoji: "🎤", Line: artistLine}.String()
+	output += EmojiLine{Emoji: isPlayingEmoji, Line: progressBar}.String()
+	return output
 }
 
 func JoinArtists(artists []spotify.Artist) string {
@@ -103,9 +110,4 @@ func formatTime(ms int) string {
 	} else {
 		return fmt.Sprintf("%d:%02d:%02d", h, m%60, s%60)
 	}
-}
-
-func PrefixLineWithEmoji(emoji, line string) string {
-	// Carriage return jumps to start of line because emojis can have variable widths
-	return fmt.Sprintf("   %s\r%s\n", line, emoji)
 }
