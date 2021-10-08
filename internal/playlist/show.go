@@ -13,9 +13,10 @@ import (
 
 func NewShowCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "show [playlist]",
-		Short: "show artist and songs",
-		Args:  cobra.MinimumNArgs(1),
+		Use:               "show [playlist]",
+		Short:             "show artist and songs",
+		Args:              cobra.MinimumNArgs(1),
+		ValidArgsFunction: AutocompletePlaylist,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {
@@ -69,4 +70,22 @@ func formatPlaylist(playlist *spotify.Playlist) (string, error) {
 	table.Render()
 
 	return output.String(), nil
+}
+
+func AutocompletePlaylist(_ *cobra.Command, _ []string, _ string) ([]string, cobra.ShellCompDirective) {
+	api, err := internal.Authenticate()
+	if err != nil {
+		return []string{}, cobra.ShellCompDirectiveError
+	}
+
+	playlists, err := api.GetPlaylists()
+	if err != nil {
+		return []string{}, cobra.ShellCompDirectiveError
+	}
+
+	var completions []string
+	for _, playlist := range playlists {
+		completions = append(completions, playlist.Name)
+	}
+	return completions, cobra.ShellCompDirectiveDefault
 }

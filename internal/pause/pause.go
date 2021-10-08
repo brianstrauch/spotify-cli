@@ -10,7 +10,7 @@ import (
 )
 
 func NewCommand() *cobra.Command {
-	cmd := &cobra.Command{
+	return &cobra.Command{
 		Use:   "pause",
 		Short: "pause music",
 		RunE: func(cmd *cobra.Command, _ []string) error {
@@ -28,8 +28,6 @@ func NewCommand() *cobra.Command {
 			return nil
 		},
 	}
-
-	return cmd
 }
 
 func Pause(api internal.APIInterface) (string, error) {

@@ -3,6 +3,7 @@ package play
 import (
 	"errors"
 	"spotify/internal"
+	"spotify/internal/playlist"
 	"spotify/internal/status"
 	"strings"
 
@@ -48,6 +49,8 @@ func NewCommand() *cobra.Command {
 
 	cmd.Flags().String("playlist", "", "playlist name from 'spotify playlist list'")
 	cmd.Flags().String("album", "", "album name that you wish to play")
+
+	_ = cmd.RegisterFlagCompletionFunc("playlist", playlist.AutocompletePlaylist)
 
 	return cmd
 }
