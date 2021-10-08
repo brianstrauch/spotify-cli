@@ -7,7 +7,6 @@ import (
 	"github.com/spf13/viper"
 
 	"spotify/internal/back"
-	"spotify/internal/device"
 	"spotify/internal/login"
 	"spotify/internal/next"
 	"spotify/internal/p"
@@ -42,7 +41,6 @@ func main() {
 	}
 
 	root.AddCommand(back.NewCommand())
-	root.AddCommand(device.NewCommand())
 	root.AddCommand(login.NewCommand())
 	root.AddCommand(next.NewCommand())
 	root.AddCommand(p.NewCommand())
