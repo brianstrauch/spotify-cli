@@ -77,9 +77,7 @@ func Play(api internal.APIInterface, track, playlist, album string) (string, err
 		if err := api.Play("", track.URI); err != nil {
 			return "", err
 		}
-	}
-
-	if album != "" {
+	} else if album != "" {
 		album, err := internal.SearchAlbum(api, album)
 		if err != nil {
 			return "", err
@@ -88,9 +86,7 @@ func Play(api internal.APIInterface, track, playlist, album string) (string, err
 		if err := api.Play(album.URI); err != nil {
 			return "", err
 		}
-	}
-
-	if playlist != "" {
+	} else if playlist != "" {
 		playlist, err := internal.SearchPlaylist(api, playlist)
 		if err != nil {
 			return "", err
@@ -99,10 +95,14 @@ func Play(api internal.APIInterface, track, playlist, album string) (string, err
 		if err := api.Play(playlist.URI); err != nil {
 			return "", err
 		}
+	} else {
+		if err := api.Play(""); err != nil {
+			return "", err
+		}
 	}
 
 	playback, err = internal.WaitForUpdatedPlayback(api, func(playback *spotify.Playback) bool {
-		hasChanged := len(playback.Item.ID) > 0 && (playback.Item.ID != id || playback.ProgressMs < progressMs)
+		hasChanged := playback.Item.ID != "" && (playback.Item.ID != id || playback.ProgressMs < progressMs)
 		return !isPlaying && playback.IsPlaying || hasChanged
 	})
 	if err != nil {
