@@ -14,7 +14,7 @@ import (
 func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "play [song]",
-		Short: "play current song, or a specific song",
+		Short: "Play current song, or a specific song.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {

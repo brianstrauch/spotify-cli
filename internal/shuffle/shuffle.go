@@ -10,7 +10,7 @@ import (
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:       "shuffle [on|off]",
-		Short:     "turn shuffle on or off",
+		Short:     "Turn shuffle on or off.",
 		Args:      cobra.ExactValidArgs(1),
 		ValidArgs: []string{"on", "off"},
 		RunE: func(cmd *cobra.Command, args []string) error {

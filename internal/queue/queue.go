@@ -13,7 +13,7 @@ func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:     "queue song",
 		Aliases: []string{"q"},
-		Short:   "queue a specific song",
+		Short:   "Queue a specific song.",
 		Args:    cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()

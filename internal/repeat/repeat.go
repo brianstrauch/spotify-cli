@@ -16,7 +16,7 @@ const (
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:       "repeat [on|off|track]",
-		Short:     "set repeat to on, off, or track",
+		Short:     "Set repeat to on, off, or track.",
 		Args:      cobra.ExactValidArgs(1),
 		ValidArgs: []string{"on", "off", "track"},
 		RunE: func(cmd *cobra.Command, args []string) error {

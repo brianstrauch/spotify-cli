@@ -12,9 +12,8 @@ import (
 
 func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "p [song]",
-		// Keep hidden, since this command is an alias.
-		Hidden: true,
+		Use:    "p [song]",
+		Hidden: true, // Keep hidden, since this command is an alias.
 		RunE: func(cmd *cobra.Command, args []string) error {
 			api, err := internal.Authenticate()
 			if err != nil {

@@ -3,6 +3,7 @@ package main
 import (
 	"time"
 
+	shell "github.com/brianstrauch/cobra-shell"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -50,6 +51,7 @@ func main() {
 	root.AddCommand(queue.NewCommand())
 	root.AddCommand(repeat.NewCommand())
 	root.AddCommand(save.NewCommand())
+	root.AddCommand(shell.New(root))
 	root.AddCommand(shuffle.NewCommand())
 	root.AddCommand(status.NewCommand())
 	root.AddCommand(unsave.NewCommand())
